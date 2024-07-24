@@ -1,9 +1,9 @@
-package com.example.proyecto_final_poo_soria_richard;
+package com.example.main;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 
-public class HelloController {
+public class MainController {
     @FXML
     private Label welcomeText;
 

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="360.0" prefWidth="585.0" stylesheets="@styles/style.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <AnchorPane prefHeight="360.0" prefWidth="586.0">
+         <children>
+            <AnchorPane layoutX="-7.0" prefHeight="360.0" prefWidth="200.0" style="-fx-background-color: #0e4c71;">
+               <children>
+                  <Label layoutX="80.0" layoutY="20.0" text="Mi" textFill="#e72f2b">
+                     <font>
+                        <Font name="Verdana Bold" size="30.0" />
+                     </font>
+                  </Label>
+                  <Label layoutX="62.0" layoutY="58.0" text="Aula" textFill="#e72f2b">
+                     <font>
+                        <Font name="Verdana Bold" size="30.0" />
+                     </font>
+                  </Label>
+                  <Label layoutX="46.0" layoutY="96.0" text="ESFOT" textFill="#e72f2b">
+                     <font>
+                        <Font name="Verdana Bold" size="30.0" />
+                     </font>
+                  </Label>
+                  <ImageView fitHeight="205.0" fitWidth="200.0" layoutY="135.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@images/aulas.png" />
+                     </image>
+                  </ImageView>
+               </children></AnchorPane>
+            <AnchorPane layoutX="193.0" prefHeight="360.0" prefWidth="390.0">
+               <children>
+                  <Label layoutX="20.0" layoutY="130.0" text="Inicio de Sesión">
+                     <font>
+                        <Font name="Verdana Bold" size="25.0" />
+                     </font>
+                  </Label>
+                  <ImageView fitHeight="115.0" fitWidth="225.0" layoutX="20.0" layoutY="20.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@images/logo_esfot_buho.png" />
+                     </image>
+                  </ImageView>
+                  <TextField layoutX="20.0" layoutY="165.0" prefHeight="35.0" prefWidth="350.0" promptText="Ingrese su Correo Institucional">
+                     <font>
+                        <Font name="Verdana" size="15.0" />
+                     </font>
+                  </TextField>
+                  <PasswordField layoutX="20.0" layoutY="210.0" prefHeight="35.0" prefWidth="350.0" promptText="Ingrese su contraseña">
+                     <font>
+                        <Font name="Verdana" size="15.0" />
+                     </font>
+                  </PasswordField>
+                  <MenuButton layoutX="20.0" layoutY="255.0" mnemonicParsing="false" text="Tipo de Usuario">
+                    <items>
+                      <MenuItem mnemonicParsing="false" text="Administrador" />
+                      <MenuItem mnemonicParsing="false" text="Profesor" />
+                       <MenuItem mnemonicParsing="false" text="Estudiante" />
+                    </items>
+                     <font>
+                        <Font name="Verdana Bold" size="15.0" />
+                     </font>
+                  </MenuButton>
+                  <Button layoutX="187.0" layoutY="300.0" mnemonicParsing="false" style="-fx-background-color: #e72f2b; -fx-text-fill: #FFFFFF;" text="Iniciar Sesión">
+                     <font>
+                        <Font name="Verdana Bold" size="20.0" />
+                     </font>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                  </Button>
+               </children></AnchorPane>
+         </children>
+      </AnchorPane>
+   </children>
+</StackPane>

@@ -134,7 +134,7 @@
                         <id>default-cli</id>
                         <configuration>
                             <mainClass>
-                                com.example.proyecto_final_poo_soria_richard/com.example.proyecto_final_poo_soria_richard.HelloApplication
+                                com.example.proyecto_final_poo_soria_richard/com.example.main.Main
                             </mainClass>
                             <launcher>app</launcher>
                             <jlinkZipName>app</jlinkZipName>

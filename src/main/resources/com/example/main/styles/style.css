@@ -1,0 +1,11 @@
+.menu-item
+{
+    -fx-font-size: 15px;
+    -fx-pref-width: 173.6px;
+    -fx-pref-height: 28.8px;
+}
+
+.menu-item:hover
+{
+    -fx-background-color:  #e72f2b;
+}

@@ -11,6 +11,6 @@ module com.example.proyecto_final_poo_soria_richard {
     requires eu.hansolo.tilesfx;
     requires com.almasb.fxgl.all;
 
-    opens com.example.proyecto_final_poo_soria_richard to javafx.fxml;
-    exports com.example.proyecto_final_poo_soria_richard;
+    opens com.example.main to javafx.fxml;
+    exports com.example.main;
 }
