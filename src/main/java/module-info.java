@@ -10,6 +10,9 @@ module com.example.proyecto_final_poo_soria_richard {
     requires org.kordamp.bootstrapfx.core;
     requires eu.hansolo.tilesfx;
     requires com.almasb.fxgl.all;
+    requires org.mongodb.driver.core;
+    requires org.mongodb.driver.sync.client;
+    requires org.mongodb.bson;
 
     opens com.example.main to javafx.fxml;
     exports com.example.main;

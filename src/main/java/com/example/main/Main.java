@@ -4,6 +4,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -16,9 +17,10 @@ public class Main extends Application {
         Scene scene = new Scene(root, 585, 360);
         root.requestFocus();
         stage.setTitle("Gestión de Aulas y laboratorios ESFOT");
+        stage.getIcons().add(new Image(Main.class.getResourceAsStream("/com/example/main/images/esfot_buho.png")));
+        stage.setResizable(false);
         stage.setScene(scene);
         stage.show();
-
     }
 
     public static void main(String[] args) {

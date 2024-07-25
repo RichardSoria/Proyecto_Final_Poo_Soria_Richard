@@ -6,9 +6,9 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="360.0" prefWidth="585.0" stylesheets="@styles/style.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1">
+<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="360.0" prefWidth="585.0" stylesheets="@styles/style.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.main.MainController">
    <children>
-      <AnchorPane prefHeight="360.0" prefWidth="586.0">
+      <AnchorPane fx:id="mainPanel" prefHeight="360.0" prefWidth="586.0">
          <children>
             <AnchorPane layoutX="-7.0" prefHeight="360.0" prefWidth="200.0" style="-fx-background-color: #0e4c71;">
                <children>
@@ -45,27 +45,27 @@
                         <Image url="@images/logo_esfot_buho.png" />
                      </image>
                   </ImageView>
-                  <TextField layoutX="20.0" layoutY="165.0" prefHeight="35.0" prefWidth="350.0" promptText="Ingrese su Correo Institucional">
+                  <TextField fx:id="campo_correo" layoutX="20.0" layoutY="165.0" prefHeight="35.0" prefWidth="350.0" promptText="Ingrese su Correo Institucional">
                      <font>
                         <Font name="Verdana" size="15.0" />
                      </font>
                   </TextField>
-                  <PasswordField layoutX="20.0" layoutY="210.0" prefHeight="35.0" prefWidth="350.0" promptText="Ingrese su contraseña">
+                  <PasswordField fx:id="campo_contrasena" layoutX="20.0" layoutY="210.0" prefHeight="35.0" prefWidth="350.0" promptText="Ingrese su contraseña">
                      <font>
                         <Font name="Verdana" size="15.0" />
                      </font>
                   </PasswordField>
-                  <MenuButton layoutX="20.0" layoutY="255.0" mnemonicParsing="false" text="Tipo de Usuario">
-                    <items>
-                      <MenuItem mnemonicParsing="false" text="Administrador" />
-                      <MenuItem mnemonicParsing="false" text="Profesor" />
-                       <MenuItem mnemonicParsing="false" text="Estudiante" />
-                    </items>
+                  <MenuButton fx:id="menu_tipo_rol" layoutX="20.0" layoutY="255.0" mnemonicParsing="false" text="Tipo de Usuario">
+                     <items>
+                        <MenuItem mnemonicParsing="false" text="Administrador" />
+                        <MenuItem mnemonicParsing="false" text="Profesor" />
+                        <MenuItem mnemonicParsing="false" text="Estudiante" />
+                     </items>
                      <font>
                         <Font name="Verdana Bold" size="15.0" />
                      </font>
                   </MenuButton>
-                  <Button layoutX="187.0" layoutY="300.0" mnemonicParsing="false" style="-fx-background-color: #e72f2b; -fx-text-fill: #FFFFFF;" text="Iniciar Sesión">
+                  <Button fx:id="boton_iniciar_sesion" layoutX="187.0" layoutY="300.0" mnemonicParsing="false" styleClass="button" text="Iniciar Sesión" onAction="#iniciarSesion">
                      <font>
                         <Font name="Verdana Bold" size="20.0" />
                      </font>
