@@ -13,6 +13,10 @@ import javafx.stage.Stage;
 import org.bson.Document;
 import com.mongodb.client.FindIterable;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
+
 public class MainController {
     @FXML
     private TextField campo_correo;
@@ -21,7 +25,35 @@ public class MainController {
     @FXML
     private MenuButton menu_tipo_rol;
 
+    // Validar correo electrónico
     private static final String EMAIL_PATTERN = "^[a-zA-Z]+\\.[a-zA-Z]+@epn\\.edu\\.ec$";
+    public boolean validarCorreo(String correo) {
+        return correo.matches(EMAIL_PATTERN);
+    }
+
+    // Generar hash de la contraseña
+    public static String generateHash(String input) {
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            byte[] encodedhash = digest.digest(input.getBytes());
+            return bytesToHex(encodedhash);
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    // Convertir bytes a hexadecimal
+    private static String bytesToHex(byte[] hash) {
+        StringBuilder hexString = new StringBuilder();
+        for (byte b : hash) {
+            String hex = Integer.toHexString(0xff & b);
+            if (hex.length() == 1) {
+                hexString.append('0');
+            }
+            hexString.append(hex);
+        }
+        return hexString.toString();
+    }
 
     private void mostrarAlerta(String titulo, String mensaje) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -54,10 +86,6 @@ public class MainController {
         alert.showAndWait();
     }
 
-    public boolean validarCorreo(String correo) {
-        return correo.matches(EMAIL_PATTERN);
-    }
-
     @FXML
     public void initialize() {
         // Agregar manejadores de eventos a los items del MenuButton
@@ -70,8 +98,8 @@ public class MainController {
     public void iniciarSesion() {
         String correo = campo_correo.getText();
         String contrasena = campo_contrasena.getText();
+        String hashedContrasena = generateHash(contrasena);
         String tipo_rol = menu_tipo_rol.getText();
-
 
         if(correo.isEmpty() || contrasena.isEmpty() || tipo_rol.equals("Tipo de Usuario")) {
             mostrarAlerta("Error al iniciar sesión", "Por favor, llene todos los campos y seleccione un tipo de usuario");
@@ -85,7 +113,7 @@ public class MainController {
                 MongoDatabase database = mongoClient.getDatabase("Base_Datos_Aulas_Laboratorios_ESFOT");
                 MongoCollection<Document> collection = database.getCollection("Administradores");
 
-                FindIterable<Document> documents = collection.find(new Document("correo", correo).append("contrasena", contrasena));
+                FindIterable<Document> documents = collection.find(new Document("correo", correo).append("contrasena", hashedContrasena));
                 if (documents.first() != null) {
                     mostrarConfirmacion("Inicio de sesión exitoso", "Bienvenido " + documents.first().get("nombre") + " " + documents.first().get("apellido") +
                             "\nHa iniciado sesión como Administrador");
@@ -101,7 +129,7 @@ public class MainController {
                 MongoDatabase database = mongoClient.getDatabase("Base_Datos_Aulas_Laboratorios_ESFOT");
                 MongoCollection<Document> collection = database.getCollection("Profesores");
 
-                FindIterable<Document> documents = collection.find(new Document("correo", correo).append("contrasena", contrasena));
+                FindIterable<Document> documents = collection.find(new Document("correo", correo).append("contrasena", hashedContrasena));
                 if (documents.first() != null) {
                     mostrarConfirmacion("Inicio de sesión exitoso", "Bienvenido " + documents.first().get("nombre") + " " + documents.first().get("apellido") +
                             "\nHa iniciado sesión como Profesor");
@@ -116,7 +144,7 @@ public class MainController {
                 MongoDatabase database = mongoClient.getDatabase("Base_Datos_Aulas_Laboratorios_ESFOT");
                 MongoCollection<Document> collection = database.getCollection("Estudiantes");
 
-                FindIterable<Document> documents = collection.find(new Document("correo", correo).append("contrasena", contrasena));
+                FindIterable<Document> documents = collection.find(new Document("correo", correo).append("contrasena", hashedContrasena));
                 if (documents.first() != null) {
                     mostrarConfirmacion("Inicio de sesión exitoso", "Bienvenido " + documents.first().get("nombre") + " " + documents.first().get("apellido") +
                             "\nHa iniciado sesión como Estudiante");
