@@ -80,15 +80,15 @@ public class MainController {
             mostrarAlerta("Error al iniciar sesión", "Correo inválido");
             return;
 
-        } else if (tipo_rol.equals("Administrador"))
-            // hacer consulta en la base de datos de mongodb
+        } else if (tipo_rol.equals("Administrador")) {
             try (MongoClient mongoClient = MongoClients.create("mongodb+srv://Richard-Soria:RichardSoria%401899@aulas-laboratorios-esfo.o7jjnmz.mongodb.net/")) {
                 MongoDatabase database = mongoClient.getDatabase("Base_Datos_Aulas_Laboratorios_ESFOT");
                 MongoCollection<Document> collection = database.getCollection("Administradores");
 
                 FindIterable<Document> documents = collection.find(new Document("correo", correo).append("contrasena", contrasena));
                 if (documents.first() != null) {
-                    mostrarConfirmacion("Inicio de sesión exitoso", "Bienvenido " + documents.first().get("nombre") + " " + documents.first().get("apellido"));
+                    mostrarConfirmacion("Inicio de sesión exitoso", "Bienvenido " + documents.first().get("nombre") + " " + documents.first().get("apellido") +
+                            "\nHa iniciado sesión como Administrador");
                 } else {
                     mostrarAlerta("Error al iniciar sesión", "Correo, contraseña o tipo de usuario incorrectos");
                 }
@@ -96,6 +96,37 @@ public class MainController {
                 mostrarAlerta("Error al iniciar sesión", "Error al consultar la base de datos: " + e.getMessage());
             }
 
+        } else if (tipo_rol.equals("Profesor")) {
+            try (MongoClient mongoClient = MongoClients.create("mongodb+srv://Richard-Soria:RichardSoria%401899@aulas-laboratorios-esfo.o7jjnmz.mongodb.net/")) {
+                MongoDatabase database = mongoClient.getDatabase("Base_Datos_Aulas_Laboratorios_ESFOT");
+                MongoCollection<Document> collection = database.getCollection("Profesores");
 
+                FindIterable<Document> documents = collection.find(new Document("correo", correo).append("contrasena", contrasena));
+                if (documents.first() != null) {
+                    mostrarConfirmacion("Inicio de sesión exitoso", "Bienvenido " + documents.first().get("nombre") + " " + documents.first().get("apellido") +
+                            "\nHa iniciado sesión como Profesor");
+                } else {
+                    mostrarAlerta("Error al iniciar sesión", "Correo, contraseña o tipo de usuario incorrectos");
+                }
+            } catch (Exception e) {
+                mostrarAlerta("Error al iniciar sesión", "Error al consultar la base de datos: " + e.getMessage());
+            }
+        } else if (tipo_rol.equals("Estudiante")) {
+            try (MongoClient mongoClient = MongoClients.create("mongodb+srv://Richard-Soria:RichardSoria%401899@aulas-laboratorios-esfo.o7jjnmz.mongodb.net/")) {
+                MongoDatabase database = mongoClient.getDatabase("Base_Datos_Aulas_Laboratorios_ESFOT");
+                MongoCollection<Document> collection = database.getCollection("Estudiantes");
+
+                FindIterable<Document> documents = collection.find(new Document("correo", correo).append("contrasena", contrasena));
+                if (documents.first() != null) {
+                    mostrarConfirmacion("Inicio de sesión exitoso", "Bienvenido " + documents.first().get("nombre") + " " + documents.first().get("apellido") +
+                            "\nHa iniciado sesión como Estudiante");
+                } else {
+                    mostrarAlerta("Error al iniciar sesión", "Correo, contraseña o tipo de usuario incorrectos");
+                }
+            } catch (Exception e) {
+                mostrarAlerta("Error al iniciar sesión", "Error al consultar la base de datos: " + e.getMessage());
+            }
+
+        }
     }
 }
