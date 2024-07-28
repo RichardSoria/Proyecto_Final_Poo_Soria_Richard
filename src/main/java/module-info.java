@@ -14,6 +14,6 @@ module com.example.proyecto_final_poo_soria_richard {
     requires org.mongodb.driver.sync.client;
     requires org.mongodb.bson;
 
-    opens com.example.main to javafx.fxml;
-    exports com.example.main;
+    opens controllers to javafx.fxml;
+    exports controllers;
 }

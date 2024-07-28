@@ -1,6 +1,6 @@
-package com.example.main.clases_sistema;
+package clases_sistema;
 
-import com.example.main.MainController;
+import controllers.IniciarSesionController;
 import javafx.scene.control.Alert;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -47,7 +47,7 @@ public class credenciales_avisos {
         alert.setHeaderText(null);
         alert.setContentText(mensaje);
         Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
-        stage.getIcons().add(new javafx.scene.image.Image(MainController.class.getResourceAsStream("/com/example/main/images/esfot_buho.png")));
+        stage.getIcons().add(new javafx.scene.image.Image(IniciarSesionController.class.getResourceAsStream("/images/esfot_buho.png")));
         alert.showAndWait();
     }
 
@@ -59,10 +59,10 @@ public class credenciales_avisos {
 
         // Agregar el icono de la aplicación a la ventana de alerta
         Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
-        stage.getIcons().add(new Image(MainController.class.getResourceAsStream("/com/example/main/images/esfot_buho.png")));
+        stage.getIcons().add(new Image(IniciarSesionController.class.getResourceAsStream("/images/esfot_buho.png")));
 
         // Crear ImageView con la imagen del check mark
-        Image imagenVisto = new Image(MainController.class.getResourceAsStream("/com/example/main/images/check.png"));
+        Image imagenVisto = new Image(IniciarSesionController.class.getResourceAsStream("/images/check.png"));
         ImageView imageView = new ImageView(imagenVisto);
         imageView.setFitHeight(50);
         imageView.setFitWidth(50);
