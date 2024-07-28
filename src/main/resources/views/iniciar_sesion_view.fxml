@@ -1,19 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.Cursor?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.MenuButton?>
-<?import javafx.scene.control.MenuItem?>
-<?import javafx.scene.control.PasswordField?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.StackPane?>
-<?import javafx.scene.text.Font?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
-<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="360.0" prefWidth="585.0" stylesheets="@../styles/style.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.IniciarSesionController">
+<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="360.0" prefWidth="585.0" stylesheets="@../styles/style.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.IniciarSesionController">
    <children>
       <AnchorPane fx:id="mainPanel" prefHeight="360.0" prefWidth="585.0">
          <children>
@@ -62,7 +55,7 @@
                         <Font name="Verdana" size="15.0" />
                      </font>
                   </PasswordField>
-                  <MenuButton fx:id="menu_tipo_rol" layoutX="20.0" layoutY="255.0" mnemonicParsing="false" text="Tipo de Usuario">
+                  <MenuButton fx:id="menu_tipo_rol" layoutX="20.0" layoutY="255.0" mnemonicParsing="false" style="-fx-background-color: #0e4c71;" text="Tipo de Usuario" textFill="WHITE">
                      <items>
                         <MenuItem mnemonicParsing="false" text="Administrador" />
                         <MenuItem mnemonicParsing="false" text="Profesor" />
