@@ -79,7 +79,7 @@ public class IniciarSesionController extends credenciales_avisos {
 
                 if (tipo_rol.equals("Administrador")) {
                     boton_iniciar_sesion.getScene().getWindow().hide();
-                    Parent root = FXMLLoader.load(getClass().getResource("/views/dashboard_admnistrador_view.fxml"));
+                    Parent root = FXMLLoader.load(getClass().getResource("/views/dashboard_administrador_view.fxml"));
                     Stage stage = new Stage();
                     Scene scene = new Scene(root);
                     root.requestFocus();
