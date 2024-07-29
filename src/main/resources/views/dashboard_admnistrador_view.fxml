@@ -3,6 +3,7 @@
 <?import java.lang.String?>
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.MenuButton?>
 <?import javafx.scene.control.MenuItem?>
@@ -123,7 +124,7 @@
          <center>
             <AnchorPane prefHeight="200.0" prefWidth="200.0" styleClass="bg_red" stylesheets="@../styles/style_dashboard.css" BorderPane.alignment="CENTER">
                <children>
-                  <AnchorPane layoutX="10.0" layoutY="10.0" prefHeight="580.0" prefWidth="780.0" stylesheets="@../styles/style_dashboard.css">
+                  <AnchorPane layoutX="10.0" layoutY="10.0" prefHeight="580.0" prefWidth="780.0" stylesheets="@../styles/style_dashboard.css" visible="false">
                      <styleClass>
                         <String fx:value="bg_white" />
                         <String fx:value="border" />
@@ -198,7 +199,7 @@
                         </ImageView>
                      </children>
                   </AnchorPane>
-                  <AnchorPane layoutX="10.0" layoutY="10.0" prefHeight="580.0" prefWidth="780.0" styleClass="border">
+                  <AnchorPane layoutX="10.0" layoutY="10.0" prefHeight="580.0" prefWidth="780.0" styleClass="border" visible="false">
                      <children>
                         <AnchorPane prefHeight="290.0" prefWidth="780.0" styleClass="border">
                            <children>
@@ -213,7 +214,7 @@
                                     <TableColumn prefWidth="100.0" text="Usuario" />
                                 </columns>
                               </TableView>
-                              <TextField layoutX="20.0" layoutY="20.0" prefHeight="30.0" prefWidth="200.0" promptText="Buscar usuario" style="-fx-alignment: left;">
+                              <TextField layoutX="20.0" layoutY="20.0" prefHeight="30.0" prefWidth="200.0" promptText="Buscar usuario" style="-fx-alignment: left; -fx-border-color: black; -fx-border-radius: 4;">
                                  <font>
                                     <Font name="Verdana" size="15.0" />
                                  </font>
@@ -223,7 +224,7 @@
                                     <Font name="Verdana Bold Italic" size="20.0" />
                                  </font>
                               </Label>
-                              <Button layoutX="184.0" layoutY="20.0" mnemonicParsing="false" prefHeight="28.9" prefWidth="28.9" styleClass="bg_red" stylesheets="@../styles/style_dashboard.css">
+                              <Button layoutX="184.0" layoutY="20.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="31.0" styleClass="bg_red" stylesheets="@../styles/style_dashboard.css">
                                  <graphic>
                                     <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
@@ -379,6 +380,283 @@
                               <Cursor fx:constant="HAND" />
                            </cursor>
                         </Button>
+                     </children>
+                  </AnchorPane>
+                  <AnchorPane layoutX="10.0" layoutY="10.0" prefHeight="580.0" prefWidth="780.0" stylesheets="@../styles/style_dashboard.css" visible="false">
+                     <styleClass>
+                        <String fx:value="bg_white" />
+                        <String fx:value="border" />
+                     </styleClass>
+                     <children>
+                        <AnchorPane layoutX="20.0" layoutY="20.0" prefHeight="540.0" prefWidth="250.0" stylesheets="@../styles/botones_reservas.css">
+                           <styleClass>
+                              <String fx:value="bg_white" />
+                              <String fx:value="border" />
+                           </styleClass>
+                           <children>
+                              <Label layoutX="40.0" layoutY="20.0" prefHeight="30.0" prefWidth="170.0" style="-fx-text-fill: #e72f2b;" text="Reservar Aulas">
+                                 <font>
+                                    <Font name="Verdana Bold Italic" size="20.0" />
+                                 </font>
+                              </Label>
+                              <Label layoutX="37.0" layoutY="100.0" prefHeight="30.0" prefWidth="175.0" text="Seleccione el aula:">
+                                 <font>
+                                    <Font name="Verdana Bold" size="16.0" />
+                                 </font>
+                              </Label>
+                              <MenuButton fx:id="menu_tipo_rol12" alignment="CENTER" layoutX="37.0" layoutY="140.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="175.0" stylesheets="@../styles/botones_reservas.css" text="Aulas" textFill="WHITE">
+                                 <items>
+                                    <MenuItem mnemonicParsing="false" text="Administrador" />
+                                    <MenuItem mnemonicParsing="false" text="Profesor" />
+                                    <MenuItem mnemonicParsing="false" text="Estudiante" />
+                                 </items>
+                                 <font>
+                                    <Font name="Verdana Bold" size="15.0" />
+                                 </font>
+                              </MenuButton>
+                              <Label layoutX="35.0" layoutY="180.0" prefHeight="30.0" prefWidth="180.0" text="Seleccione la fecha:">
+                                 <font>
+                                    <Font name="Verdana Bold" size="16.0" />
+                                 </font>
+                              </Label>
+                              <DatePicker layoutX="37.0" layoutY="220.0" prefHeight="30.0" prefWidth="175.0" promptText="AA-MM-DD" style="-fx-border-color: black; -fx-border-radius: 4;" stylesheets="@../styles/botones_reservas.css">
+                                 <cursor>
+                                    <Cursor fx:constant="HAND" />
+                                 </cursor></DatePicker>
+                              <Label layoutX="24.0" layoutY="265.0" prefHeight="30.0" prefWidth="201.0" text="Seleccione el horario:">
+                                 <font>
+                                    <Font name="Verdana Bold" size="16.0" />
+                                 </font>
+                              </Label>
+                              <MenuButton fx:id="menu_tipo_rol123" alignment="CENTER" contentDisplay="CENTER" layoutX="37.0" layoutY="305.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="175.0" stylesheets="@../styles/botones_reservas.css" text="Horarios" textFill="WHITE">
+                                 <items>
+                                    <MenuItem mnemonicParsing="false" text="07:00 AM - 09:00 AM" />
+                                    <MenuItem mnemonicParsing="false" text="09:00 AM - 11:00 AM" />
+                                    <MenuItem mnemonicParsing="false" text="11:00 AM - 01:00 PM" />
+                                    <MenuItem mnemonicParsing="false" text="02:00 PM - 04:00 PM" />
+                                    <MenuItem mnemonicParsing="false" text="04:00 PM - 06:00 PM" />
+                                    <MenuItem mnemonicParsing="false" text="06:00 PM - 08:00 PM" />
+                                 </items>
+                                 <font>
+                                    <Font name="Verdana Bold" size="15.0" />
+                                 </font>
+                              </MenuButton>
+                              <Button layoutX="37.0" layoutY="370.0" mnemonicParsing="false" prefWidth="175.0" style="-fx-background-radius: 5; -fx-border-radius: 5; -fx-text-fill: white;" styleClass="bg_blue" stylesheets="@../styles/style_dashboard.css" text="Reservar">
+                                 <font>
+                                    <Font name="Verdana Bold" size="20.0" />
+                                 </font>
+                                 <graphic>
+                                    <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../images/calendar_1100753.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                                 <cursor>
+                                    <Cursor fx:constant="HAND" />
+                                 </cursor>
+                              </Button>
+                              <Button layoutX="37.0" layoutY="420.0" mnemonicParsing="false" prefHeight="43.0" prefWidth="175.0" style="-fx-background-radius: 5; -fx-border-radius: 5; -fx-text-fill: white;" styleClass="bg_blue" stylesheets="@../styles/style_dashboard.css" text="Actualizar">
+                                 <font>
+                                    <Font name="Verdana Bold" size="19.0" />
+                                 </font>
+                                 <graphic>
+                                    <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../images/curved-arrow-png-1-1.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                                 <cursor>
+                                    <Cursor fx:constant="HAND" />
+                                 </cursor>
+                              </Button>
+                              <Button layoutX="37.0" layoutY="470.0" mnemonicParsing="false" prefWidth="175.0" style="-fx-background-radius: 5; -fx-border-radius: 5; -fx-text-fill: white;" styleClass="bg_blue" stylesheets="@../styles/style_dashboard.css" text="Eliminar">
+                                 <font>
+                                    <Font name="Verdana Bold" size="20.0" />
+                                 </font>
+                                 <graphic>
+                                    <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../images/PngItem_314793.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                                 <cursor>
+                                    <Cursor fx:constant="HAND" />
+                                 </cursor>
+                              </Button>
+                              <TextField layoutX="37.0" layoutY="60.0" prefHeight="30.0" prefWidth="175.0" promptText="Buscar aula" style="-fx-alignment: left; -fx-border-color: black; -fx-border-radius: 4;">
+                                 <font>
+                                    <Font name="Verdana" size="15.0" />
+                                 </font>
+                              </TextField>
+                              <Button layoutX="176.0" layoutY="60.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="31.0" styleClass="bg_red" stylesheets="@../styles/style_dashboard.css">
+                                 <graphic>
+                                    <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../images/search.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                              </Button>
+                           </children>
+                        </AnchorPane>
+                        <AnchorPane layoutX="290.0" layoutY="20.0" prefHeight="540.0" prefWidth="470.0">
+                           <styleClass>
+                              <String fx:value="bg_white" />
+                              <String fx:value="border" />
+                           </styleClass>
+                           <children>
+                              <TableView prefHeight="540.0" prefWidth="470.0" stylesheets="@../styles/style_dashboard.css">
+                                 <columns>
+                                    <TableColumn prefWidth="117.0" text="Aula" />
+                                    <TableColumn prefWidth="115.0" text="Fecha" />
+                                    <TableColumn prefWidth="115.0" text="Horario" />
+                                    <TableColumn prefWidth="115.0" text="Usuario" />
+                                 </columns>
+                              </TableView>
+                           </children>
+                        </AnchorPane>
+                     </children>
+                  </AnchorPane>
+                  <AnchorPane layoutX="10.0" layoutY="10.0" prefHeight="580.0" prefWidth="780.0" stylesheets="@../styles/style_dashboard.css">
+                     <styleClass>
+                        <String fx:value="bg_white" />
+                        <String fx:value="border" />
+                     </styleClass>
+                     <children>
+                        <AnchorPane layoutX="20.0" layoutY="20.0" prefHeight="540.0" prefWidth="250.0" stylesheets="@../styles/botones_reservas.css">
+                           <styleClass>
+                              <String fx:value="bg_white" />
+                              <String fx:value="border" />
+                           </styleClass>
+                           <children>
+                              <Label layoutX="40.0" layoutY="20.0" prefHeight="30.0" prefWidth="170.0" style="-fx-text-fill: #e72f2b;" text="Reservar Labs">
+                                 <font>
+                                    <Font name="Verdana Bold Italic" size="20.0" />
+                                 </font>
+                              </Label>
+                              <Label layoutX="37.0" layoutY="100.0" prefHeight="30.0" prefWidth="175.0" text="Seleccione el lab:">
+                                 <font>
+                                    <Font name="Verdana Bold" size="16.0" />
+                                 </font>
+                              </Label>
+                              <MenuButton fx:id="menu_tipo_rol121" alignment="CENTER" layoutX="37.0" layoutY="140.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="175.0" stylesheets="@../styles/botones_reservas.css" text="Laboratorios" textFill="WHITE">
+                                 <items>
+                                    <MenuItem mnemonicParsing="false" text="Administrador" />
+                                    <MenuItem mnemonicParsing="false" text="Profesor" />
+                                    <MenuItem mnemonicParsing="false" text="Estudiante" />
+                                 </items>
+                                 <font>
+                                    <Font name="Verdana Bold" size="15.0" />
+                                 </font>
+                              </MenuButton>
+                              <Label layoutX="35.0" layoutY="180.0" prefHeight="30.0" prefWidth="180.0" text="Seleccione la fecha:">
+                                 <font>
+                                    <Font name="Verdana Bold" size="16.0" />
+                                 </font>
+                              </Label>
+                              <DatePicker layoutX="37.0" layoutY="220.0" prefHeight="30.0" prefWidth="175.0" promptText="AA-MM-DD" style="-fx-border-color: black; -fx-border-radius: 4;" stylesheets="@../styles/botones_reservas.css">
+                                 <cursor>
+                                    <Cursor fx:constant="HAND" />
+                                 </cursor>
+                              </DatePicker>
+                              <Label layoutX="24.0" layoutY="265.0" prefHeight="30.0" prefWidth="201.0" text="Seleccione el horario:">
+                                 <font>
+                                    <Font name="Verdana Bold" size="16.0" />
+                                 </font>
+                              </Label>
+                              <MenuButton fx:id="menu_tipo_rol1211" alignment="CENTER" contentDisplay="CENTER" layoutX="37.0" layoutY="305.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="175.0" stylesheets="@../styles/botones_reservas.css" text="Horarios" textFill="WHITE">
+                                 <items>
+                                    <MenuItem mnemonicParsing="false" text="07:00 AM - 09:00 AM" />
+                                    <MenuItem mnemonicParsing="false" text="09:00 AM - 11:00 AM" />
+                                    <MenuItem mnemonicParsing="false" text="11:00 AM - 01:00 PM" />
+                                    <MenuItem mnemonicParsing="false" text="02:00 PM - 04:00 PM" />
+                                    <MenuItem mnemonicParsing="false" text="04:00 PM - 06:00 PM" />
+                                    <MenuItem mnemonicParsing="false" text="06:00 PM - 08:00 PM" />
+                                 </items>
+                                 <font>
+                                    <Font name="Verdana Bold" size="15.0" />
+                                 </font>
+                              </MenuButton>
+                              <Button layoutX="37.0" layoutY="370.0" mnemonicParsing="false" prefWidth="175.0" style="-fx-background-radius: 5; -fx-border-radius: 5; -fx-text-fill: white;" styleClass="bg_blue" stylesheets="@../styles/style_dashboard.css" text="Reservar">
+                                 <font>
+                                    <Font name="Verdana Bold" size="20.0" />
+                                 </font>
+                                 <graphic>
+                                    <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../images/calendar_1100753.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                                 <cursor>
+                                    <Cursor fx:constant="HAND" />
+                                 </cursor>
+                              </Button>
+                              <Button layoutX="37.0" layoutY="420.0" mnemonicParsing="false" prefHeight="43.0" prefWidth="175.0" style="-fx-background-radius: 5; -fx-border-radius: 5; -fx-text-fill: white;" styleClass="bg_blue" stylesheets="@../styles/style_dashboard.css" text="Actualizar">
+                                 <font>
+                                    <Font name="Verdana Bold" size="19.0" />
+                                 </font>
+                                 <graphic>
+                                    <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../images/curved-arrow-png-1-1.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                                 <cursor>
+                                    <Cursor fx:constant="HAND" />
+                                 </cursor>
+                              </Button>
+                              <Button layoutX="37.0" layoutY="470.0" mnemonicParsing="false" prefWidth="175.0" style="-fx-background-radius: 5; -fx-border-radius: 5; -fx-text-fill: white;" styleClass="bg_blue" stylesheets="@../styles/style_dashboard.css" text="Eliminar">
+                                 <font>
+                                    <Font name="Verdana Bold" size="20.0" />
+                                 </font>
+                                 <graphic>
+                                    <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../images/PngItem_314793.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                                 <cursor>
+                                    <Cursor fx:constant="HAND" />
+                                 </cursor>
+                              </Button>
+                              <TextField layoutX="37.0" layoutY="60.0" prefHeight="30.0" prefWidth="175.0" promptText="Buscar aula" style="-fx-alignment: left; -fx-border-color: black; -fx-border-radius: 4;">
+                                 <font>
+                                    <Font name="Verdana" size="15.0" />
+                                 </font>
+                              </TextField>
+                              <Button layoutX="176.0" layoutY="60.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="31.0" styleClass="bg_red" stylesheets="@../styles/style_dashboard.css">
+                                 <graphic>
+                                    <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../images/search.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                              </Button>
+                           </children>
+                        </AnchorPane>
+                        <AnchorPane layoutX="290.0" layoutY="20.0" prefHeight="540.0" prefWidth="470.0">
+                           <styleClass>
+                              <String fx:value="bg_white" />
+                              <String fx:value="border" />
+                           </styleClass>
+                           <children>
+                              <TableView prefHeight="540.0" prefWidth="470.0" stylesheets="@../styles/style_dashboard.css">
+                                 <columns>
+                                    <TableColumn prefWidth="117.0" text="Laboratorio" />
+                                    <TableColumn prefWidth="115.0" text="Fecha" />
+                                    <TableColumn prefWidth="115.0" text="Horario" />
+                                    <TableColumn prefWidth="115.0" text="Usuario" />
+                                 </columns>
+                              </TableView>
+                           </children>
+                        </AnchorPane>
                      </children>
                   </AnchorPane>
                </children>

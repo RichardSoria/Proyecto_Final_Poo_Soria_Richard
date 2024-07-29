@@ -1,0 +1,24 @@
+.menu-item
+{
+    -fx-font-size: 15px;
+    -fx-pref-width: 175px;
+    -fx-pref-height: 30px;
+}
+
+.date-picker
+{
+    -fx-font-size: 15px;
+    -fx-pref-width: 175px;
+    -fx-pref-height: 30px;
+
+}
+
+.date-picker .arrow-button
+{
+    -fx-background-color: #e72f2b;
+}
+
+.date-picker .arrow-button:hover
+{
+    -fx-background-color: #f8ab20;
+}

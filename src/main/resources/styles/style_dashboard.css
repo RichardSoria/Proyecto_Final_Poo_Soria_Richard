@@ -1,107 +1,90 @@
-.button_color
-{
+.button_color {
     -fx-background-color: #FFFFFF;
     -fx-text-fill: black;
 }
 
-.bg_red
-{
-    -fx-background-color:  #e72f2b;
+.bg_red {
+    -fx-background-color: #e72f2b;
 }
 
-.bg_white
-{
-    -fx-background-color:  #FFFFFF;
-}
-
-.bg_blue
-{
-    -fx-background-color:  #0e4c71;
-}
-
-.border
-{
+.bg_white {
     -fx-background-color: #FFFFFF;
-    -fx-background-radius: 20px;
-    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0, 10), 5, 0, 0, 0);
-
 }
 
-
-.menu-button
-{
+.bg_blue {
     -fx-background-color: #0e4c71;
 }
 
-.menu-item
-{
+.border {
+    -fx-background-color: #FFFFFF;
+    -fx-background-radius: 20px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 0);
+}
+
+.menu-button {
+    -fx-background-color: #0e4c71;
+}
+
+.menu-item {
     -fx-font-size: 15px;
     -fx-pref-width: 157px;
     -fx-pref-height: 28.8px;
-
 }
 
-.menu-item:hover
-{
-    -fx-background-color:  #e72f2b;
+.menu-item:hover {
+    -fx-background-color: #e72f2b;
 }
 
-.button_color_yellow
-{
+.button_color_yellow {
     -fx-background-color: #f8ab20;
     -fx-background-radius: 20px;
-    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0, 20), 10, 0, 0, 0);
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 0);
 }
 
-.button:hover
-{
+.button:hover {
     -fx-background-color: #f8ab20;
 }
 
-#boton_usuario:hover
-{
+#boton_usuario:hover {
     -fx-background-color: #0e4c71;
 }
 
-
-.text-field
-{
+.text-field {
     -fx-background-color: #FFFFFF;
     -fx-background-radius: 5px;
-    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0, 10), 5, 0, 0, 0);
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 0);
     -fx-alignment: center;
 }
 
-.table-view
-{
+.table-view {
     -fx-background-color: transparent;
     -fx-border-radius: 10px;
     -fx-border-color: black;
     -fx-border-width: 1px;
 }
-.table-view .table-column
-{
+
+.table-view .table-column {
     -fx-alignment: center;
 }
 
-.table-view .column-header-background
-{
+.table-view .column-header-background {
     -fx-background-color: #e72f2b;
     -fx-background-insets: 0 0 0 0;
     -fx-background-radius: 10px 10px 0 0;
 }
 
-.table-view .column-header, .filter
-{
+.table-view .column-header, .filter {
     -fx-background-color: transparent;
     -fx-size: 40px;
 }
 
-.table-view .column-header .label
-{
+.table-view .column-header .label {
     -fx-text-fill: #fff;
     -fx-font-size: 15px;
     -fx-font-weight: bold;
-
 }
 
+.menu-item-reservas {
+    -fx-pref-width: 175px;
+    -fx-pref-height: 30px;
+}
