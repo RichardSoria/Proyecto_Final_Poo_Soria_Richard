@@ -1,16 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.image.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.MenuButton?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.text.Font?>
 
-<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="360.0" prefWidth="585.0" stylesheets="@../styles/style.css" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.IniciarSesionController">
+<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="360.0" prefWidth="585.0" stylesheets="@../styles/style.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.IniciarSesionController">
    <children>
       <AnchorPane fx:id="mainPanel" prefHeight="360.0" prefWidth="585.0">
          <children>
-            <AnchorPane layoutX="-5.0" prefHeight="370.0" prefWidth="200.0" style="-fx-background-color: #0e4c71;">
+            <AnchorPane layoutX="-5.0" prefHeight="360.0" prefWidth="200.0" style="-fx-background-color: #0e4c71;">
                <children>
                   <Label layoutX="80.0" layoutY="20.0" text="Mi" textFill="#e72f2b">
                      <font>
@@ -33,7 +40,7 @@
                      </image>
                   </ImageView>
                </children></AnchorPane>
-            <AnchorPane layoutX="195.0" prefHeight="370.0" prefWidth="390.0">
+            <AnchorPane layoutX="195.0" prefHeight="360.0" prefWidth="390.0">
                <children>
                   <Label layoutX="20.0" layoutY="130.0" text="Inicio de Sesión">
                      <font>
