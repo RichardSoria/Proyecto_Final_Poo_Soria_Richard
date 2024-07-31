@@ -1,6 +1,7 @@
 package controllers;
 
 import clases_sistema.credenciales_avisos;
+import clases_sistema.usuarioConectado;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -25,6 +26,8 @@ public class IniciarSesionController extends credenciales_avisos {
     private MenuButton menu_tipo_rol;
     @FXML
     private Button boton_iniciar_sesion;
+
+    String nombreUsuarioConectado;
 
     @FXML
     public void initialize() {
@@ -76,6 +79,9 @@ public class IniciarSesionController extends credenciales_avisos {
             if (documents.first() != null) {
                 mostrarConfirmacion("Inicio de sesión exitoso", "Bienvenido " + documents.first().get("nombre") + " " + documents.first().get("apellido") +
                         "\nHa iniciado sesión como " + tipo_rol);
+
+                nombreUsuarioConectado = documents.first().get("nombre") + " " + documents.first().get("apellido");
+                usuarioConectado.getInstance().setNombreUsuarioConectado(nombreUsuarioConectado);
 
                 if (tipo_rol.equals("Administrador")) {
                     boton_iniciar_sesion.getScene().getWindow().hide();

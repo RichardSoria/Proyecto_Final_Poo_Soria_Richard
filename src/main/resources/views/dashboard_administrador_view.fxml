@@ -210,7 +210,7 @@
                                     <TableColumn fx:id="columna_nombre" prefWidth="100.0" text="Nombre" />
                                     <TableColumn fx:id="columna_apellido" prefWidth="100.0" text="Apellido" />
                                     <TableColumn fx:id="columna_correo" prefWidth="137.0" text="Correo" />
-                                    <TableColumn fx:id="cplumna_contrasena" prefWidth="100.0" text="Contraseña" />
+                                    <TableColumn fx:id="columna_contrasena" prefWidth="100.0" text="Contraseña" />
                                     <TableColumn fx:id="columna_numero_celular" prefWidth="100.0" text="N° Celular" />
                                     <TableColumn fx:id="columna_tipo_usuario" prefWidth="100.0" text="Usuario" />
                                  </columns>
@@ -513,7 +513,7 @@
                                     <Font name="Verdana" size="15.0" />
                                  </font>
                               </TextField>
-                              <Button layoutX="176.0" layoutY="45.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="30.0" styleClass="bg_red" stylesheets="@../styles/style_dashboard.css">
+                              <Button layoutX="176.0" layoutY="45.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="31.0" styleClass="bg_red" stylesheets="@../styles/style_dashboard.css">
                                  <graphic>
                                     <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
@@ -642,7 +642,7 @@
                                     <Font name="Verdana" size="15.0" />
                                  </font>
                               </TextField>
-                              <Button layoutX="176.0" layoutY="45.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="30.0" styleClass="bg_red" stylesheets="@../styles/style_dashboard.css">
+                              <Button layoutX="176.0" layoutY="45.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="31.0" styleClass="bg_red" stylesheets="@../styles/style_dashboard.css">
                                  <graphic>
                                     <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
