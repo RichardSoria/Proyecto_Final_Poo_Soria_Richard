@@ -15,5 +15,6 @@ module com.example.proyecto_final_poo_soria_richard {
     requires org.mongodb.bson;
 
     opens controllers to javafx.fxml;
+    opens clases_sistema to javafx.base;
     exports controllers;
 }
