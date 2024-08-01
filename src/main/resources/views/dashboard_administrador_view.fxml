@@ -38,7 +38,7 @@
                         <Font name="Verdana Bold" size="18.0" />
                      </font>
                   </Label>
-                  <Label fx:id="nombre_usuario_conectado" alignment="CENTER" layoutX="25.0" layoutY="150.0" prefHeight="25.0" prefWidth="150.0" style="-fx-text-fill: white;">
+                  <Label fx:id="nombre_usuario_conectado" alignment="CENTER" layoutX="12.5" layoutY="150.0" prefHeight="25.0" prefWidth="175.0" style="-fx-text-fill: white;">
                      <font>
                         <Font name="Verdana Italic" size="20.0" />
                      </font>
@@ -125,7 +125,7 @@
          <center>
             <AnchorPane prefHeight="200.0" prefWidth="200.0" styleClass="bg_red" stylesheets="@../styles/style_dashboard.css" BorderPane.alignment="CENTER">
                <children>
-                  <AnchorPane fx:id="dashboard_modulos" layoutX="10.0" layoutY="10.0" prefHeight="580.0" prefWidth="780.0" stylesheets="@../styles/style_dashboard.css" visible="false">
+                  <AnchorPane fx:id="dashboard_modulos" layoutX="10.0" layoutY="10.0" prefHeight="580.0" prefWidth="780.0" stylesheets="@../styles/style_dashboard.css">
                      <styleClass>
                         <String fx:value="bg_white" />
                         <String fx:value="border" />
@@ -200,7 +200,7 @@
                         </ImageView>
                      </children>
                   </AnchorPane>
-                  <AnchorPane fx:id="dashboard_gestion_usuarios" layoutX="10.0" layoutY="10.0" prefHeight="580.0" prefWidth="780.0" styleClass="border">
+                  <AnchorPane fx:id="dashboard_gestion_usuarios" layoutX="10.0" layoutY="10.0" prefHeight="580.0" prefWidth="780.0" styleClass="border" visible="false">
                      <children>
                         <AnchorPane prefHeight="290.0" prefWidth="780.0" styleClass="border">
                            <children>
