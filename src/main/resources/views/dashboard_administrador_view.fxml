@@ -125,7 +125,7 @@
          <center>
             <AnchorPane prefHeight="200.0" prefWidth="200.0" styleClass="bg_red" stylesheets="@../styles/style_dashboard.css" BorderPane.alignment="CENTER">
                <children>
-                  <AnchorPane fx:id="dashboard_modulos" layoutX="10.0" layoutY="10.0" prefHeight="580.0" prefWidth="780.0" stylesheets="@../styles/style_dashboard.css">
+                  <AnchorPane fx:id="dashboard_modulos" layoutX="10.0" layoutY="10.0" prefHeight="580.0" prefWidth="780.0" stylesheets="@../styles/style_dashboard.css" visible="false">
                      <styleClass>
                         <String fx:value="bg_white" />
                         <String fx:value="border" />
@@ -200,11 +200,11 @@
                         </ImageView>
                      </children>
                   </AnchorPane>
-                  <AnchorPane fx:id="dashboard_gestion_usuarios" layoutX="10.0" layoutY="10.0" prefHeight="580.0" prefWidth="780.0" styleClass="border" visible="false">
+                  <AnchorPane fx:id="dashboard_gestion_usuarios" layoutX="10.0" layoutY="10.0" prefHeight="580.0" prefWidth="780.0" styleClass="border">
                      <children>
                         <AnchorPane prefHeight="290.0" prefWidth="780.0" styleClass="border">
                            <children>
-                              <TableView fx:id="tabla_mostrar_usuarios" layoutX="20.0" layoutY="60.0" prefHeight="210.0" prefWidth="740.0" stylesheets="@../styles/style_dashboard.css">
+                              <TableView fx:id="tabla_mostrar_usuarios" layoutX="20.0" layoutY="60.0" onMouseClicked="#seleccionarUsuario" prefHeight="210.0" prefWidth="740.0" stylesheets="@../styles/style_dashboard.css">
                                  <columns>
                                     <TableColumn fx:id="columna_cedula" prefWidth="100.0" text="Cédula" />
                                     <TableColumn fx:id="columna_nombre" prefWidth="100.0" text="Nombre" />
@@ -218,7 +218,7 @@
                                     <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
                                  </columnResizePolicy>
                               </TableView>
-                              <TextField fx:id="campo_buscar_usuario" layoutX="20.0" layoutY="20.0" prefHeight="30.0" prefWidth="200.0" promptText="Buscar usuario" style="-fx-border-color: black; -fx-border-radius: 4; -fx-alignment: CENTER_LEFT;">
+                              <TextField fx:id="campo_buscar_usuario" layoutX="20.0" layoutY="20.0" onKeyReleased="#buscarUsuario" prefHeight="30.0" prefWidth="200.0" promptText="Buscar usuario" style="-fx-border-color: black; -fx-border-radius: 4; -fx-alignment: CENTER_LEFT;">
                                  <font>
                                     <Font name="Verdana" size="15.0" />
                                  </font>
@@ -319,7 +319,7 @@
                               <Font name="Verdana Bold" size="15.0" />
                            </font>
                         </MenuButton>
-                        <Button fx:id="boton_anadir_usuario" layoutX="29.0" layoutY="520.0" mnemonicParsing="false" prefWidth="170.0" style="-fx-background-radius: 5; -fx-border-radius: 5; -fx-text-fill: white;" styleClass="bg_blue" stylesheets="@../styles/style_dashboard.css" text="Añadir">
+                        <Button fx:id="boton_anadir_usuario" layoutX="29.0" layoutY="520.0" mnemonicParsing="false" onAction="#botonAnadirUsuario" prefWidth="170.0" style="-fx-background-radius: 5; -fx-border-radius: 5; -fx-text-fill: white;" styleClass="bg_blue" stylesheets="@../styles/style_dashboard.css" text="Añadir">
                            <font>
                               <Font name="Verdana Bold" size="20.0" />
                            </font>
@@ -334,7 +334,7 @@
                               <Cursor fx:constant="HAND" />
                            </cursor>
                         </Button>
-                        <Button fx:id="boton_actualizar_usuario" layoutX="209.0" layoutY="520.0" mnemonicParsing="false" prefWidth="180.0" style="-fx-background-radius: 5; -fx-border-radius: 5; -fx-text-fill: white;" styleClass="bg_blue" stylesheets="@../styles/style_dashboard.css" text="Actualizar">
+                        <Button fx:id="boton_actualizar_usuario" layoutX="209.0" layoutY="520.0" mnemonicParsing="false" onAction="#botonAcualizarUsuario" prefWidth="180.0" style="-fx-background-radius: 5; -fx-border-radius: 5; -fx-text-fill: white;" styleClass="bg_blue" stylesheets="@../styles/style_dashboard.css" text="Actualizar">
                            <font>
                               <Font name="Verdana Bold" size="20.0" />
                            </font>
@@ -349,7 +349,7 @@
                               <Cursor fx:constant="HAND" />
                            </cursor>
                         </Button>
-                        <Button fx:id="boton_eliminar_usuario" layoutX="399.0" layoutY="520.0" mnemonicParsing="false" prefWidth="170.0" style="-fx-background-radius: 5; -fx-border-radius: 5; -fx-text-fill: white;" styleClass="bg_blue" stylesheets="@../styles/style_dashboard.css" text="Eliminar">
+                        <Button fx:id="boton_eliminar_usuario" layoutX="399.0" layoutY="520.0" mnemonicParsing="false" onAction="#botonEliminarUsuario" prefWidth="170.0" style="-fx-background-radius: 5; -fx-border-radius: 5; -fx-text-fill: white;" styleClass="bg_blue" stylesheets="@../styles/style_dashboard.css" text="Eliminar">
                            <font>
                               <Font name="Verdana Bold" size="20.0" />
                            </font>
@@ -364,7 +364,7 @@
                               <Cursor fx:constant="HAND" />
                            </cursor>
                         </Button>
-                        <Button fx:id="boton_limpiar_campos" layoutX="579.0" layoutY="520.0" mnemonicParsing="false" prefWidth="170.0" style="-fx-background-radius: 5; -fx-border-radius: 5; -fx-text-fill: white;" styleClass="bg_blue" stylesheets="@../styles/style_dashboard.css" text="Limpiar">
+                        <Button fx:id="boton_limpiar_campos" layoutX="579.0" layoutY="520.0" mnemonicParsing="false" onAction="#botonLimpiarCampos" prefWidth="170.0" style="-fx-background-radius: 5; -fx-border-radius: 5; -fx-text-fill: white;" styleClass="bg_blue" stylesheets="@../styles/style_dashboard.css" text="Limpiar">
                            <font>
                               <Font name="Verdana Bold" size="20.0" />
                            </font>

@@ -10,6 +10,8 @@ import com.mongodb.client.MongoDatabase;
 import controllers.IniciarSesionController;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -216,6 +218,7 @@ public class DashboardAdministradorController extends credenciales_avisos implem
     private TableView<?> tabla_reservas_laboratorios_mostrar;
 
     private ObservableList<nuevo_usuario> listaUsuarios;
+    private FilteredList<nuevo_usuario> filteredData;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -231,23 +234,51 @@ public class DashboardAdministradorController extends credenciales_avisos implem
         columna_tipo_usuario.setCellValueFactory(new PropertyValueFactory<>("tipo_rol"));
 
         listaUsuarios = FXCollections.observableArrayList();
-        tabla_mostrar_usuarios.setItems(listaUsuarios);
+        filteredData = new FilteredList<>(listaUsuarios, e -> true);
+
+        tabla_mostrar_usuarios.setItems(filteredData);
 
         // Añadir event handler para cada MenuItem en modo_bases_datos_usuarios
         for (MenuItem item : modo_bases_datos_usuarios.getItems()) {
-            item.setOnAction(e -> {modo_bases_datos_usuarios.setText(item.getText());
+            item.setOnAction(e -> {
+                modo_bases_datos_usuarios.setText(item.getText());
                 cargarUsuarios(); // Recargar usuarios cuando se seleccione una nueva base de datos
             });
         }
+
+        for (MenuItem item : campo_rol_usuario.getItems()) {
+            item.setOnAction(e -> campo_rol_usuario.setText(item.getText()));
+        }
+
+        campo_buscar_usuario.textProperty().addListener((observable, oldValue, newValue) -> buscarUsuario());
+
+        SortedList<nuevo_usuario> listaOrdenada = new SortedList<>(filteredData);
+        listaOrdenada.comparatorProperty().bind(tabla_mostrar_usuarios.comparatorProperty());
+        tabla_mostrar_usuarios.setItems(listaOrdenada);
     }
 
-    private void cargarUsuarios() {
+    public void buscarUsuario() {
+        String filter = campo_buscar_usuario.getText();
+        filteredData.setPredicate(usuario -> {
+            if (filter == null || filter.isEmpty()) {
+                return true;
+            }
+            String lowerCaseFilter = filter.toLowerCase();
+            return usuario.getCedula().toLowerCase().contains(lowerCaseFilter) ||
+                    usuario.getNombre().toLowerCase().contains(lowerCaseFilter) ||
+                    usuario.getApellido().toLowerCase().contains(lowerCaseFilter) ||
+                    usuario.getCorreo().toLowerCase().contains(lowerCaseFilter) ||
+                    usuario.getNumero_celular().toLowerCase().contains(lowerCaseFilter) ||
+                    usuario.getTipo_rol().toLowerCase().contains(lowerCaseFilter);
+        });
+    }
+
+    public void cargarUsuarios() {
         String mongoUri = "mongodb+srv://Richard-Soria:RichardSoria%401899@aulas-laboratorios-esfo.o7jjnmz.mongodb.net/";
         String databaseName = "Base_Datos_Aulas_Laboratorios_ESFOT";
         String collectionName = "";
 
-        switch (modo_bases_datos_usuarios.getText())
-        {
+        switch (modo_bases_datos_usuarios.getText()) {
             case "Administradores":
                 collectionName = "Administradores";
                 break;
@@ -283,6 +314,232 @@ public class DashboardAdministradorController extends credenciales_avisos implem
         } catch (Exception e) {
             mostrarAlerta("Error al cargar usuarios", "Error al consultar la base de datos: " + e.getMessage());
         }
+    }
+
+    public void seleccionarUsuario() {
+        nuevo_usuario usuarioSeleccionado = tabla_mostrar_usuarios.getSelectionModel().getSelectedItem();
+        if (usuarioSeleccionado != null) {
+            campo_cedula.setText(usuarioSeleccionado.getCedula());
+            campo_nombre.setText(usuarioSeleccionado.getNombre());
+            campo_apellido.setText(usuarioSeleccionado.getApellido());
+            campo_correo.setText(usuarioSeleccionado.getCorreo());
+            campo_contrasena.setText(usuarioSeleccionado.getContrasena());
+            campo_numero_celular.setText(usuarioSeleccionado.getNumero_celular());
+            campo_rol_usuario.setText(usuarioSeleccionado.getTipo_rol());
+        }
+    }
+
+    public void botonAnadirUsuario() {
+        if (campo_cedula.getText().isEmpty() || campo_nombre.getText().isEmpty() || campo_apellido.getText().isEmpty() || campo_correo.getText().isEmpty() || campo_contrasena.getText().isEmpty() || campo_numero_celular.getText().isEmpty() || campo_rol_usuario.getText().equals("Tipo de Usuario")) {
+            mostrarAlerta("Error al añadir usuario", "Por favor, llene todos los campos y seleccione un tipo de usuario");
+        } else if (!validarCorreo(campo_correo.getText())) {
+            mostrarAlerta("Error al añadir usuario", "Correo Institucional inválido");
+
+        } else if (campo_cedula.getText().length() != 10) {
+            mostrarAlerta("Error al añadir usuario", "Cédula inválida");
+
+        } else if (!campoNumerico(campo_cedula.getText())) {
+            mostrarAlerta("Error al añadir usuario", "Cédula inválida");
+
+        } else if (campo_numero_celular.getText().length() != 10) {
+            mostrarAlerta("Error al añadir usuario", "Número de celular inválido");
+
+        } else if (!campoNumerico(campo_numero_celular.getText())) {
+            mostrarAlerta("Error al añadir usuario", "Número de celular inválido");
+
+        } else if (campo_contrasena.getText().length() < 8) {
+            mostrarAlerta("Error al añadir usuario", "La contraseña debe tener al menos 8 caracteres");
+
+        } else {
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Añadir Usuario");
+            alert.setHeaderText(null);
+            alert.setContentText("¿Está seguro que desea añadir este usuario?");
+            Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
+            stage.getIcons().add(new Image(IniciarSesionController.class.getResourceAsStream("/images/esfot_buho.png")));
+            Optional<ButtonType> opcion = alert.showAndWait();
+
+            if (opcion.get() == ButtonType.OK) {
+                String mongoUri = "mongodb+srv://Richard-Soria:RichardSoria%401899@aulas-laboratorios-esfo.o7jjnmz.mongodb.net/";
+                String databaseName = "Base_Datos_Aulas_Laboratorios_ESFOT";
+                String collectionName = "";
+
+                switch (campo_rol_usuario.getText()) {
+                    case "Administrador":
+                        collectionName = "Administradores";
+                        break;
+                    case "Profesor":
+                        collectionName = "Profesores";
+                        break;
+                    case "Estudiante":
+                        collectionName = "Estudiantes";
+                        break;
+                    default:
+                        mostrarAlerta("Error al cargar usuarios", "Modo de base de datos no válido");
+                        return;
+                }
+
+                try (MongoClient mongoClient = MongoClients.create(mongoUri)) {
+                    MongoDatabase database = mongoClient.getDatabase(databaseName);
+                    MongoCollection<Document> collection = database.getCollection(collectionName);
+
+                    Document query = new Document("cedula", campo_cedula.getText());
+                    Document doc = new Document("cedula", campo_cedula.getText())
+                            .append("nombre", campo_nombre.getText())
+                            .append("apellido", campo_apellido.getText())
+                            .append("correo", campo_correo.getText())
+                            .append("contrasena", generateHash(campo_contrasena.getText()))
+                            .append("numero_celular", campo_numero_celular.getText())
+                            .append("tipo_rol", campo_rol_usuario.getText());
+                    collection.insertOne(doc);
+                    mostrarConfirmacion("Usuario añadido", "El usuario ha sido añadido exitosamente");
+                    botonLimpiarCampos();
+                    cargarUsuarios();
+                } catch (Exception e) {
+                    mostrarAlerta("Error al añadir usuario", "Error al añadir usuario a la base de datos: el usuario ya se encuentra registrado.");
+                }
+            }
+        }
+    }
+
+    public void botonAcualizarUsuario() {
+        if (campo_cedula.getText().isEmpty() || campo_nombre.getText().isEmpty() || campo_apellido.getText().isEmpty() || campo_correo.getText().isEmpty() || campo_contrasena.getText().isEmpty() || campo_numero_celular.getText().isEmpty() || campo_rol_usuario.getText().equals("Tipo de Usuario")) {
+            mostrarAlerta("Error al añadir usuario", "Por favor, llene todos los campos y seleccione un tipo de usuario");
+        } else if (!validarCorreo(campo_correo.getText())) {
+            mostrarAlerta("Error al añadir usuario", "Correo Institucional inválido");
+
+        } else if (campo_cedula.getText().length() != 10) {
+            mostrarAlerta("Error al añadir usuario", "Cédula inválida");
+
+        } else if (!campoNumerico(campo_cedula.getText())) {
+            mostrarAlerta("Error al añadir usuario", "Cédula inválida");
+
+        } else if (campo_numero_celular.getText().length() != 10) {
+            mostrarAlerta("Error al añadir usuario", "Número de celular inválido");
+
+        } else if (!campoNumerico(campo_numero_celular.getText())) {
+            mostrarAlerta("Error al añadir usuario", "Número de celular inválido");
+
+        } else if (campo_contrasena.getText().length() < 8) {
+            mostrarAlerta("Error al añadir usuario", "La contraseña debe tener al menos 8 caracteres");
+
+        } else if (campo_cedula.getText().equals(tabla_mostrar_usuarios.getSelectionModel().getSelectedItem().getCedula())
+                && campo_nombre.getText().equals(tabla_mostrar_usuarios.getSelectionModel().getSelectedItem().getNombre())
+                && campo_apellido.getText().equals(tabla_mostrar_usuarios.getSelectionModel().getSelectedItem().getApellido())
+                && campo_correo.getText().equals(tabla_mostrar_usuarios.getSelectionModel().getSelectedItem().getCorreo())
+                && campo_contrasena.getText().equals(tabla_mostrar_usuarios.getSelectionModel().getSelectedItem().getContrasena())
+                && campo_numero_celular.getText().equals(tabla_mostrar_usuarios.getSelectionModel().getSelectedItem().getNumero_celular())
+                && campo_rol_usuario.getText().equals(tabla_mostrar_usuarios.getSelectionModel().getSelectedItem().getTipo_rol())) {
+            mostrarAlerta("Error al actualizar usuario", "No se ha realizado ningún cambio en los campos");
+
+        } else {
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Actualizar Usuario");
+            alert.setHeaderText(null);
+            alert.setContentText("¿Está seguro que desea actualizar este usuario?");
+            Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
+            stage.getIcons().add(new Image(IniciarSesionController.class.getResourceAsStream("/images/esfot_buho.png")));
+            Optional<ButtonType> opcion = alert.showAndWait();
+
+            if (opcion.get() == ButtonType.OK) {
+                String mongoUri = "mongodb+srv://Richard-Soria:RichardSoria%401899@aulas-laboratorios-esfo.o7jjnmz.mongodb.net/";
+                String databaseName = "Base_Datos_Aulas_Laboratorios_ESFOT";
+                String collectionName = "";
+
+                switch (campo_rol_usuario.getText()) {
+                    case "Administrador":
+                        collectionName = "Administradores";
+                        break;
+                    case "Profesor":
+                        collectionName = "Profesores";
+                        break;
+                    case "Estudiante":
+                        collectionName = "Estudiantes";
+                        break;
+                    default:
+                        mostrarAlerta("Error al cargar usuarios", "Modo de base de datos no válido");
+                        return;
+                }
+
+                try (MongoClient mongoClient = MongoClients.create(mongoUri)) {
+                    MongoDatabase database = mongoClient.getDatabase(databaseName);
+                    MongoCollection<Document> collection = database.getCollection(collectionName);
+
+                    Document query = new Document("cedula", campo_cedula.getText());
+                    Document doc = new Document("cedula", campo_cedula.getText())
+                            .append("nombre", campo_nombre.getText())
+                            .append("apellido", campo_apellido.getText())
+                            .append("correo", campo_correo.getText())
+                            .append("contrasena", generateHash(campo_contrasena.getText()))
+                            .append("numero_celular", campo_numero_celular.getText())
+                            .append("tipo_rol", campo_rol_usuario.getText());
+                    collection.replaceOne(query, doc);
+                    mostrarConfirmacion("Usuario actualizado", "El usuario ha sido actualizado exitosamente");
+                    botonLimpiarCampos();
+                    cargarUsuarios();
+                } catch (Exception e) {
+                    mostrarAlerta("Error al actualizar usuario", "Error al actualizar usuario en la base de datos: " + e.getMessage());
+                }
+            }
+        }
+    }
+
+    public void botonEliminarUsuario() {
+        if (campo_cedula.getText().isEmpty() || campo_nombre.getText().isEmpty() || campo_apellido.getText().isEmpty() || campo_correo.getText().isEmpty() || campo_contrasena.getText().isEmpty() || campo_numero_celular.getText().isEmpty() || campo_rol_usuario.getText().equals("Tipo de Usuario")) {
+            mostrarAlerta("Error al eliminar usuario", "Por favor, seleccione un usuario a eliminar.");
+        } else {
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Eliminar Usuario");
+            alert.setHeaderText(null);
+            alert.setContentText("¿Está seguro que desea eliminar este usuario?");
+            Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
+            stage.getIcons().add(new Image(IniciarSesionController.class.getResourceAsStream("/images/esfot_buho.png")));
+            Optional<ButtonType> opcion = alert.showAndWait();
+
+            if (opcion.get() == ButtonType.OK) {
+                String mongoUri = "mongodb+srv://Richard-Soria:RichardSoria%401899@aulas-laboratorios-esfo.o7jjnmz.mongodb.net/";
+                String databaseName = "Base_Datos_Aulas_Laboratorios_ESFOT";
+                String collectionName = "";
+
+                switch (campo_rol_usuario.getText()) {
+                    case "Administrador":
+                        collectionName = "Administradores";
+                        break;
+                    case "Profesor":
+                        collectionName = "Profesores";
+                        break;
+                    case "Estudiante":
+                        collectionName = "Estudiantes";
+                        break;
+                    default:
+                        mostrarAlerta("Error al cargar usuarios", "Modo de base de datos no válido");
+                        return;
+                }
+
+                try (MongoClient mongoClient = MongoClients.create(mongoUri)) {
+                    MongoDatabase database = mongoClient.getDatabase(databaseName);
+                    MongoCollection<Document> collection = database.getCollection(collectionName);
+
+                    Document query = new Document("cedula", campo_cedula.getText());
+                    collection.deleteOne(query);
+                    mostrarConfirmacion("Usuario eliminado", "El usuario ha sido eliminado exitosamente");
+                    botonLimpiarCampos();
+                    cargarUsuarios();
+                } catch (Exception e) {
+                    mostrarAlerta("Error al eliminar usuario", "Error al consultar la base de datos: " + e.getMessage());
+                }
+            }
+        }
+    }
+
+    public void botonLimpiarCampos() {
+        campo_cedula.clear();
+        campo_nombre.clear();
+        campo_apellido.clear();
+        campo_correo.clear();
+        campo_contrasena.clear();
+        campo_numero_celular.clear();
+        campo_rol_usuario.setText("Tipo de Usuario");
     }
 
     public void moduloBotonUsuario() {
@@ -335,10 +592,10 @@ public class DashboardAdministradorController extends credenciales_avisos implem
         alert.setContentText("¿Está seguro que desea cerrar sesión?");
         Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
         stage.getIcons().add(new Image(IniciarSesionController.class.getResourceAsStream("/images/esfot_buho.png")));
-        Optional<ButtonType> opcion = alert.showAndWait();
+        Optional<ButtonType> opcionSalirSesion = alert.showAndWait();
 
         try {
-            if (opcion.get() == ButtonType.OK) {
+            if (opcionSalirSesion.get() == ButtonType.OK) {
                 boton_salir_sesion.getScene().getWindow().hide();
                 Parent root = FXMLLoader.load(getClass().getResource("/views/iniciar_sesion_view.fxml"));
                 Scene scene = new Scene(root);
