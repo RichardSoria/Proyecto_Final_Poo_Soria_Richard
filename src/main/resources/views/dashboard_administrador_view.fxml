@@ -125,7 +125,7 @@
          <center>
             <AnchorPane prefHeight="200.0" prefWidth="200.0" styleClass="bg_red" stylesheets="@../styles/style_dashboard.css" BorderPane.alignment="CENTER">
                <children>
-                  <AnchorPane fx:id="dashboard_modulos" layoutX="10.0" layoutY="10.0" prefHeight="580.0" prefWidth="780.0" stylesheets="@../styles/style_dashboard.css">
+                  <AnchorPane fx:id="dashboard_modulos" layoutX="10.0" layoutY="10.0" prefHeight="580.0" prefWidth="780.0" stylesheets="@../styles/style_dashboard.css" visible="false">
                      <styleClass>
                         <String fx:value="bg_white" />
                         <String fx:value="border" />
@@ -364,7 +364,7 @@
                               <Cursor fx:constant="HAND" />
                            </cursor>
                         </Button>
-                        <Button fx:id="boton_limpiar_campos" layoutX="579.0" layoutY="520.0" mnemonicParsing="false" onAction="#botonLimpiarCampos" prefWidth="170.0" style="-fx-background-radius: 5; -fx-border-radius: 5; -fx-text-fill: white;" styleClass="bg_blue" stylesheets="@../styles/style_dashboard.css" text="Limpiar">
+                        <Button fx:id="boton_limpiar_campos" layoutX="579.0" layoutY="520.0" mnemonicParsing="false" onAction="#botonLimpiarCamposUsuarios" prefWidth="170.0" style="-fx-background-radius: 5; -fx-border-radius: 5; -fx-text-fill: white;" styleClass="bg_blue" stylesheets="@../styles/style_dashboard.css" text="Limpiar">
                            <font>
                               <Font name="Verdana Bold" size="20.0" />
                            </font>
@@ -386,7 +386,7 @@
                         </PasswordField>
                      </children>
                   </AnchorPane>
-                  <AnchorPane fx:id="dashboard_reservar_aulas" layoutX="10.0" layoutY="10.0" prefHeight="580.0" prefWidth="780.0" stylesheets="@../styles/style_dashboard.css" visible="false">
+                  <AnchorPane fx:id="dashboard_reservar_aulas" layoutX="10.0" layoutY="10.0" prefHeight="580.0" prefWidth="780.0" stylesheets="@../styles/style_dashboard.css">
                      <styleClass>
                         <String fx:value="bg_white" />
                         <String fx:value="border" />
@@ -466,7 +466,7 @@
                                     <Font name="Verdana Bold" size="15.0" />
                                  </font>
                               </MenuButton>
-                              <Button fx:id="boton_reservar_aula" layoutX="37.0" layoutY="355.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="175.0" style="-fx-background-radius: 5; -fx-border-radius: 5; -fx-text-fill: white;" styleClass="bg_blue" stylesheets="@../styles/style_dashboard.css" text="Reservar">
+                              <Button fx:id="boton_reservar_aula" layoutX="37.0" layoutY="355.0" mnemonicParsing="false" onAction="#realizarReservaAula" prefHeight="30.0" prefWidth="175.0" style="-fx-background-radius: 5; -fx-border-radius: 5; -fx-text-fill: white;" styleClass="bg_blue" stylesheets="@../styles/style_dashboard.css" text="Reservar">
                                  <font>
                                     <Font name="Verdana Bold" size="20.0" />
                                  </font>
@@ -511,7 +511,7 @@
                                     <Cursor fx:constant="HAND" />
                                  </cursor>
                               </Button>
-                              <TextField fx:id="campo_buscar_aula" layoutX="37.0" layoutY="45.0" prefHeight="30.0" prefWidth="175.0" promptText="Buscar aula" style="-fx-border-color: black; -fx-border-radius: 4; -fx-alignment: CENTER_LEFT;">
+                              <TextField fx:id="campo_buscar_aula" layoutX="37.0" layoutY="45.0" onKeyReleased="#buscarAula" prefHeight="30.0" prefWidth="175.0" promptText="Buscar aula" style="-fx-border-color: black; -fx-border-radius: 4; -fx-alignment: CENTER_LEFT;">
                                  <font>
                                     <Font name="Verdana" size="15.0" />
                                  </font>
@@ -561,7 +561,7 @@
                               <String fx:value="border" />
                            </styleClass>
                            <children>
-                              <TableView fx:id="tabla_mostrar_reservas_aulas" prefHeight="540.0" prefWidth="470.0" stylesheets="@../styles/style_dashboard.css">
+                              <TableView fx:id="tabla_mostrar_reservas_aulas" onMouseClicked="#seleccionarAulaReserva" prefHeight="540.0" prefWidth="470.0" stylesheets="@../styles/style_dashboard.css">
                                  <columns>
                                     <TableColumn fx:id="columna_aula" prefWidth="120.0" text="Aula" />
                                     <TableColumn fx:id="columna_aula_fecha" prefWidth="115.0" text="Fecha" />

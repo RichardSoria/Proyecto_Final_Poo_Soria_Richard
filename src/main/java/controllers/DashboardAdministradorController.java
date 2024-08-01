@@ -2,12 +2,12 @@ package controllers;
 
 import clases_sistema.credenciales_avisos;
 import clases_sistema.nuevo_usuario;
+import clases_sistema.reserva_aulas;
 import clases_sistema.usuarioConectado;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
-import controllers.IniciarSesionController;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -212,7 +212,7 @@ public class DashboardAdministradorController extends credenciales_avisos implem
     private TableView<nuevo_usuario> tabla_mostrar_usuarios;
 
     @FXML
-    private TableView<?> tabla_mostrar_reservas_aulas;
+    private TableView<reserva_aulas> tabla_mostrar_reservas_aulas;
 
     @FXML
     private TableView<?> tabla_reservas_laboratorios_mostrar;
@@ -220,11 +220,16 @@ public class DashboardAdministradorController extends credenciales_avisos implem
     private ObservableList<nuevo_usuario> listaUsuarios;
     private FilteredList<nuevo_usuario> filteredData;
 
+    private ObservableList<reserva_aulas> listaReservasAulas;
+    private FilteredList<reserva_aulas> filteredDataReservasAulas;
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        // Mostrar nombre de usuario conectado
         String nombreUsuarioConectado = usuarioConectado.getInstance().getNombreUsuarioConectado();
         nombre_usuario_conectado.setText(nombreUsuarioConectado);
 
+        // Inicializar columnas de la tabla de usuarios
         columna_cedula.setCellValueFactory(new PropertyValueFactory<>("cedula"));
         columna_nombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
         columna_apellido.setCellValueFactory(new PropertyValueFactory<>("apellido"));
@@ -233,9 +238,11 @@ public class DashboardAdministradorController extends credenciales_avisos implem
         columna_numero_celular.setCellValueFactory(new PropertyValueFactory<>("numero_celular"));
         columna_tipo_usuario.setCellValueFactory(new PropertyValueFactory<>("tipo_rol"));
 
+        // Inicializar lista de usuarios y FilteredList
         listaUsuarios = FXCollections.observableArrayList();
         filteredData = new FilteredList<>(listaUsuarios, e -> true);
 
+        // Cargar usuarios por defecto
         tabla_mostrar_usuarios.setItems(filteredData);
 
         // Añadir event handler para cada MenuItem en modo_bases_datos_usuarios
@@ -246,15 +253,45 @@ public class DashboardAdministradorController extends credenciales_avisos implem
             });
         }
 
+        // Añadir event handler para cada MenuItem en campo_rol_usuario
         for (MenuItem item : campo_rol_usuario.getItems()) {
             item.setOnAction(e -> campo_rol_usuario.setText(item.getText()));
         }
 
         campo_buscar_usuario.textProperty().addListener((observable, oldValue, newValue) -> buscarUsuario());
 
+        campo_buscar_aula.textProperty().addListener((observable, oldValue, newValue) -> buscarAula());
+
+        // Cargar usuarios por defecto
         SortedList<nuevo_usuario> listaOrdenada = new SortedList<>(filteredData);
         listaOrdenada.comparatorProperty().bind(tabla_mostrar_usuarios.comparatorProperty());
         tabla_mostrar_usuarios.setItems(listaOrdenada);
+
+        // Inicializar columnas de la tabla de reservas de aulas
+        columna_aula.setCellValueFactory(new PropertyValueFactory<>("aula"));
+        columna_aula_fecha.setCellValueFactory(new PropertyValueFactory<>("fecha"));
+        columna_aula_horario.setCellValueFactory(new PropertyValueFactory<>("horario"));
+        columna_aula_cedula.setCellValueFactory(new PropertyValueFactory<>("cedula"));
+
+        // Inicializar lista de reservas de aulas y FilteredList
+        listaReservasAulas = FXCollections.observableArrayList();
+        filteredDataReservasAulas = new FilteredList<>(listaReservasAulas, e -> true);
+
+        // Cargar reservas de aulas por defecto
+        tabla_mostrar_reservas_aulas.setItems(filteredDataReservasAulas);
+
+        // Añadir event handler para cada MenuItem en campo_seleccionar_aula
+        cargarReservasAulas();
+
+        // Añadir event handler para cada MenuItem en campo_seleccionar_aula
+        for (MenuItem item : campo_seleccionar_aula.getItems()) {
+            item.setOnAction(e -> campo_seleccionar_aula.setText(item.getText()));
+        }
+
+        // Añadir event handler para cada MenuItem en campo_seleccionar_horario_aula
+        for (MenuItem item : campo_seleccionar_horario_aula.getItems()) {
+            item.setOnAction(e -> campo_seleccionar_horario_aula.setText(item.getText()));
+        }
     }
 
     public void buscarUsuario() {
@@ -392,7 +429,6 @@ public class DashboardAdministradorController extends credenciales_avisos implem
                     MongoDatabase database = mongoClient.getDatabase(databaseName);
                     MongoCollection<Document> collection = database.getCollection(collectionName);
 
-                    Document query = new Document("cedula", campo_cedula.getText());
                     Document doc = new Document("cedula", campo_cedula.getText())
                             .append("nombre", campo_nombre.getText())
                             .append("apellido", campo_apellido.getText())
@@ -402,7 +438,7 @@ public class DashboardAdministradorController extends credenciales_avisos implem
                             .append("tipo_rol", campo_rol_usuario.getText());
                     collection.insertOne(doc);
                     mostrarConfirmacion("Usuario añadido", "El usuario ha sido añadido exitosamente");
-                    botonLimpiarCampos();
+                    botonLimpiarCamposUsuarios();
                     cargarUsuarios();
                 } catch (Exception e) {
                     mostrarAlerta("Error al añadir usuario", "Error al añadir usuario a la base de datos: el usuario ya se encuentra registrado.");
@@ -484,7 +520,7 @@ public class DashboardAdministradorController extends credenciales_avisos implem
                             .append("tipo_rol", campo_rol_usuario.getText());
                     collection.replaceOne(query, doc);
                     mostrarConfirmacion("Usuario actualizado", "El usuario ha sido actualizado exitosamente");
-                    botonLimpiarCampos();
+                    botonLimpiarCamposUsuarios();
                     cargarUsuarios();
                 } catch (Exception e) {
                     mostrarAlerta("Error al actualizar usuario", "Error al actualizar usuario en la base de datos: " + e.getMessage());
@@ -532,7 +568,7 @@ public class DashboardAdministradorController extends credenciales_avisos implem
                     Document query = new Document("cedula", campo_cedula.getText());
                     collection.deleteOne(query);
                     mostrarConfirmacion("Usuario eliminado", "El usuario ha sido eliminado exitosamente");
-                    botonLimpiarCampos();
+                    botonLimpiarCamposUsuarios();
                     cargarUsuarios();
                 } catch (Exception e) {
                     mostrarAlerta("Error al eliminar usuario", "Error al consultar la base de datos: " + e.getMessage());
@@ -541,7 +577,7 @@ public class DashboardAdministradorController extends credenciales_avisos implem
         }
     }
 
-    public void botonLimpiarCampos() {
+    public void botonLimpiarCamposUsuarios() {
         campo_cedula.clear();
         campo_nombre.clear();
         campo_apellido.clear();
@@ -551,19 +587,133 @@ public class DashboardAdministradorController extends credenciales_avisos implem
         campo_rol_usuario.setText("Tipo de Usuario");
     }
 
+    // Buscar aula
+    public void buscarAula()
+    {
+        String filter = campo_buscar_aula.getText();
+        filteredDataReservasAulas.setPredicate(reserva -> {
+            if (filter == null || filter.isEmpty()) {
+                return true;
+            }
+            String lowerCaseFilter = filter.toLowerCase();
+            return reserva.getAula().toLowerCase().contains(lowerCaseFilter) ||
+                    reserva.getFecha().toLowerCase().contains(lowerCaseFilter) ||
+                    reserva.getHorario().toLowerCase().contains(lowerCaseFilter) ||
+                    reserva.getCedula().toLowerCase().contains(lowerCaseFilter);
+        });
+    }
+
+
+    // Mostrar reserva de aulas
+    public void cargarReservasAulas()
+    {
+        listaReservasAulas.clear(); // Limpiar la lista actual antes de cargar nuevas reservas
+
+        String mongoUri = "mongodb+srv://Richard-Soria:RichardSoria%401899@aulas-laboratorios-esfo.o7jjnmz.mongodb.net/";
+        String databaseName = "Base_Datos_Aulas_Laboratorios_ESFOT";
+        String collectionName = "Reservas_Aulas";
+
+        try (MongoClient mongoClient = MongoClients.create(mongoUri)) {
+            MongoDatabase database = mongoClient.getDatabase(databaseName);
+            MongoCollection<Document> collection = database.getCollection(collectionName);
+
+            for (Document doc : collection.find()) {
+                reserva_aulas reserva = new reserva_aulas(
+                        doc.getString("aula"),
+                        doc.getString("fecha"),
+                        doc.getString("horario"),
+                        doc.getString("cedula")
+                );
+                listaReservasAulas.add(reserva);
+            }
+        } catch (Exception e) {
+            mostrarAlerta("Error al cargar reservas de aulas", "Error al consultar la base de datos: " + e.getMessage());
+        }
+    }
+
+    // Seleccionar reserva de aulas
+    public void seleccionarAulaReserva()
+    {
+        reserva_aulas reservaSeleccionada = tabla_mostrar_reservas_aulas.getSelectionModel().getSelectedItem();
+        if (reservaSeleccionada != null) {
+            campo_seleccionar_aula.setText(reservaSeleccionada.getAula());
+            campo_seleccionar_fecha_aula.setValue(java.time.LocalDate.parse(reservaSeleccionada.getFecha()));
+            campo_seleccionar_horario_aula.setText(reservaSeleccionada.getHorario());
+            campo_cedula_reserva_aula.setText(reservaSeleccionada.getCedula());
+        }
+    }
+
+    public void realizarReservaAula(){
+        if (campo_seleccionar_aula.getText().isEmpty() || campo_seleccionar_fecha_aula.getValue() == null || campo_seleccionar_horario_aula.getText().isEmpty() || campo_cedula_reserva_aula.getText().isEmpty()) {
+            mostrarAlerta("Error al realizar reserva", "Por favor, llene todos los campos");
+        } else if (campo_cedula_reserva_aula.getText().length() != 10) {
+            mostrarAlerta("Error al realizar reserva", "Cédula inválida");
+        } else if (!campoNumerico(campo_cedula_reserva_aula.getText())) {
+            mostrarAlerta("Error al realizar reserva", "Cédula inválida");
+
+            // coroborar si ya existe una reserva en la misma aula, fecha y horario
+        } else if (listaReservasAulas.stream().anyMatch(reserva -> reserva.getAula().equals(campo_seleccionar_aula.getText()) && reserva.getFecha().equals(campo_seleccionar_fecha_aula.getValue().toString()) && reserva.getHorario().equals(campo_seleccionar_horario_aula.getText()))) {
+            mostrarAlerta("Error al realizar reserva", "Un usuario ya ha reservado esta aula en la misma fecha y horario");
+
+        } else {
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Realizar Reserva");
+            alert.setHeaderText(null);
+            alert.setContentText("¿Está seguro que desea realizar esta reserva?");
+            Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
+            stage.getIcons().add(new Image(IniciarSesionController.class.getResourceAsStream("/images/esfot_buho.png")));
+            Optional<ButtonType> opcion = alert.showAndWait();
+
+            if (opcion.get() == ButtonType.OK) {
+                String mongoUri = "mongodb+srv://Richard-Soria:RichardSoria%401899@aulas-laboratorios-esfo.o7jjnmz.mongodb.net/";
+                String databaseName = "Base_Datos_Aulas_Laboratorios_ESFOT";
+                String collectionName = "Reservas_Aulas";
+
+                try (MongoClient mongoClient = MongoClients.create(mongoUri)) {
+                    MongoDatabase database = mongoClient.getDatabase(databaseName);
+                    MongoCollection<Document> collection = database.getCollection(collectionName);
+
+                    Document doc = new Document("aula", campo_seleccionar_aula.getText())
+                            .append("fecha", campo_seleccionar_fecha_aula.getValue().toString())
+                            .append("horario", campo_seleccionar_horario_aula.getText())
+                            .append("cedula", campo_cedula_reserva_aula.getText());
+                    collection.insertOne(doc);
+                    mostrarConfirmacion("Reserva realizada", "La reserva ha sido realizada exitosamente");
+                    //botonLimpiarCamposReservaAula();
+                    cargarReservasAulas();
+                } catch (Exception e) {
+                    mostrarAlerta("Error al realizar reserva", "Error al realizar reserva en la base de datos: " + e.getMessage());
+                }
+
+
+            }
+        }
+    }
+
     public void moduloBotonUsuario() {
         dashboard_gestion_usuarios.setVisible(true);
         dashboard_modulos.setVisible(false);
+        dashboard_reservar_aulas.setVisible(false);
+        dashboard_reservar_laboratorios.setVisible(false);
+        botonLimpiarCamposUsuarios();
+
     }
 
     public void moduloBotonAulas() {
         dashboard_reservar_aulas.setVisible(true);
         dashboard_modulos.setVisible(false);
+        dashboard_gestion_usuarios.setVisible(false);
+        dashboard_reservar_laboratorios.setVisible(false);
+        botonLimpiarCamposUsuarios();
     }
 
     public void moduloBotonLabs() {
         dashboard_reservar_laboratorios.setVisible(true);
         dashboard_modulos.setVisible(false);
+        dashboard_gestion_usuarios.setVisible(false);
+        dashboard_reservar_aulas.setVisible(false);
+        botonLimpiarCamposUsuarios();
+
     }
 
     public void botonModulos() {
@@ -571,6 +721,7 @@ public class DashboardAdministradorController extends credenciales_avisos implem
         dashboard_gestion_usuarios.setVisible(false);
         dashboard_reservar_aulas.setVisible(false);
         dashboard_reservar_laboratorios.setVisible(false);
+        botonLimpiarCamposUsuarios();
     }
 
     public void botonUsuarios() {
@@ -578,6 +729,7 @@ public class DashboardAdministradorController extends credenciales_avisos implem
         dashboard_modulos.setVisible(false);
         dashboard_reservar_aulas.setVisible(false);
         dashboard_reservar_laboratorios.setVisible(false);
+        botonLimpiarCamposUsuarios();
     }
 
     public void botonAulas() {
@@ -585,6 +737,7 @@ public class DashboardAdministradorController extends credenciales_avisos implem
         dashboard_modulos.setVisible(false);
         dashboard_gestion_usuarios.setVisible(false);
         dashboard_reservar_laboratorios.setVisible(false);
+        botonLimpiarCamposUsuarios();
     }
 
     public void botonLabs() {
@@ -592,6 +745,7 @@ public class DashboardAdministradorController extends credenciales_avisos implem
         dashboard_modulos.setVisible(false);
         dashboard_gestion_usuarios.setVisible(false);
         dashboard_reservar_aulas.setVisible(false);
+        botonLimpiarCamposUsuarios();
     }
 
     public void salirInicioSesion() {
