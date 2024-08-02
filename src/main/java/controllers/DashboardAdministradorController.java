@@ -1,13 +1,11 @@
 package controllers;
 
-import clases_sistema.credenciales_avisos;
-import clases_sistema.nuevo_usuario;
-import clases_sistema.reserva_aulas;
-import clases_sistema.usuarioConectado;
+import clases_sistema.*;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.result.UpdateResult;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -113,7 +111,7 @@ public class DashboardAdministradorController extends credenciales_avisos implem
     private TextField campo_numero_celular;
 
     @FXML
-    private TextField campo_reserva_usuario_laboratorio;
+    private TextField campo_cedula_reserva_laboratorio;
 
     @FXML
     private MenuButton campo_rol_usuario;
@@ -215,13 +213,17 @@ public class DashboardAdministradorController extends credenciales_avisos implem
     private TableView<reserva_aulas> tabla_mostrar_reservas_aulas;
 
     @FXML
-    private TableView<?> tabla_reservas_laboratorios_mostrar;
+    private TableView<reserva_laboratorios> tabla_reservas_laboratorios_mostrar;
 
     private ObservableList<nuevo_usuario> listaUsuarios;
     private FilteredList<nuevo_usuario> filteredData;
 
     private ObservableList<reserva_aulas> listaReservasAulas;
     private FilteredList<reserva_aulas> filteredDataReservasAulas;
+
+    private ObservableList<reserva_laboratorios> listaReservasLaboratorios;
+    private FilteredList<reserva_laboratorios> filteredDataReservasLaboratorios;
+
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -259,7 +261,6 @@ public class DashboardAdministradorController extends credenciales_avisos implem
         }
 
         campo_buscar_usuario.textProperty().addListener((observable, oldValue, newValue) -> buscarUsuario());
-
         campo_buscar_aula.textProperty().addListener((observable, oldValue, newValue) -> buscarAula());
 
         // Cargar usuarios por defecto
@@ -279,8 +280,6 @@ public class DashboardAdministradorController extends credenciales_avisos implem
 
         // Cargar reservas de aulas por defecto
         tabla_mostrar_reservas_aulas.setItems(filteredDataReservasAulas);
-
-        // Añadir event handler para cada MenuItem en campo_seleccionar_aula
         cargarReservasAulas();
 
         // Añadir event handler para cada MenuItem en campo_seleccionar_aula
@@ -292,6 +291,31 @@ public class DashboardAdministradorController extends credenciales_avisos implem
         for (MenuItem item : campo_seleccionar_horario_aula.getItems()) {
             item.setOnAction(e -> campo_seleccionar_horario_aula.setText(item.getText()));
         }
+
+        // Inicializar columnas de la tabla de reservas de laboratorios
+        columna_laboratorio.setCellValueFactory(new PropertyValueFactory<>("laboratorio"));
+        columna_laboratorio_fecha.setCellValueFactory(new PropertyValueFactory<>("fecha"));
+        columna_laboratorio_horario.setCellValueFactory(new PropertyValueFactory<>("horario"));
+        columna_laboratorio_cedula.setCellValueFactory(new PropertyValueFactory<>("cedula"));
+
+        // Inicializar lista de reservas de laboratorios y FilteredList
+        listaReservasLaboratorios = FXCollections.observableArrayList();
+        filteredDataReservasLaboratorios = new FilteredList<>(listaReservasLaboratorios, e -> true);
+
+        // Cargar reservas de laboratorios por defecto
+        tabla_reservas_laboratorios_mostrar.setItems(filteredDataReservasLaboratorios);
+        cargarReservasLaboratorios();
+
+        // Añadir event handler para cada MenuItem en campo_seleccionar_laboratorios
+        for (MenuItem item : campo_seleccionar_laboratorios.getItems()) {
+            item.setOnAction(e -> campo_seleccionar_laboratorios.setText(item.getText()));
+        }
+
+        // Añadir event handler para cada MenuItem en campo_seleccionar_horario_laboratorio
+        for (MenuItem item : campo_seleccionar_horario_laboratorio.getItems()) {
+            item.setOnAction(e -> campo_seleccionar_horario_laboratorio.setText(item.getText()));
+        }
+
     }
 
     public void buscarUsuario() {
@@ -588,8 +612,7 @@ public class DashboardAdministradorController extends credenciales_avisos implem
     }
 
     // Buscar aula
-    public void buscarAula()
-    {
+    public void buscarAula() {
         String filter = campo_buscar_aula.getText();
         filteredDataReservasAulas.setPredicate(reserva -> {
             if (filter == null || filter.isEmpty()) {
@@ -605,8 +628,7 @@ public class DashboardAdministradorController extends credenciales_avisos implem
 
 
     // Mostrar reserva de aulas
-    public void cargarReservasAulas()
-    {
+    public void cargarReservasAulas() {
         listaReservasAulas.clear(); // Limpiar la lista actual antes de cargar nuevas reservas
 
         String mongoUri = "mongodb+srv://Richard-Soria:RichardSoria%401899@aulas-laboratorios-esfo.o7jjnmz.mongodb.net/";
@@ -632,8 +654,7 @@ public class DashboardAdministradorController extends credenciales_avisos implem
     }
 
     // Seleccionar reserva de aulas
-    public void seleccionarAulaReserva()
-    {
+    public void seleccionarAulaReserva() {
         reserva_aulas reservaSeleccionada = tabla_mostrar_reservas_aulas.getSelectionModel().getSelectedItem();
         if (reservaSeleccionada != null) {
             campo_seleccionar_aula.setText(reservaSeleccionada.getAula());
@@ -643,18 +664,17 @@ public class DashboardAdministradorController extends credenciales_avisos implem
         }
     }
 
-    public void botonRealizarReservaAula(){
+    public void botonRealizarReservaAula() {
         if (campo_seleccionar_aula.getText().isEmpty() || campo_seleccionar_fecha_aula.getValue() == null || campo_seleccionar_horario_aula.getText().isEmpty() || campo_cedula_reserva_aula.getText().isEmpty()) {
             mostrarAlerta("Error al realizar reserva", "Por favor, llene todos los campos");
         } else if (campo_cedula_reserva_aula.getText().length() != 10) {
             mostrarAlerta("Error al realizar reserva", "Cédula inválida");
         } else if (!campoNumerico(campo_cedula_reserva_aula.getText())) {
             mostrarAlerta("Error al realizar reserva", "Cédula inválida");
-
-            // coroborar si ya existe una reserva en la misma aula, fecha y horario
+        } else if (!usuarioExiste(campo_cedula_reserva_aula.getText())) {
+            mostrarAlerta("Error al realizar reserva", "El usuario no existe en el sistema");
         } else if (listaReservasAulas.stream().anyMatch(reserva -> reserva.getAula().equals(campo_seleccionar_aula.getText()) && reserva.getFecha().equals(campo_seleccionar_fecha_aula.getValue().toString()) && reserva.getHorario().equals(campo_seleccionar_horario_aula.getText()))) {
             mostrarAlerta("Error al realizar reserva", "Un usuario ya ha reservado esta aula en la misma fecha y horario");
-
         } else {
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setTitle("Realizar Reserva");
@@ -684,26 +704,25 @@ public class DashboardAdministradorController extends credenciales_avisos implem
                 } catch (Exception e) {
                     mostrarAlerta("Error al realizar reserva", "Error al realizar reserva en la base de datos: " + e.getMessage());
                 }
-
-
             }
         }
     }
 
-    public void botonActualizarReservaAula(){
+
+    public void botonActualizarReservaAula() {
         if (campo_seleccionar_aula.getText().isEmpty() || campo_seleccionar_fecha_aula.getValue() == null || campo_seleccionar_horario_aula.getText().isEmpty() || campo_cedula_reserva_aula.getText().isEmpty()) {
             mostrarAlerta("Error al actualizar reserva", "Por favor, llene todos los campos");
         } else if (campo_cedula_reserva_aula.getText().length() != 10) {
             mostrarAlerta("Error al actualizar reserva", "Cédula inválida");
         } else if (!campoNumerico(campo_cedula_reserva_aula.getText())) {
             mostrarAlerta("Error al actualizar reserva", "Cédula inválida");
-
+        } else if (!usuarioExiste(campo_cedula_reserva_aula.getText())) {
+            mostrarAlerta("Error al realizar reserva", "El usuario no existe en el sistema");
         } else if (campo_seleccionar_aula.getText().equals(tabla_mostrar_reservas_aulas.getSelectionModel().getSelectedItem().getAula())
                 && campo_seleccionar_fecha_aula.getValue().toString().equals(tabla_mostrar_reservas_aulas.getSelectionModel().getSelectedItem().getFecha())
                 && campo_seleccionar_horario_aula.getText().equals(tabla_mostrar_reservas_aulas.getSelectionModel().getSelectedItem().getHorario())
                 && campo_cedula_reserva_aula.getText().equals(tabla_mostrar_reservas_aulas.getSelectionModel().getSelectedItem().getCedula())) {
             mostrarAlerta("Error al actualizar reserva", "No se ha realizado ningún cambio en los campos");
-
         } else {
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setTitle("Actualizar Reserva");
@@ -722,16 +741,21 @@ public class DashboardAdministradorController extends credenciales_avisos implem
                     MongoDatabase database = mongoClient.getDatabase(databaseName);
                     MongoCollection<Document> collection = database.getCollection(collectionName);
 
-                    Document query = new Document("aula", campo_seleccionar_aula.getText())
-                            .append("fecha", campo_seleccionar_fecha_aula.getValue().toString())
-                            .append("horario", campo_seleccionar_horario_aula.getText())
-                            .append("cedula", campo_cedula_reserva_aula.getText());
+                    Document query = new Document("aula", tabla_mostrar_reservas_aulas.getSelectionModel().getSelectedItem().getAula())
+                            .append("fecha", tabla_mostrar_reservas_aulas.getSelectionModel().getSelectedItem().getFecha())
+                            .append("horario", tabla_mostrar_reservas_aulas.getSelectionModel().getSelectedItem().getHorario())
+                            .append("cedula", tabla_mostrar_reservas_aulas.getSelectionModel().getSelectedItem().getCedula());
+
                     Document doc = new Document("aula", campo_seleccionar_aula.getText())
                             .append("fecha", campo_seleccionar_fecha_aula.getValue().toString())
                             .append("horario", campo_seleccionar_horario_aula.getText())
                             .append("cedula", campo_cedula_reserva_aula.getText());
-                    collection.replaceOne(query, doc);
-                    mostrarConfirmacion("Reserva actualizada", "La reserva ha sido actualizada exitosamente");
+                    UpdateResult result = collection.replaceOne(query, doc);
+                    if (result.getMatchedCount() > 0) {
+                        mostrarConfirmacion("Reserva actualizada", "La reserva ha sido actualizada exitosamente");
+                    } else {
+                        mostrarAlerta("Error al actualizar reserva", "No se encontró la reserva para actualizar");
+                    }
                     botonLimpiarCamposReservaAula();
                     cargarReservasAulas();
                 } catch (Exception e) {
@@ -741,7 +765,8 @@ public class DashboardAdministradorController extends credenciales_avisos implem
         }
     }
 
-    public void botonEliminarReservaAula(){
+
+    public void botonEliminarReservaAula() {
         if (campo_seleccionar_aula.getText().isEmpty() || campo_seleccionar_fecha_aula.getValue() == null || campo_seleccionar_horario_aula.getText().isEmpty() || campo_cedula_reserva_aula.getText().isEmpty()) {
             mostrarAlerta("Error al eliminar reserva", "Por favor, seleccione una reserva a eliminar.");
         } else {
@@ -777,11 +802,212 @@ public class DashboardAdministradorController extends credenciales_avisos implem
         }
     }
 
-    public void botonLimpiarCamposReservaAula(){
+    public void botonLimpiarCamposReservaAula() {
         campo_seleccionar_aula.setText("Aulas");
         campo_seleccionar_fecha_aula.setValue(null);
         campo_seleccionar_horario_aula.setText("Horarios");
         campo_cedula_reserva_aula.setText("");
+    }
+
+    // Buscar laboratorio
+    public void buscarLaboratorio(){
+        String filter = campo_buscar_laboratorio.getText();
+        filteredDataReservasLaboratorios.setPredicate(reserva -> {
+            if (filter == null || filter.isEmpty()) {
+                return true;
+            }
+            String lowerCaseFilter = filter.toLowerCase();
+            return reserva.getLaboratorio().toLowerCase().contains(lowerCaseFilter) ||
+                    reserva.getFecha().toLowerCase().contains(lowerCaseFilter) ||
+                    reserva.getHorario().toLowerCase().contains(lowerCaseFilter) ||
+                    reserva.getCedula().toLowerCase().contains(lowerCaseFilter);
+        });
+    }
+
+    // Mostrar reserva de laboratorios
+    public void cargarReservasLaboratorios() {
+        listaReservasLaboratorios.clear(); // Limpiar la lista actual antes de cargar nuevas reservas
+
+        String mongoUri = "mongodb+srv://Richard-Soria:RichardSoria%401899@aulas-laboratorios-esfo.o7jjnmz.mongodb.net/";
+        String databaseName = "Base_Datos_Aulas_Laboratorios_ESFOT";
+        String collectionName = "Reservas_Laboratorios";
+
+        try (MongoClient mongoClient = MongoClients.create(mongoUri)) {
+            MongoDatabase database = mongoClient.getDatabase(databaseName);
+            MongoCollection<Document> collection = database.getCollection(collectionName);
+
+            for (Document doc : collection.find()) {
+                reserva_laboratorios reserva = new reserva_laboratorios(
+                        doc.getString("laboratorio"),
+                        doc.getString("fecha"),
+                        doc.getString("horario"),
+                        doc.getString("cedula")
+                );
+                listaReservasLaboratorios.add(reserva);
+            }
+        } catch (Exception e) {
+            mostrarAlerta("Error al cargar reservas de laboratorios", "Error al consultar la base de datos: " + e.getMessage());
+        }
+    }
+
+    // Seleccionar reserva de laboratorios
+    public void seleccionarLaboratorioReserva() {
+        reserva_laboratorios reservaSeleccionada = tabla_reservas_laboratorios_mostrar.getSelectionModel().getSelectedItem();
+        if (reservaSeleccionada != null) {
+            campo_seleccionar_laboratorios.setText(reservaSeleccionada.getLaboratorio());
+            campo_seleccionar_fecha_laboratorios.setValue(java.time.LocalDate.parse(reservaSeleccionada.getFecha()));
+            campo_seleccionar_horario_laboratorio.setText(reservaSeleccionada.getHorario());
+            campo_cedula_reserva_laboratorio.setText(reservaSeleccionada.getCedula());
+        }
+    }
+
+    // Realizar reserva de laboratorios
+    public void botonRealizarReservaLaboratorio() {
+        if (campo_seleccionar_laboratorios.getText().isEmpty() || campo_seleccionar_fecha_laboratorios.getValue() == null || campo_seleccionar_horario_laboratorio.getText().isEmpty() || campo_cedula_reserva_laboratorio.getText().isEmpty()) {
+            mostrarAlerta("Error al realizar reserva", "Por favor, llene todos los campos");
+        } else if (campo_cedula_reserva_laboratorio.getText().length() != 10) {
+            mostrarAlerta("Error al realizar reserva", "Cédula inválida");
+        } else if (!campoNumerico(campo_cedula_reserva_laboratorio.getText())) {
+            mostrarAlerta("Error al realizar reserva", "Cédula inválida");
+        } else if (!usuarioExiste(campo_cedula_reserva_laboratorio.getText())) {
+            mostrarAlerta("Error al realizar reserva", "El usuario no existe en el sistema");
+        } else if (listaReservasLaboratorios.stream().anyMatch(reserva -> reserva.getLaboratorio().equals(campo_seleccionar_laboratorios.getText()) && reserva.getFecha().equals(campo_seleccionar_fecha_laboratorios.getValue().toString()) && reserva.getHorario().equals(campo_seleccionar_horario_laboratorio.getText()))) {
+            mostrarAlerta("Error al realizar reserva", "Un usuario ya ha reservado este laboratorio en la misma fecha y horario");
+
+        } else {
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Realizar Reserva");
+            alert.setHeaderText(null);
+            alert.setContentText("¿Está seguro que desea realizar esta reserva?");
+            Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
+            stage.getIcons().add(new Image(IniciarSesionController.class.getResourceAsStream("/images/esfot_buho.png")));
+            Optional<ButtonType> opcion = alert.showAndWait();
+
+            if (opcion.get() == ButtonType.OK) {
+                String mongoUri = "mongodb+srv://Richard-Soria:RichardSoria%401899@aulas-laboratorios-esfo.o7jjnmz.mongodb.net/";
+                String databaseName = "Base_Datos_Aulas_Laboratorios_ESFOT";
+                String collectionName = "Reservas_Laboratorios";
+
+                try (MongoClient mongoClient = MongoClients.create(mongoUri)) {
+                    MongoDatabase database = mongoClient.getDatabase(databaseName);
+                    MongoCollection<Document> collection = database.getCollection(collectionName);
+
+                    Document doc = new Document("laboratorio", campo_seleccionar_laboratorios.getText())
+                            .append("fecha", campo_seleccionar_fecha_laboratorios.getValue().toString())
+                            .append("horario", campo_seleccionar_horario_laboratorio.getText())
+                            .append("cedula", campo_cedula_reserva_laboratorio.getText());
+                    collection.insertOne(doc);
+                    mostrarConfirmacion("Reserva realizada", "La reserva ha sido realizada exitosamente");
+                    botonLimpiarCamposReservaLaboratorio();
+                    cargarReservasLaboratorios();
+                } catch (Exception e) {
+                    mostrarAlerta("Error al realizar reserva", "Error al realizar reserva en la base de datos: " + e.getMessage());
+                }
+            }
+        }
+    }
+
+    // Actualizar reserva de laboratorios
+    public void botonActualizarReservaLaboratorio() {
+        if (campo_seleccionar_laboratorios.getText().isEmpty() || campo_seleccionar_fecha_laboratorios.getValue() == null || campo_seleccionar_horario_laboratorio.getText().isEmpty() || campo_cedula_reserva_laboratorio.getText().isEmpty()) {
+            mostrarAlerta("Error al actualizar reserva", "Por favor, llene todos los campos");
+        } else if (campo_cedula_reserva_laboratorio.getText().length() != 10) {
+            mostrarAlerta("Error al actualizar reserva", "Cédula inválida");
+        } else if (!campoNumerico(campo_cedula_reserva_laboratorio.getText())) {
+            mostrarAlerta("Error al actualizar reserva", "Cédula inválida");
+        } else if (!usuarioExiste(campo_cedula_reserva_laboratorio.getText())) {
+            mostrarAlerta("Error al realizar reserva", "El usuario no existe en el sistema");
+        } else if (campo_seleccionar_laboratorios.getText().equals(tabla_reservas_laboratorios_mostrar.getSelectionModel().getSelectedItem().getLaboratorio())
+                && campo_seleccionar_fecha_laboratorios.getValue().toString().equals(tabla_reservas_laboratorios_mostrar.getSelectionModel().getSelectedItem().getFecha())
+                && campo_seleccionar_horario_laboratorio.getText().equals(tabla_reservas_laboratorios_mostrar.getSelectionModel().getSelectedItem().getHorario())
+                && campo_cedula_reserva_laboratorio.getText().equals(tabla_reservas_laboratorios_mostrar.getSelectionModel().getSelectedItem().getCedula())) {
+            mostrarAlerta("Error al actualizar reserva", "No se ha realizado ningún cambio en los campos");
+
+        } else {
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Actualizar Reserva");
+            alert.setHeaderText(null);
+            alert.setContentText("¿Está seguro que desea actualizar esta reserva?");
+            Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
+            stage.getIcons().add(new Image(IniciarSesionController.class.getResourceAsStream("/images/esfot_buho.png")));
+            Optional<ButtonType> opcion = alert.showAndWait();
+
+            if (opcion.get() == ButtonType.OK) {
+                String mongoUri = "mongodb+srv://Richard-Soria:RichardSoria%401899@aulas-laboratorios-esfo.o7jjnmz.mongodb.net/";
+                String databaseName = "Base_Datos_Aulas_Laboratorios_ESFOT";
+                String collectionName = "Reservas_Laboratorios";
+
+                try (MongoClient mongoClient = MongoClients.create(mongoUri)) {
+                    MongoDatabase database = mongoClient.getDatabase(databaseName);
+                    MongoCollection<Document> collection = database.getCollection(collectionName);
+
+                    Document query = new Document("laboratorio", tabla_reservas_laboratorios_mostrar.getSelectionModel().getSelectedItem().getLaboratorio())
+                            .append("fecha", tabla_reservas_laboratorios_mostrar.getSelectionModel().getSelectedItem().getFecha())
+                            .append("horario", tabla_reservas_laboratorios_mostrar.getSelectionModel().getSelectedItem().getHorario())
+                            .append("cedula", tabla_reservas_laboratorios_mostrar.getSelectionModel().getSelectedItem().getCedula());
+
+                    Document doc = new Document("laboratorio", campo_seleccionar_laboratorios.getText())
+                            .append("fecha", campo_seleccionar_fecha_laboratorios.getValue().toString())
+                            .append("horario", campo_seleccionar_horario_laboratorio.getText())
+                            .append("cedula", campo_cedula_reserva_laboratorio.getText());
+                    UpdateResult result = collection.replaceOne(query, doc);
+                    if (result.getMatchedCount() > 0) {
+                        mostrarConfirmacion("Reserva actualizada", "La reserva ha sido actualizada exitosamente");
+                    } else {
+                        mostrarAlerta("Error al actualizar reserva", "No se encontró la reserva para actualizar");
+                    }
+                    botonLimpiarCamposReservaLaboratorio();
+                    cargarReservasLaboratorios();
+                } catch (Exception e) {
+                    mostrarAlerta("Error al actualizar reserva", "Error al actualizar reserva en la base de datos: " + e.getMessage());
+                }
+            }
+        }
+    }
+
+    // Eliminar reserva de laboratorios
+    public void botonEliminarReservaLaboratorio() {
+        if (campo_seleccionar_laboratorios.getText().isEmpty() || campo_seleccionar_fecha_laboratorios.getValue() == null || campo_seleccionar_horario_laboratorio.getText().isEmpty() || campo_cedula_reserva_laboratorio.getText().isEmpty()) {
+            mostrarAlerta("Error al eliminar reserva", "Por favor, seleccione una reserva a eliminar.");
+        } else {
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Eliminar Reserva");
+            alert.setHeaderText(null);
+            alert.setContentText("¿Está seguro que desea eliminar esta reserva?");
+            Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
+            stage.getIcons().add(new Image(IniciarSesionController.class.getResourceAsStream("/images/esfot_buho.png")));
+            Optional<ButtonType> opcion = alert.showAndWait();
+
+            if (opcion.get() == ButtonType.OK) {
+                String mongoUri = "mongodb+srv://Richard-Soria:RichardSoria%401899@aulas-laboratorios-esfo.o7jjnmz.mongodb.net/";
+                String databaseName = "Base_Datos_Aulas_Laboratorios_ESFOT";
+                String collectionName = "Reservas_Laboratorios";
+
+                try (MongoClient mongoClient = MongoClients.create(mongoUri)) {
+                    MongoDatabase database = mongoClient.getDatabase(databaseName);
+                    MongoCollection<Document> collection = database.getCollection(collectionName);
+
+                    Document query = new Document("laboratorio", campo_seleccionar_laboratorios.getText())
+                            .append("fecha", campo_seleccionar_fecha_laboratorios.getValue().toString())
+                            .append("horario", campo_seleccionar_horario_laboratorio.getText())
+                            .append("cedula", campo_cedula_reserva_laboratorio.getText());
+                    collection.deleteOne(query);
+                    mostrarConfirmacion("Reserva eliminada", "La reserva ha sido eliminada exitosamente");
+                    botonLimpiarCamposReservaLaboratorio();
+                    cargarReservasLaboratorios();
+                } catch (Exception e) {
+                    mostrarAlerta("Error al eliminar reserva", "Error al consultar la base de datos: " + e.getMessage());
+                }
+            }
+        }
+    }
+
+    // Limpiar campos de reserva de laboratorios
+    public void botonLimpiarCamposReservaLaboratorio() {
+        campo_seleccionar_laboratorios.setText("Laboratorios");
+        campo_seleccionar_fecha_laboratorios.setValue(null);
+        campo_seleccionar_horario_laboratorio.setText("Horarios");
+        campo_cedula_reserva_laboratorio.setText("");
     }
 
     public void moduloBotonUsuario() {
@@ -791,6 +1017,7 @@ public class DashboardAdministradorController extends credenciales_avisos implem
         dashboard_reservar_laboratorios.setVisible(false);
         botonLimpiarCamposUsuarios();
         botonLimpiarCamposReservaAula();
+        botonLimpiarCamposReservaLaboratorio();
     }
 
     public void moduloBotonAulas() {
@@ -800,7 +1027,7 @@ public class DashboardAdministradorController extends credenciales_avisos implem
         dashboard_reservar_laboratorios.setVisible(false);
         botonLimpiarCamposUsuarios();
         botonLimpiarCamposReservaAula();
-
+        botonLimpiarCamposReservaLaboratorio();
     }
 
     public void moduloBotonLabs() {
@@ -810,6 +1037,7 @@ public class DashboardAdministradorController extends credenciales_avisos implem
         dashboard_reservar_aulas.setVisible(false);
         botonLimpiarCamposUsuarios();
         botonLimpiarCamposReservaAula();
+        botonLimpiarCamposReservaLaboratorio();
     }
 
     public void botonModulos() {
@@ -819,6 +1047,7 @@ public class DashboardAdministradorController extends credenciales_avisos implem
         dashboard_reservar_laboratorios.setVisible(false);
         botonLimpiarCamposUsuarios();
         botonLimpiarCamposReservaAula();
+        botonLimpiarCamposReservaLaboratorio();
     }
 
     public void botonUsuarios() {
@@ -828,6 +1057,7 @@ public class DashboardAdministradorController extends credenciales_avisos implem
         dashboard_reservar_laboratorios.setVisible(false);
         botonLimpiarCamposUsuarios();
         botonLimpiarCamposReservaAula();
+        botonLimpiarCamposReservaLaboratorio();
     }
 
     public void botonAulas() {
@@ -837,6 +1067,7 @@ public class DashboardAdministradorController extends credenciales_avisos implem
         dashboard_reservar_laboratorios.setVisible(false);
         botonLimpiarCamposUsuarios();
         botonLimpiarCamposReservaAula();
+        botonLimpiarCamposReservaLaboratorio();
     }
 
     public void botonLabs() {
@@ -846,6 +1077,7 @@ public class DashboardAdministradorController extends credenciales_avisos implem
         dashboard_reservar_aulas.setVisible(false);
         botonLimpiarCamposUsuarios();
         botonLimpiarCamposReservaAula();
+        botonLimpiarCamposReservaLaboratorio();
     }
 
     public void salirInicioSesion() {

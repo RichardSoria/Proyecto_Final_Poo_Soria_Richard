@@ -1,11 +1,16 @@
 package clases_sistema;
 
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoClients;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
 import controllers.IniciarSesionController;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
+import org.bson.Document;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -56,6 +61,29 @@ public class credenciales_avisos {
         stage.getIcons().add(new javafx.scene.image.Image(IniciarSesionController.class.getResourceAsStream("/images/esfot_buho.png")));
         alert.showAndWait();
     }
+
+    public boolean usuarioExiste(String cedula) {
+        String mongoUri = "mongodb+srv://Richard-Soria:RichardSoria%401899@aulas-laboratorios-esfo.o7jjnmz.mongodb.net/";
+        String databaseName = "Base_Datos_Aulas_Laboratorios_ESFOT";
+
+        try (MongoClient mongoClient = MongoClients.create(mongoUri)) {
+            MongoDatabase database = mongoClient.getDatabase(databaseName);
+
+            String[] collections = {"Administradores", "Profesores", "Estudiantes"};
+
+            for (String collectionName : collections) {
+                MongoCollection<Document> collection = database.getCollection(collectionName);
+                Document query = new Document("cedula", cedula);
+                if (collection.find(query).first() != null) {
+                    return true;
+                }
+            }
+        } catch (Exception e) {
+            mostrarAlerta("Error al buscar usuario", "Error al consultar la base de datos: " + e.getMessage());
+        }
+        return false;
+    }
+
 
     public void mostrarConfirmacion(String titulo, String mensaje) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
