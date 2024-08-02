@@ -643,7 +643,7 @@ public class DashboardAdministradorController extends credenciales_avisos implem
         }
     }
 
-    public void realizarReservaAula(){
+    public void botonRealizarReservaAula(){
         if (campo_seleccionar_aula.getText().isEmpty() || campo_seleccionar_fecha_aula.getValue() == null || campo_seleccionar_horario_aula.getText().isEmpty() || campo_cedula_reserva_aula.getText().isEmpty()) {
             mostrarAlerta("Error al realizar reserva", "Por favor, llene todos los campos");
         } else if (campo_cedula_reserva_aula.getText().length() != 10) {
@@ -679,7 +679,7 @@ public class DashboardAdministradorController extends credenciales_avisos implem
                             .append("cedula", campo_cedula_reserva_aula.getText());
                     collection.insertOne(doc);
                     mostrarConfirmacion("Reserva realizada", "La reserva ha sido realizada exitosamente");
-                    //botonLimpiarCamposReservaAula();
+                    botonLimpiarCamposReservaAula();
                     cargarReservasAulas();
                 } catch (Exception e) {
                     mostrarAlerta("Error al realizar reserva", "Error al realizar reserva en la base de datos: " + e.getMessage());
@@ -690,13 +690,107 @@ public class DashboardAdministradorController extends credenciales_avisos implem
         }
     }
 
+    public void botonActualizarReservaAula(){
+        if (campo_seleccionar_aula.getText().isEmpty() || campo_seleccionar_fecha_aula.getValue() == null || campo_seleccionar_horario_aula.getText().isEmpty() || campo_cedula_reserva_aula.getText().isEmpty()) {
+            mostrarAlerta("Error al actualizar reserva", "Por favor, llene todos los campos");
+        } else if (campo_cedula_reserva_aula.getText().length() != 10) {
+            mostrarAlerta("Error al actualizar reserva", "Cédula inválida");
+        } else if (!campoNumerico(campo_cedula_reserva_aula.getText())) {
+            mostrarAlerta("Error al actualizar reserva", "Cédula inválida");
+
+        } else if (campo_seleccionar_aula.getText().equals(tabla_mostrar_reservas_aulas.getSelectionModel().getSelectedItem().getAula())
+                && campo_seleccionar_fecha_aula.getValue().toString().equals(tabla_mostrar_reservas_aulas.getSelectionModel().getSelectedItem().getFecha())
+                && campo_seleccionar_horario_aula.getText().equals(tabla_mostrar_reservas_aulas.getSelectionModel().getSelectedItem().getHorario())
+                && campo_cedula_reserva_aula.getText().equals(tabla_mostrar_reservas_aulas.getSelectionModel().getSelectedItem().getCedula())) {
+            mostrarAlerta("Error al actualizar reserva", "No se ha realizado ningún cambio en los campos");
+
+        } else {
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Actualizar Reserva");
+            alert.setHeaderText(null);
+            alert.setContentText("¿Está seguro que desea actualizar esta reserva?");
+            Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
+            stage.getIcons().add(new Image(IniciarSesionController.class.getResourceAsStream("/images/esfot_buho.png")));
+            Optional<ButtonType> opcion = alert.showAndWait();
+
+            if (opcion.get() == ButtonType.OK) {
+                String mongoUri = "mongodb+srv://Richard-Soria:RichardSoria%401899@aulas-laboratorios-esfo.o7jjnmz.mongodb.net/";
+                String databaseName = "Base_Datos_Aulas_Laboratorios_ESFOT";
+                String collectionName = "Reservas_Aulas";
+
+                try (MongoClient mongoClient = MongoClients.create(mongoUri)) {
+                    MongoDatabase database = mongoClient.getDatabase(databaseName);
+                    MongoCollection<Document> collection = database.getCollection(collectionName);
+
+                    Document query = new Document("aula", campo_seleccionar_aula.getText())
+                            .append("fecha", campo_seleccionar_fecha_aula.getValue().toString())
+                            .append("horario", campo_seleccionar_horario_aula.getText())
+                            .append("cedula", campo_cedula_reserva_aula.getText());
+                    Document doc = new Document("aula", campo_seleccionar_aula.getText())
+                            .append("fecha", campo_seleccionar_fecha_aula.getValue().toString())
+                            .append("horario", campo_seleccionar_horario_aula.getText())
+                            .append("cedula", campo_cedula_reserva_aula.getText());
+                    collection.replaceOne(query, doc);
+                    mostrarConfirmacion("Reserva actualizada", "La reserva ha sido actualizada exitosamente");
+                    botonLimpiarCamposReservaAula();
+                    cargarReservasAulas();
+                } catch (Exception e) {
+                    mostrarAlerta("Error al actualizar reserva", "Error al actualizar reserva en la base de datos: " + e.getMessage());
+                }
+            }
+        }
+    }
+
+    public void botonEliminarReservaAula(){
+        if (campo_seleccionar_aula.getText().isEmpty() || campo_seleccionar_fecha_aula.getValue() == null || campo_seleccionar_horario_aula.getText().isEmpty() || campo_cedula_reserva_aula.getText().isEmpty()) {
+            mostrarAlerta("Error al eliminar reserva", "Por favor, seleccione una reserva a eliminar.");
+        } else {
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Eliminar Reserva");
+            alert.setHeaderText(null);
+            alert.setContentText("¿Está seguro que desea eliminar esta reserva?");
+            Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
+            stage.getIcons().add(new Image(IniciarSesionController.class.getResourceAsStream("/images/esfot_buho.png")));
+            Optional<ButtonType> opcion = alert.showAndWait();
+
+            if (opcion.get() == ButtonType.OK) {
+                String mongoUri = "mongodb+srv://Richard-Soria:RichardSoria%401899@aulas-laboratorios-esfo.o7jjnmz.mongodb.net/";
+                String databaseName = "Base_Datos_Aulas_Laboratorios_ESFOT";
+                String collectionName = "Reservas_Aulas";
+
+                try (MongoClient mongoClient = MongoClients.create(mongoUri)) {
+                    MongoDatabase database = mongoClient.getDatabase(databaseName);
+                    MongoCollection<Document> collection = database.getCollection(collectionName);
+
+                    Document query = new Document("aula", campo_seleccionar_aula.getText())
+                            .append("fecha", campo_seleccionar_fecha_aula.getValue().toString())
+                            .append("horario", campo_seleccionar_horario_aula.getText())
+                            .append("cedula", campo_cedula_reserva_aula.getText());
+                    collection.deleteOne(query);
+                    mostrarConfirmacion("Reserva eliminada", "La reserva ha sido eliminada exitosamente");
+                    botonLimpiarCamposReservaAula();
+                    cargarReservasAulas();
+                } catch (Exception e) {
+                    mostrarAlerta("Error al eliminar reserva", "Error al consultar la base de datos: " + e.getMessage());
+                }
+            }
+        }
+    }
+
+    public void botonLimpiarCamposReservaAula(){
+        campo_seleccionar_aula.setText("Aulas");
+        campo_seleccionar_fecha_aula.setValue(null);
+        campo_seleccionar_horario_aula.setText("Horarios");
+        campo_cedula_reserva_aula.setText("");
+    }
+
     public void moduloBotonUsuario() {
         dashboard_gestion_usuarios.setVisible(true);
         dashboard_modulos.setVisible(false);
         dashboard_reservar_aulas.setVisible(false);
         dashboard_reservar_laboratorios.setVisible(false);
         botonLimpiarCamposUsuarios();
-
+        botonLimpiarCamposReservaAula();
     }
 
     public void moduloBotonAulas() {
@@ -705,6 +799,8 @@ public class DashboardAdministradorController extends credenciales_avisos implem
         dashboard_gestion_usuarios.setVisible(false);
         dashboard_reservar_laboratorios.setVisible(false);
         botonLimpiarCamposUsuarios();
+        botonLimpiarCamposReservaAula();
+
     }
 
     public void moduloBotonLabs() {
@@ -713,7 +809,7 @@ public class DashboardAdministradorController extends credenciales_avisos implem
         dashboard_gestion_usuarios.setVisible(false);
         dashboard_reservar_aulas.setVisible(false);
         botonLimpiarCamposUsuarios();
-
+        botonLimpiarCamposReservaAula();
     }
 
     public void botonModulos() {
@@ -722,6 +818,7 @@ public class DashboardAdministradorController extends credenciales_avisos implem
         dashboard_reservar_aulas.setVisible(false);
         dashboard_reservar_laboratorios.setVisible(false);
         botonLimpiarCamposUsuarios();
+        botonLimpiarCamposReservaAula();
     }
 
     public void botonUsuarios() {
@@ -730,6 +827,7 @@ public class DashboardAdministradorController extends credenciales_avisos implem
         dashboard_reservar_aulas.setVisible(false);
         dashboard_reservar_laboratorios.setVisible(false);
         botonLimpiarCamposUsuarios();
+        botonLimpiarCamposReservaAula();
     }
 
     public void botonAulas() {
@@ -738,6 +836,7 @@ public class DashboardAdministradorController extends credenciales_avisos implem
         dashboard_gestion_usuarios.setVisible(false);
         dashboard_reservar_laboratorios.setVisible(false);
         botonLimpiarCamposUsuarios();
+        botonLimpiarCamposReservaAula();
     }
 
     public void botonLabs() {
@@ -746,6 +845,7 @@ public class DashboardAdministradorController extends credenciales_avisos implem
         dashboard_gestion_usuarios.setVisible(false);
         dashboard_reservar_aulas.setVisible(false);
         botonLimpiarCamposUsuarios();
+        botonLimpiarCamposReservaAula();
     }
 
     public void salirInicioSesion() {

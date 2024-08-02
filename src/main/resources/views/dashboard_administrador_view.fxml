@@ -455,18 +455,18 @@
                               </Label>
                               <MenuButton fx:id="campo_seleccionar_horario_aula" alignment="CENTER" contentDisplay="CENTER" layoutX="37.0" layoutY="235.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="175.0" stylesheets="@../styles/botones_reservas.css" text="Horarios" textFill="WHITE">
                                  <items>
-                                    <MenuItem mnemonicParsing="false" text="07:00 AM - 09:00 AM" />
-                                    <MenuItem mnemonicParsing="false" text="09:00 AM - 11:00 AM" />
-                                    <MenuItem mnemonicParsing="false" text="11:00 AM - 01:00 PM" />
-                                    <MenuItem mnemonicParsing="false" text="02:00 PM - 04:00 PM" />
-                                    <MenuItem mnemonicParsing="false" text="04:00 PM - 06:00 PM" />
-                                    <MenuItem mnemonicParsing="false" text="06:00 PM - 08:00 PM" />
+                                    <MenuItem mnemonicParsing="false" text="07:00 - 09:00" />
+                                    <MenuItem mnemonicParsing="false" text="09:00 - 11:00" />
+                                    <MenuItem mnemonicParsing="false" text="11:00 - 13:00" />
+                                    <MenuItem mnemonicParsing="false" text="14:00 - 16:00" />
+                                    <MenuItem mnemonicParsing="false" text="16:00 - 18:00" />
+                                    <MenuItem mnemonicParsing="false" text="18:00 - 20:00" />
                                  </items>
                                  <font>
                                     <Font name="Verdana Bold" size="15.0" />
                                  </font>
                               </MenuButton>
-                              <Button fx:id="boton_reservar_aula" layoutX="37.0" layoutY="355.0" mnemonicParsing="false" onAction="#realizarReservaAula" prefHeight="30.0" prefWidth="175.0" style="-fx-background-radius: 5; -fx-border-radius: 5; -fx-text-fill: white;" styleClass="bg_blue" stylesheets="@../styles/style_dashboard.css" text="Reservar">
+                              <Button fx:id="boton_reservar_aula" layoutX="37.0" layoutY="355.0" mnemonicParsing="false" onAction="#botonRealizarReservaAula" prefHeight="30.0" prefWidth="175.0" style="-fx-background-radius: 5; -fx-border-radius: 5; -fx-text-fill: white;" styleClass="bg_blue" stylesheets="@../styles/style_dashboard.css" text="Reservar">
                                  <font>
                                     <Font name="Verdana Bold" size="20.0" />
                                  </font>
@@ -481,7 +481,7 @@
                                     <Cursor fx:constant="HAND" />
                                  </cursor>
                               </Button>
-                              <Button fx:id="boton_actualizar_aula" layoutX="37.0" layoutY="400.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="175.0" style="-fx-background-radius: 5; -fx-border-radius: 5; -fx-text-fill: white;" styleClass="bg_blue" stylesheets="@../styles/style_dashboard.css" text="Actualizar">
+                              <Button fx:id="boton_actualizar_aula" layoutX="37.0" layoutY="400.0" mnemonicParsing="false" onAction="#botonActualizarReservaAula" prefHeight="30.0" prefWidth="175.0" style="-fx-background-radius: 5; -fx-border-radius: 5; -fx-text-fill: white;" styleClass="bg_blue" stylesheets="@../styles/style_dashboard.css" text="Actualizar">
                                  <font>
                                     <Font name="Verdana Bold" size="20.0" />
                                  </font>
@@ -496,7 +496,7 @@
                                     <Cursor fx:constant="HAND" />
                                  </cursor>
                               </Button>
-                              <Button fx:id="boton_eliminar_aula" layoutX="37.0" layoutY="445.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="175.0" style="-fx-background-radius: 5; -fx-border-radius: 5; -fx-text-fill: white;" styleClass="bg_blue" stylesheets="@../styles/style_dashboard.css" text="Eliminar">
+                              <Button fx:id="boton_eliminar_aula" layoutX="37.0" layoutY="445.0" mnemonicParsing="false" onAction="#botonEliminarReservaAula" prefHeight="30.0" prefWidth="175.0" style="-fx-background-radius: 5; -fx-border-radius: 5; -fx-text-fill: white;" styleClass="bg_blue" stylesheets="@../styles/style_dashboard.css" text="Eliminar">
                                  <font>
                                     <Font name="Verdana Bold" size="20.0" />
                                  </font>
@@ -538,7 +538,7 @@
                                     <Font name="Verdana Bold" size="16.0" />
                                  </font>
                               </Label>
-                              <Button fx:id="boton_limpiar_campo_reserva_aula" layoutX="37.0" layoutY="490.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="175.0" style="-fx-background-radius: 5; -fx-border-radius: 5; -fx-text-fill: white;" styleClass="bg_blue" stylesheets="@../styles/style_dashboard.css" text="Limpiar">
+                              <Button fx:id="boton_limpiar_campo_reserva_aula" layoutX="37.0" layoutY="490.0" mnemonicParsing="false" onAction="#botonLimpiarCamposReservaAula" prefHeight="30.0" prefWidth="175.0" style="-fx-background-radius: 5; -fx-border-radius: 5; -fx-text-fill: white;" styleClass="bg_blue" stylesheets="@../styles/style_dashboard.css" text="Limpiar">
                                  <font>
                                     <Font name="Verdana Bold" size="20.0" />
                                  </font>
@@ -564,8 +564,8 @@
                               <TableView fx:id="tabla_mostrar_reservas_aulas" onMouseClicked="#seleccionarAulaReserva" prefHeight="540.0" prefWidth="470.0" stylesheets="@../styles/style_dashboard.css">
                                  <columns>
                                     <TableColumn fx:id="columna_aula" prefWidth="120.0" text="Aula" />
-                                    <TableColumn fx:id="columna_aula_fecha" prefWidth="115.0" text="Fecha" />
-                                    <TableColumn fx:id="columna_aula_horario" prefWidth="115.0" text="Horario" />
+                                    <TableColumn fx:id="columna_aula_fecha" prefWidth="100.0" text="Fecha" />
+                                    <TableColumn fx:id="columna_aula_horario" prefWidth="130.0" text="Horario" />
                                     <TableColumn fx:id="columna_aula_cedula" prefWidth="115.0" text="Cédula" />
                                  </columns>
                                  <columnResizePolicy>
