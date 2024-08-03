@@ -13,6 +13,7 @@ module com.example.proyecto_final_poo_soria_richard {
     requires org.mongodb.driver.core;
     requires org.mongodb.driver.sync.client;
     requires org.mongodb.bson;
+    requires java.mail;
 
     opens controllers to javafx.fxml;
     opens clases_sistema to javafx.base;

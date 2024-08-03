@@ -82,6 +82,36 @@ public class credenciales_avisos {
         return false;
     }
 
+    public boolean usuarioExisteCollection(String cedula, String campo_tipo_rol) {
+        String mongoUri = "mongodb+srv://Richard-Soria:RichardSoria%401899@aulas-laboratorios-esfo.o7jjnmz.mongodb.net/";
+        String databaseName = "Base_Datos_Aulas_Laboratorios_ESFOT";
+        String collectionName = "";
+
+        switch (campo_tipo_rol) {
+            case "Administrador":
+                collectionName = "Administradores";
+                break;
+            case "Profesor":
+                collectionName = "Profesores";
+                break;
+            case "Estudiante":
+                collectionName = "Estudiantes";
+                break;
+        }
+
+        try (MongoClient mongoClient = MongoClients.create(mongoUri)) {
+            MongoDatabase database = mongoClient.getDatabase(databaseName);
+            MongoCollection<Document> collection = database.getCollection(collectionName);
+            Document query = new Document("cedula", cedula);
+            if (collection.find(query).first() != null) {
+                return true;
+            }
+        } catch (Exception e) {
+            mostrarAlerta("Error al buscar usuario", "Error al consultar la base de datos: " + e.getMessage());
+        }
+        return false;
+    }
+
     public String obtenerNombreApellidoUsuario(String cedula) {
         String mongoUri = "mongodb+srv://Richard-Soria:RichardSoria%401899@aulas-laboratorios-esfo.o7jjnmz.mongodb.net/";
         String databaseName = "Base_Datos_Aulas_Laboratorios_ESFOT";
@@ -106,6 +136,32 @@ public class credenciales_avisos {
         }
 
         return NombreApellidoUsuario;
+    }
+
+    public String obtenerCorreoUsuario(String cedula){
+        String mongoUri = "mongodb+srv://Richard-Soria:RichardSoria%401899@aulas-laboratorios-esfo.o7jjnmz.mongodb.net/";
+        String databaseName = "Base_Datos_Aulas_Laboratorios_ESFOT";
+        String correoUsuario = null;
+
+        try (MongoClient mongoClient = MongoClients.create(mongoUri)) {
+            MongoDatabase database = mongoClient.getDatabase(databaseName);
+
+            String[] collections = {"Administradores", "Profesores", "Estudiantes"};
+
+            for (String collectionName : collections) {
+                MongoCollection<Document> collection = database.getCollection(collectionName);
+                Document query = new Document("cedula", cedula);
+                Document usuario = collection.find(query).first();
+                if (usuario != null) {
+                    correoUsuario = usuario.getString("correo");
+                    break;
+                }
+            }
+        } catch (Exception e) {
+            mostrarAlerta("Error al buscar usuario", "Error al consultar la base de datos: " + e.getMessage());
+        }
+
+        return correoUsuario;
     }
 
     public Boolean comprobarReservaLaboratorios(String cedula, String fecha, String horario) {

@@ -227,7 +227,9 @@ public class DashboardAdministradorController extends credenciales_avisos implem
     private FilteredList<reserva_laboratorios> filteredDataReservasLaboratorios;
 
     String nombreApellidoUsuario;
+    String correoUsuario;
 
+    enviar_correo enviarCorreo = new enviar_correo();
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -444,7 +446,7 @@ public class DashboardAdministradorController extends credenciales_avisos implem
         } else if (campo_contrasena.getText().length() < 8) {
             mostrarAlerta("Error al añadir usuario", "La contraseña debe tener al menos 8 caracteres");
 
-        } else if (usuarioExiste(campo_cedula.getText())) {
+        } else if (usuarioExisteCollection(campo_cedula.getText(), campo_rol_usuario.getText())) {
             mostrarAlerta("Error al añadir usuario", "El usuario ya se encuentra registrado");
 
         } else {
@@ -489,6 +491,18 @@ public class DashboardAdministradorController extends credenciales_avisos implem
                             .append("tipo_rol", campo_rol_usuario.getText());
                     collection.insertOne(doc);
                     mostrarConfirmacion("Usuario añadido", "El usuario ha sido añadido exitosamente");
+
+                    enviarCorreo.enviarCorreo(campo_correo.getText(), "Registro de Usuario", "Estimado/a " + campo_nombre.getText() + " " + campo_apellido.getText() + ",\n\n" +
+                            "Su usuario ha sido registrado exitosamente en el sistema de Gestión de Aulas y Laboratorios de la ESFOT.\n\n" +
+                            "Cédula: " + campo_cedula.getText() + "\n" +
+                            "Nombre: " + campo_nombre.getText() + " " + campo_apellido.getText() + "\n" +
+                            "Correo: " + campo_correo.getText() + "\n" +
+                            "Contraseña: " + campo_contrasena.getText() + "\n" +
+                            "Número de Celular: " + campo_numero_celular.getText() + "\n" +
+                            "Tipo de Usuario: " + campo_rol_usuario.getText() + "\n\n" +
+                            "Saludos cordiales,\n" +
+                            "Gestión de Aulas y Laboratorios ESFOT");
+
                     botonLimpiarCamposUsuarios();
                     cargarUsuarios();
                 } catch (Exception e) {
@@ -501,6 +515,7 @@ public class DashboardAdministradorController extends credenciales_avisos implem
     public void botonAcualizarUsuario() {
         if (campo_cedula.getText().isEmpty() || campo_nombre.getText().isEmpty() || campo_apellido.getText().isEmpty() || campo_correo.getText().isEmpty() || campo_contrasena.getText().isEmpty() || campo_numero_celular.getText().isEmpty() || campo_rol_usuario.getText().equals("Tipo de Usuario")) {
             mostrarAlerta("Error al añadir usuario", "Por favor, llene todos los campos y seleccione un tipo de usuario");
+
         } else if (!validarCorreo(campo_correo.getText())) {
             mostrarAlerta("Error al añadir usuario", "Correo Institucional inválido");
 
@@ -519,8 +534,8 @@ public class DashboardAdministradorController extends credenciales_avisos implem
         } else if (campo_contrasena.getText().length() < 8) {
             mostrarAlerta("Error al añadir usuario", "La contraseña debe tener al menos 8 caracteres");
 
-        } else if (usuarioExiste(campo_cedula.getText())) {
-            mostrarAlerta("Error al añadir usuario", "El usuario ya se encuentra registrado");
+        } else if (!usuarioExisteCollection(campo_cedula.getText(), campo_rol_usuario.getText())) {
+            mostrarAlerta("Error al actualizar usuario", "No se ha actualizado los datos del usaurio ya que no se encuentra registrado");
 
         } else if (campo_cedula.getText().equals(tabla_mostrar_usuarios.getSelectionModel().getSelectedItem().getCedula())
                 && campo_nombre.getText().equals(tabla_mostrar_usuarios.getSelectionModel().getSelectedItem().getNombre())
@@ -573,6 +588,18 @@ public class DashboardAdministradorController extends credenciales_avisos implem
                             .append("numero_celular", campo_numero_celular.getText())
                             .append("tipo_rol", campo_rol_usuario.getText());
                     collection.replaceOne(query, doc);
+
+                    enviarCorreo.enviarCorreo(campo_correo.getText(), "Actualización de Usuario", "Estimado/a " + campo_nombre.getText() + " " + campo_apellido.getText() + ",\n\n" +
+                            "Su usuario ha sido actualizado exitosamente en el sistema de Gestión de Aulas y Laboratorios de la ESFOT.\n\n" +
+                            "Cédula: " + campo_cedula.getText() + "\n" +
+                            "Nombre: " + campo_nombre.getText() + " " + campo_apellido.getText() + "\n" +
+                            "Correo: " + campo_correo.getText() + "\n" +
+                            "Contraseña: " + campo_contrasena.getText() + "\n" +
+                            "Número de Celular: " + campo_numero_celular.getText() + "\n" +
+                            "Tipo de Usuario: " + campo_rol_usuario.getText() + "\n\n" +
+                            "Saludos cordiales,\n" +
+                            "Gestión de Aulas y Laboratorios ESFOT");
+
                     mostrarConfirmacion("Usuario actualizado", "El usuario ha sido actualizado exitosamente");
                     botonLimpiarCamposUsuarios();
                     cargarUsuarios();
@@ -586,6 +613,28 @@ public class DashboardAdministradorController extends credenciales_avisos implem
     public void botonEliminarUsuario() {
         if (campo_cedula.getText().isEmpty() || campo_nombre.getText().isEmpty() || campo_apellido.getText().isEmpty() || campo_correo.getText().isEmpty() || campo_contrasena.getText().isEmpty() || campo_numero_celular.getText().isEmpty() || campo_rol_usuario.getText().equals("Tipo de Usuario")) {
             mostrarAlerta("Error al eliminar usuario", "Por favor, seleccione un usuario a eliminar.");
+
+        } else if (!validarCorreo(campo_correo.getText())) {
+            mostrarAlerta("Error al añadir usuario", "Correo Institucional inválido");
+
+        } else if (campo_cedula.getText().length() != 10) {
+            mostrarAlerta("Error al añadir usuario", "Cédula inválida");
+
+        } else if (!campoNumerico(campo_cedula.getText())) {
+            mostrarAlerta("Error al añadir usuario", "Cédula inválida");
+
+        } else if (campo_numero_celular.getText().length() != 10) {
+            mostrarAlerta("Error al añadir usuario", "Número de celular inválido");
+
+        } else if (!campoNumerico(campo_numero_celular.getText())) {
+            mostrarAlerta("Error al añadir usuario", "Número de celular inválido");
+
+        } else if (campo_contrasena.getText().length() < 8) {
+            mostrarAlerta("Error al añadir usuario", "La contraseña debe tener al menos 8 caracteres");
+
+        } else if (!usuarioExisteCollection(campo_cedula.getText(), campo_rol_usuario.getText())) {
+            mostrarAlerta("Error al eliminar usuario", "No se ha eliminado el usuario ya que no se encuentra registrado");
+
         } else {
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setTitle("Eliminar Usuario");
@@ -621,6 +670,12 @@ public class DashboardAdministradorController extends credenciales_avisos implem
 
                     Document query = new Document("cedula", campo_cedula.getText());
                     collection.deleteOne(query);
+
+                    enviarCorreo.enviarCorreo(campo_correo.getText(), "Eliminación de Usuario", "Estimado/a " + campo_nombre.getText() + " " + campo_apellido.getText() + ",\n\n" +
+                            "Su usuario ha sido eliminado exitosamente del sistema de Gestión de Aulas y Laboratorios de la ESFOT.\n\n" +
+                            "Saludos cordiales,\n" +
+                            "Gestión de Aulas y Laboratorios ESFOT");
+
                     mostrarConfirmacion("Usuario eliminado", "El usuario ha sido eliminado exitosamente");
                     botonLimpiarCamposUsuarios();
                     cargarUsuarios();
@@ -742,6 +797,12 @@ public class DashboardAdministradorController extends credenciales_avisos implem
                             .append("horario", campo_seleccionar_horario_aula.getText())
                             .append("cedula", campo_cedula_reserva_aula.getText());
                     collection.insertOne(doc);
+
+                    enviarCorreo.enviarCorreo(obtenerCorreoUsuario(campo_cedula_reserva_aula.getText()), "Reserva de Aula", "Estimado/a " + nombreApellidoUsuario + ",\n\n" +
+                            "Su reserva del aula " + campo_seleccionar_aula.getText() + " para el día " + campo_seleccionar_fecha_aula.getValue().toString() + " en el horario de " + campo_seleccionar_horario_aula.getText() + " ha sido realizada exitosamente.\n\n" +
+                            "Saludos cordiales,\n" +
+                            "Gestión de Aulas y Laboratorios ESFOT");
+
                     mostrarConfirmacion("Reserva realizada", "La reserva ha sido realizada exitosamente");
                     botonLimpiarCamposReservaAula();
                     cargarReservasAulas();
@@ -755,6 +816,13 @@ public class DashboardAdministradorController extends credenciales_avisos implem
 
     public void botonActualizarReservaAula() {
         nombreApellidoUsuario = obtenerNombreApellidoUsuario(campo_cedula_reserva_aula.getText());
+
+        reserva_aulas reservaSeleccionada = tabla_mostrar_reservas_aulas.getSelectionModel().getSelectedItem();
+
+        boolean reservaEncontrada = listaReservasAulas.stream().anyMatch(reserva -> reserva.getAula().equals(campo_seleccionar_aula.getText())
+                && reserva.getFecha().equals(campo_seleccionar_fecha_aula.getValue().toString())
+                && reserva.getHorario().equals(campo_seleccionar_horario_aula.getText())
+                && reserva.getCedula().equals(campo_cedula_reserva_aula.getText()));
 
         if (campo_seleccionar_aula.getText().isEmpty() || campo_seleccionar_fecha_aula.getValue() == null || campo_seleccionar_horario_aula.getText().isEmpty() || campo_cedula_reserva_aula.getText().isEmpty()) {
             mostrarAlerta("Error al actualizar reserva", "Por favor, llene todos los campos");
@@ -777,7 +845,11 @@ public class DashboardAdministradorController extends credenciales_avisos implem
         } else if (comprobarReservaLaboratorios(campo_cedula_reserva_aula.getText(), campo_seleccionar_fecha_aula.getValue().toString(), campo_seleccionar_horario_aula.getText())) {
             mostrarAlerta("Error al realizar reserva", "El usuario " + nombreApellidoUsuario + " ya ha reservado un laboratorio en la misma fecha y horario");
 
-        } else if (campo_seleccionar_aula.getText().equals(tabla_mostrar_reservas_aulas.getSelectionModel().getSelectedItem().getAula())
+        } else if(reservaSeleccionada == null && !reservaEncontrada) {
+            mostrarAlerta("Error al actualizar reserva", "No se encontró la reserva para actualizar");
+        }
+
+        else if (campo_seleccionar_aula.getText().equals(tabla_mostrar_reservas_aulas.getSelectionModel().getSelectedItem().getAula())
                 && campo_seleccionar_fecha_aula.getValue().toString().equals(tabla_mostrar_reservas_aulas.getSelectionModel().getSelectedItem().getFecha())
                 && campo_seleccionar_horario_aula.getText().equals(tabla_mostrar_reservas_aulas.getSelectionModel().getSelectedItem().getHorario())
                 && campo_cedula_reserva_aula.getText().equals(tabla_mostrar_reservas_aulas.getSelectionModel().getSelectedItem().getCedula())) {
@@ -811,6 +883,12 @@ public class DashboardAdministradorController extends credenciales_avisos implem
                             .append("horario", campo_seleccionar_horario_aula.getText())
                             .append("cedula", campo_cedula_reserva_aula.getText());
                     UpdateResult result = collection.replaceOne(query, doc);
+
+                    enviarCorreo.enviarCorreo(obtenerCorreoUsuario(campo_cedula_reserva_aula.getText()), "Actualización de Reserva de Aula", "Estimado/a " + nombreApellidoUsuario + ",\n\n" +
+                            "Su reserva del aula " + campo_seleccionar_aula.getText() + " para el día " + campo_seleccionar_fecha_aula.getValue().toString() + " en el horario de " + campo_seleccionar_horario_aula.getText() + " ha sido actualizada exitosamente.\n\n" +
+                            "Saludos cordiales,\n" +
+                            "Gestión de Aulas y Laboratorios ESFOT");
+
                     if (result.getMatchedCount() > 0) {
                         mostrarConfirmacion("Reserva actualizada", "La reserva ha sido actualizada exitosamente");
                     } else {
@@ -827,8 +905,20 @@ public class DashboardAdministradorController extends credenciales_avisos implem
 
 
     public void botonEliminarReservaAula() {
+
+        reserva_aulas reservaSeleccionada = tabla_mostrar_reservas_aulas.getSelectionModel().getSelectedItem();
+
+        boolean reservaEncontrada = listaReservasAulas.stream().anyMatch(reserva -> reserva.getAula().equals(campo_seleccionar_aula.getText())
+                && reserva.getFecha().equals(campo_seleccionar_fecha_aula.getValue().toString())
+                && reserva.getHorario().equals(campo_seleccionar_horario_aula.getText())
+                && reserva.getCedula().equals(campo_cedula_reserva_aula.getText()));
+
         if (campo_seleccionar_aula.getText().isEmpty() || campo_seleccionar_fecha_aula.getValue() == null || campo_seleccionar_horario_aula.getText().isEmpty() || campo_cedula_reserva_aula.getText().isEmpty()) {
             mostrarAlerta("Error al eliminar reserva", "Por favor, seleccione una reserva a eliminar.");
+
+        } else if (reservaSeleccionada == null && !reservaEncontrada) {
+            mostrarAlerta("Error al eliminar reserva", "No se encontró la reserva para eliminar");
+
         } else {
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setTitle("Eliminar Reserva");
@@ -852,6 +942,12 @@ public class DashboardAdministradorController extends credenciales_avisos implem
                             .append("horario", campo_seleccionar_horario_aula.getText())
                             .append("cedula", campo_cedula_reserva_aula.getText());
                     collection.deleteOne(query);
+
+                    enviarCorreo.enviarCorreo(obtenerCorreoUsuario(campo_cedula_reserva_aula.getText()), "Eliminación de Reserva de Aula", "Estimado/a " + nombreApellidoUsuario + ",\n\n" +
+                            "Su reserva del aula " + campo_seleccionar_aula.getText() + " para el día " + campo_seleccionar_fecha_aula.getValue().toString() + " en el horario de " + campo_seleccionar_horario_aula.getText() + " ha sido eliminada exitosamente.\n\n" +
+                            "Saludos cordiales,\n" +
+                            "Gestión de Aulas y Laboratorios ESFOT");
+
                     mostrarConfirmacion("Reserva eliminada", "La reserva ha sido eliminada exitosamente");
                     botonLimpiarCamposReservaAula();
                     cargarReservasAulas();
@@ -972,6 +1068,12 @@ public class DashboardAdministradorController extends credenciales_avisos implem
                             .append("horario", campo_seleccionar_horario_laboratorio.getText())
                             .append("cedula", campo_cedula_reserva_laboratorio.getText());
                     collection.insertOne(doc);
+
+                    enviarCorreo.enviarCorreo(obtenerCorreoUsuario(campo_cedula_reserva_laboratorio.getText()), "Reserva de Laboratorio", "Estimado/a " + nombreApellidoUsuario + ",\n\n" +
+                            "Su reserva del laboratorio " + campo_seleccionar_laboratorios.getText() + " para el día " + campo_seleccionar_fecha_laboratorios.getValue().toString() + " en el horario de " + campo_seleccionar_horario_laboratorio.getText() + " ha sido realizada exitosamente.\n\n" +
+                            "Saludos cordiales,\n" +
+                            "Gestión de Aulas y Laboratorios ESFOT");
+
                     mostrarConfirmacion("Reserva realizada", "La reserva ha sido realizada exitosamente");
                     botonLimpiarCamposReservaLaboratorio();
                     cargarReservasLaboratorios();
@@ -986,6 +1088,13 @@ public class DashboardAdministradorController extends credenciales_avisos implem
     public void botonActualizarReservaLaboratorio() {
         nombreApellidoUsuario = obtenerNombreApellidoUsuario(campo_cedula_reserva_laboratorio.getText());
 
+        reserva_laboratorios reservaSeleccionada = tabla_reservas_laboratorios_mostrar.getSelectionModel().getSelectedItem();
+
+        boolean reservaEncontrada = listaReservasLaboratorios.stream().anyMatch(reserva -> reserva.getLaboratorio().equals(campo_seleccionar_laboratorios.getText())
+                && reserva.getFecha().equals(campo_seleccionar_fecha_laboratorios.getValue().toString())
+                && reserva.getHorario().equals(campo_seleccionar_horario_laboratorio.getText())
+                && reserva.getCedula().equals(campo_cedula_reserva_laboratorio.getText()));
+
         if (campo_seleccionar_laboratorios.getText().isEmpty() || campo_seleccionar_fecha_laboratorios.getValue() == null || campo_seleccionar_horario_laboratorio.getText().isEmpty() || campo_cedula_reserva_laboratorio.getText().isEmpty()) {
             mostrarAlerta("Error al actualizar reserva", "Por favor, llene todos los campos");
 
@@ -997,6 +1106,9 @@ public class DashboardAdministradorController extends credenciales_avisos implem
 
         } else if (!usuarioExiste(campo_cedula_reserva_laboratorio.getText())) {
             mostrarAlerta("Error al realizar reserva", "El usuario no existe en el sistema");
+
+        } else if (reservaSeleccionada == null && !reservaEncontrada) {
+            mostrarAlerta("Error al actualizar reserva", "No se encontró la reserva para actualizar");
 
         } else if (comprobarReservaAulas(campo_cedula_reserva_laboratorio.getText(), campo_seleccionar_fecha_laboratorios.getValue().toString(), campo_seleccionar_horario_laboratorio.getText())) {
             mostrarAlerta("Error al realizar reserva", "El usuario " + nombreApellidoUsuario + " ya ha reservado un aula en la misma fecha y horario");
@@ -1041,6 +1153,12 @@ public class DashboardAdministradorController extends credenciales_avisos implem
                             .append("horario", campo_seleccionar_horario_laboratorio.getText())
                             .append("cedula", campo_cedula_reserva_laboratorio.getText());
                     UpdateResult result = collection.replaceOne(query, doc);
+
+                    enviarCorreo.enviarCorreo(obtenerCorreoUsuario(campo_cedula_reserva_laboratorio.getText()), "Actualización de Reserva de Laboratorio", "Estimado/a " + nombreApellidoUsuario + ",\n\n" +
+                            "Su reserva del laboratorio " + campo_seleccionar_laboratorios.getText() + " para el día " + campo_seleccionar_fecha_laboratorios.getValue().toString() + " en el horario de " + campo_seleccionar_horario_laboratorio.getText() + " ha sido actualizada exitosamente.\n\n" +
+                            "Saludos cordiales,\n" +
+                            "Gestión de Aulas y Laboratorios ESFOT");
+
                     if (result.getMatchedCount() > 0) {
                         mostrarConfirmacion("Reserva actualizada", "La reserva ha sido actualizada exitosamente");
                     } else {
@@ -1057,8 +1175,20 @@ public class DashboardAdministradorController extends credenciales_avisos implem
 
     // Eliminar reserva de laboratorios
     public void botonEliminarReservaLaboratorio() {
+
+        reserva_laboratorios reservaSeleccionada = tabla_reservas_laboratorios_mostrar.getSelectionModel().getSelectedItem();
+
+        boolean reservaEncontrada = listaReservasLaboratorios.stream().anyMatch(reserva -> reserva.getLaboratorio().equals(campo_seleccionar_laboratorios.getText())
+                && reserva.getFecha().equals(campo_seleccionar_fecha_laboratorios.getValue().toString())
+                && reserva.getHorario().equals(campo_seleccionar_horario_laboratorio.getText())
+                && reserva.getCedula().equals(campo_cedula_reserva_laboratorio.getText()));
+
         if (campo_seleccionar_laboratorios.getText().isEmpty() || campo_seleccionar_fecha_laboratorios.getValue() == null || campo_seleccionar_horario_laboratorio.getText().isEmpty() || campo_cedula_reserva_laboratorio.getText().isEmpty()) {
             mostrarAlerta("Error al eliminar reserva", "Por favor, seleccione una reserva a eliminar.");
+
+        } else if (reservaSeleccionada == null && !reservaEncontrada) {
+            mostrarAlerta("Error al eliminar reserva", "No se encontró la reserva para eliminar");
+
         } else {
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setTitle("Eliminar Reserva");
@@ -1082,6 +1212,12 @@ public class DashboardAdministradorController extends credenciales_avisos implem
                             .append("horario", campo_seleccionar_horario_laboratorio.getText())
                             .append("cedula", campo_cedula_reserva_laboratorio.getText());
                     collection.deleteOne(query);
+
+                    enviarCorreo.enviarCorreo(obtenerCorreoUsuario(campo_cedula_reserva_laboratorio.getText()), "Eliminación de Reserva de Laboratorio", "Estimado/a " + nombreApellidoUsuario + ",\n\n" +
+                            "Su reserva del laboratorio " + campo_seleccionar_laboratorios.getText() + " para el día " + campo_seleccionar_fecha_laboratorios.getValue().toString() + " en el horario de " + campo_seleccionar_horario_laboratorio.getText() + " ha sido eliminada exitosamente.\n\n" +
+                            "Saludos cordiales,\n" +
+                            "Gestión de Aulas y Laboratorios ESFOT");
+
                     mostrarConfirmacion("Reserva eliminada", "La reserva ha sido eliminada exitosamente");
                     botonLimpiarCamposReservaLaboratorio();
                     cargarReservasLaboratorios();
