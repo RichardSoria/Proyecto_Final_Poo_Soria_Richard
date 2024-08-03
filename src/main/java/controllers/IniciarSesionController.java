@@ -27,7 +27,7 @@ public class IniciarSesionController extends credenciales_avisos {
     @FXML
     private Button boton_iniciar_sesion;
 
-    String nombreUsuarioConectado;
+
 
     @FXML
     public void initialize() {
@@ -43,6 +43,11 @@ public class IniciarSesionController extends credenciales_avisos {
         String contrasena = campo_contrasena.getText();
         String hashedContrasena = generateHash(contrasena);
         String tipo_rol = menu_tipo_rol.getText();
+
+        String nombreUsuarioConectado = "";
+        String correoUsuarioConectado = "";
+        String cedulaUsuarioConectado = "";
+        String tipoRolUsuarioConectado = "";
 
         if (correo.isEmpty() || contrasena.isEmpty() || tipo_rol.equals("Tipo de Usuario")) {
             mostrarAlerta("Error al iniciar sesión", "Por favor, llene todos los campos y seleccione un tipo de usuario");
@@ -83,6 +88,15 @@ public class IniciarSesionController extends credenciales_avisos {
                 nombreUsuarioConectado = documents.first().get("nombre") + " " + documents.first().get("apellido");
                 usuarioConectado.getInstance().setNombreUsuarioConectado(nombreUsuarioConectado);
 
+                correoUsuarioConectado = documents.first().get("correo").toString();
+                usuarioConectado.getInstance().setCorreoUsuarioConectado(correoUsuarioConectado);
+
+                cedulaUsuarioConectado = documents.first().get("cedula").toString();
+                usuarioConectado.getInstance().setCedulaUsuarioConectado(cedulaUsuarioConectado);
+
+                tipoRolUsuarioConectado = tipo_rol;
+                usuarioConectado.getInstance().setTipoRolUsuarioConectado(tipoRolUsuarioConectado);
+
                 if (tipo_rol.equals("Administrador")) {
                     boton_iniciar_sesion.getScene().getWindow().hide();
                     Parent root = FXMLLoader.load(getClass().getResource("/views/dashboard_administrador_view.fxml"));
@@ -90,6 +104,28 @@ public class IniciarSesionController extends credenciales_avisos {
                     Scene scene = new Scene(root);
                     root.requestFocus();
                     stage.setTitle("Dashboard Administrador");
+                    stage.getIcons().add(new Image(Main.class.getResourceAsStream("/images/esfot_buho.png")));
+                    stage.setResizable(false);
+                    stage.setScene(scene);
+                    stage.show();
+                } else if (tipo_rol.equals("Profesor")) {
+                    boton_iniciar_sesion.getScene().getWindow().hide();
+                    Parent root = FXMLLoader.load(getClass().getResource("/views/dashboard_profesor_view.fxml"));
+                    Stage stage = new Stage();
+                    Scene scene = new Scene(root);
+                    root.requestFocus();
+                    stage.setTitle("Dashboard Profesor");
+                    stage.getIcons().add(new Image(Main.class.getResourceAsStream("/images/esfot_buho.png")));
+                    stage.setResizable(false);
+                    stage.setScene(scene);
+                    stage.show();
+                } else if (tipo_rol.equals("Estudiante")) {
+                    boton_iniciar_sesion.getScene().getWindow().hide();
+                    Parent root = FXMLLoader.load(getClass().getResource("/views/dashboard_estudiante_view.fxml"));
+                    Stage stage = new Stage();
+                    Scene scene = new Scene(root);
+                    root.requestFocus();
+                    stage.setTitle("Dashboard Estudiante");
                     stage.getIcons().add(new Image(Main.class.getResourceAsStream("/images/esfot_buho.png")));
                     stage.setResizable(false);
                     stage.setScene(scene);

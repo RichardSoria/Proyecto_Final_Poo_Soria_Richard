@@ -12,7 +12,7 @@ import java.io.IOException;
 public class Main extends Application {
     @Override
     public void start(Stage stage) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("/views/dashboard_administrador_view.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("/views/dashboard_profesor_view.fxml"));
         Parent root = fxmlLoader.load();
         Scene scene = new Scene(root);
         root.requestFocus();

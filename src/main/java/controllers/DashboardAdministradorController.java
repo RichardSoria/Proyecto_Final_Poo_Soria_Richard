@@ -227,8 +227,6 @@ public class DashboardAdministradorController extends credenciales_avisos implem
     private FilteredList<reserva_laboratorios> filteredDataReservasLaboratorios;
 
     String nombreApellidoUsuario;
-    String correoUsuario;
-
     enviar_correo enviarCorreo = new enviar_correo();
 
     @Override
@@ -449,6 +447,12 @@ public class DashboardAdministradorController extends credenciales_avisos implem
         } else if (usuarioExisteCollection(campo_cedula.getText(), campo_rol_usuario.getText())) {
             mostrarAlerta("Error al añadir usuario", "El usuario ya se encuentra registrado");
 
+        } else if (usuarioExisteCollectionCorreo(campo_correo.getText(), campo_rol_usuario.getText())) {
+            mostrarAlerta("Error al añadir usuario", "El correo ya se encuentra registrado");
+
+        } else if (usuarioExisteCollectionNumeroCelular(campo_numero_celular.getText(), campo_rol_usuario.getText())) {
+            mostrarAlerta("Error al añadir usuario", "El número de celular ya se encuentra registrado");
+
         } else {
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setTitle("Añadir Usuario");
@@ -514,37 +518,25 @@ public class DashboardAdministradorController extends credenciales_avisos implem
 
     public void botonAcualizarUsuario() {
         if (campo_cedula.getText().isEmpty() || campo_nombre.getText().isEmpty() || campo_apellido.getText().isEmpty() || campo_correo.getText().isEmpty() || campo_contrasena.getText().isEmpty() || campo_numero_celular.getText().isEmpty() || campo_rol_usuario.getText().equals("Tipo de Usuario")) {
-            mostrarAlerta("Error al añadir usuario", "Por favor, llene todos los campos y seleccione un tipo de usuario");
+            mostrarAlerta("Error al actualizar usuario", "Por favor, llene todos los campos y seleccione un tipo de usuario");
 
         } else if (!validarCorreo(campo_correo.getText())) {
-            mostrarAlerta("Error al añadir usuario", "Correo Institucional inválido");
+            mostrarAlerta("Error al actualizar usuario", "Correo Institucional inválido");
 
         } else if (campo_cedula.getText().length() != 10) {
-            mostrarAlerta("Error al añadir usuario", "Cédula inválida");
+            mostrarAlerta("Error al actualizar usuario", "Cédula inválida");
 
         } else if (!campoNumerico(campo_cedula.getText())) {
-            mostrarAlerta("Error al añadir usuario", "Cédula inválida");
+            mostrarAlerta("Error al actualizar usuario", "Cédula inválida");
 
         } else if (campo_numero_celular.getText().length() != 10) {
-            mostrarAlerta("Error al añadir usuario", "Número de celular inválido");
+            mostrarAlerta("Error al actualizar usuario", "Número de celular inválido");
 
         } else if (!campoNumerico(campo_numero_celular.getText())) {
-            mostrarAlerta("Error al añadir usuario", "Número de celular inválido");
+            mostrarAlerta("Error al actualizar usuario", "Número de celular inválido");
 
         } else if (campo_contrasena.getText().length() < 8) {
-            mostrarAlerta("Error al añadir usuario", "La contraseña debe tener al menos 8 caracteres");
-
-        } else if (!usuarioExisteCollection(campo_cedula.getText(), campo_rol_usuario.getText())) {
-            mostrarAlerta("Error al actualizar usuario", "No se ha actualizado los datos del usaurio ya que no se encuentra registrado");
-
-        } else if (campo_cedula.getText().equals(tabla_mostrar_usuarios.getSelectionModel().getSelectedItem().getCedula())
-                && campo_nombre.getText().equals(tabla_mostrar_usuarios.getSelectionModel().getSelectedItem().getNombre())
-                && campo_apellido.getText().equals(tabla_mostrar_usuarios.getSelectionModel().getSelectedItem().getApellido())
-                && campo_correo.getText().equals(tabla_mostrar_usuarios.getSelectionModel().getSelectedItem().getCorreo())
-                && campo_contrasena.getText().equals(tabla_mostrar_usuarios.getSelectionModel().getSelectedItem().getContrasena())
-                && campo_numero_celular.getText().equals(tabla_mostrar_usuarios.getSelectionModel().getSelectedItem().getNumero_celular())
-                && campo_rol_usuario.getText().equals(tabla_mostrar_usuarios.getSelectionModel().getSelectedItem().getTipo_rol())) {
-            mostrarAlerta("Error al actualizar usuario", "No se ha realizado ningún cambio en los campos");
+            mostrarAlerta("Error al actualizar usuario", "La contraseña debe tener al menos 8 caracteres");
 
         } else {
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
@@ -579,7 +571,7 @@ public class DashboardAdministradorController extends credenciales_avisos implem
                     MongoDatabase database = mongoClient.getDatabase(databaseName);
                     MongoCollection<Document> collection = database.getCollection(collectionName);
 
-                    Document query = new Document("cedula", campo_cedula.getText());
+                    Document query = new Document("cedula", tabla_mostrar_usuarios.getSelectionModel().getSelectedItem().getCedula());
                     Document doc = new Document("cedula", campo_cedula.getText())
                             .append("nombre", campo_nombre.getText())
                             .append("apellido", campo_apellido.getText())
@@ -587,22 +579,27 @@ public class DashboardAdministradorController extends credenciales_avisos implem
                             .append("contrasena", generateHash(campo_contrasena.getText()))
                             .append("numero_celular", campo_numero_celular.getText())
                             .append("tipo_rol", campo_rol_usuario.getText());
-                    collection.replaceOne(query, doc);
 
-                    enviarCorreo.enviarCorreo(campo_correo.getText(), "Actualización de Usuario", "Estimado/a " + campo_nombre.getText() + " " + campo_apellido.getText() + ",\n\n" +
-                            "Su usuario ha sido actualizado exitosamente en el sistema de Gestión de Aulas y Laboratorios de la ESFOT.\n\n" +
-                            "Cédula: " + campo_cedula.getText() + "\n" +
-                            "Nombre: " + campo_nombre.getText() + " " + campo_apellido.getText() + "\n" +
-                            "Correo: " + campo_correo.getText() + "\n" +
-                            "Contraseña: " + campo_contrasena.getText() + "\n" +
-                            "Número de Celular: " + campo_numero_celular.getText() + "\n" +
-                            "Tipo de Usuario: " + campo_rol_usuario.getText() + "\n\n" +
-                            "Saludos cordiales,\n" +
-                            "Gestión de Aulas y Laboratorios ESFOT");
+                    UpdateResult result = collection.replaceOne(query, doc);
 
-                    mostrarConfirmacion("Usuario actualizado", "El usuario ha sido actualizado exitosamente");
-                    botonLimpiarCamposUsuarios();
-                    cargarUsuarios();
+                    if (result.getMatchedCount() > 0) {
+                        enviarCorreo.enviarCorreo(campo_correo.getText(), "Actualización de Usuario", "Estimado/a " + campo_nombre.getText() + " " + campo_apellido.getText() + ",\n\n" +
+                                "Su usuario ha sido actualizado exitosamente en el sistema de Gestión de Aulas y Laboratorios de la ESFOT.\n\n" +
+                                "Cédula: " + campo_cedula.getText() + "\n" +
+                                "Nombre: " + campo_nombre.getText() + " " + campo_apellido.getText() + "\n" +
+                                "Correo: " + campo_correo.getText() + "\n" +
+                                "Contraseña: " + campo_contrasena.getText() + "\n" +
+                                "Número de Celular: " + campo_numero_celular.getText() + "\n" +
+                                "Tipo de Usuario: " + campo_rol_usuario.getText() + "\n\n" +
+                                "Saludos cordiales,\n" +
+                                "Gestión de Aulas y Laboratorios ESFOT");
+
+                        mostrarConfirmacion("Usuario actualizado", "El usuario ha sido actualizado exitosamente");
+                        botonLimpiarCamposUsuarios();
+                        cargarUsuarios();
+                    } else {
+                        mostrarAlerta("Error al actualizar usuario", "No se encontró el usuario a actualizar");
+                    }
                 } catch (Exception e) {
                     mostrarAlerta("Error al actualizar usuario", "Error al actualizar usuario en la base de datos: " + e.getMessage());
                 }
@@ -634,6 +631,12 @@ public class DashboardAdministradorController extends credenciales_avisos implem
 
         } else if (!usuarioExisteCollection(campo_cedula.getText(), campo_rol_usuario.getText())) {
             mostrarAlerta("Error al eliminar usuario", "No se ha eliminado el usuario ya que no se encuentra registrado");
+
+        } else if (!usuarioExisteCollectionCorreo(campo_correo.getText(), campo_rol_usuario.getText())) {
+            mostrarAlerta("Error al eliminar usuario", "El correo no se encuentra registrado");
+
+        } else if (!usuarioExisteCollectionNumeroCelular(campo_numero_celular.getText(), campo_rol_usuario.getText())) {
+            mostrarAlerta("Error al eliminar usuario", "El número de celular no se encuentra registrado");
 
         } else {
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
@@ -750,7 +753,7 @@ public class DashboardAdministradorController extends credenciales_avisos implem
     }
 
     public void botonRealizarReservaAula() {
-        nombreApellidoUsuario = obtenerNombreApellidoUsuario(campo_cedula_reserva_aula.getText());
+        nombreApellidoUsuario = mostrarNombreApellidoUsuario(campo_cedula_reserva_aula.getText());
 
         if (campo_seleccionar_aula.getText().isEmpty() || campo_seleccionar_fecha_aula.getValue() == null || campo_seleccionar_horario_aula.getText().isEmpty() || campo_cedula_reserva_aula.getText().isEmpty()) {
             mostrarAlerta("Error al realizar reserva", "Por favor, llene todos los campos");
@@ -815,7 +818,7 @@ public class DashboardAdministradorController extends credenciales_avisos implem
 
 
     public void botonActualizarReservaAula() {
-        nombreApellidoUsuario = obtenerNombreApellidoUsuario(campo_cedula_reserva_aula.getText());
+        nombreApellidoUsuario = mostrarNombreApellidoUsuario(campo_cedula_reserva_aula.getText());
 
         reserva_aulas reservaSeleccionada = tabla_mostrar_reservas_aulas.getSelectionModel().getSelectedItem();
 
@@ -884,12 +887,11 @@ public class DashboardAdministradorController extends credenciales_avisos implem
                             .append("cedula", campo_cedula_reserva_aula.getText());
                     UpdateResult result = collection.replaceOne(query, doc);
 
-                    enviarCorreo.enviarCorreo(obtenerCorreoUsuario(campo_cedula_reserva_aula.getText()), "Actualización de Reserva de Aula", "Estimado/a " + nombreApellidoUsuario + ",\n\n" +
-                            "Su reserva del aula " + campo_seleccionar_aula.getText() + " para el día " + campo_seleccionar_fecha_aula.getValue().toString() + " en el horario de " + campo_seleccionar_horario_aula.getText() + " ha sido actualizada exitosamente.\n\n" +
-                            "Saludos cordiales,\n" +
-                            "Gestión de Aulas y Laboratorios ESFOT");
-
                     if (result.getMatchedCount() > 0) {
+                        enviarCorreo.enviarCorreo(obtenerCorreoUsuario(campo_cedula_reserva_aula.getText()), "Actualización de Reserva de Aula", "Estimado/a " + nombreApellidoUsuario + ",\n\n" +
+                                "Su reserva del aula " + campo_seleccionar_aula.getText() + " para el día " + campo_seleccionar_fecha_aula.getValue().toString() + " en el horario de " + campo_seleccionar_horario_aula.getText() + " ha sido actualizada exitosamente.\n\n" +
+                                "Saludos cordiales,\n" +
+                                "Gestión de Aulas y Laboratorios ESFOT");
                         mostrarConfirmacion("Reserva actualizada", "La reserva ha sido actualizada exitosamente");
                     } else {
                         mostrarAlerta("Error al actualizar reserva", "No se encontró la reserva para actualizar");
@@ -1019,7 +1021,7 @@ public class DashboardAdministradorController extends credenciales_avisos implem
 
     // Realizar reserva de laboratorios
     public void botonRealizarReservaLaboratorio() {
-        nombreApellidoUsuario = obtenerNombreApellidoUsuario(campo_cedula_reserva_laboratorio.getText());
+        nombreApellidoUsuario = mostrarNombreApellidoUsuario(campo_cedula_reserva_laboratorio.getText());
 
         if (campo_seleccionar_laboratorios.getText().isEmpty() || campo_seleccionar_fecha_laboratorios.getValue() == null || campo_seleccionar_horario_laboratorio.getText().isEmpty() || campo_cedula_reserva_laboratorio.getText().isEmpty()) {
             mostrarAlerta("Error al realizar reserva", "Por favor, llene todos los campos");
@@ -1086,7 +1088,7 @@ public class DashboardAdministradorController extends credenciales_avisos implem
 
     // Actualizar reserva de laboratorios
     public void botonActualizarReservaLaboratorio() {
-        nombreApellidoUsuario = obtenerNombreApellidoUsuario(campo_cedula_reserva_laboratorio.getText());
+        nombreApellidoUsuario = mostrarNombreApellidoUsuario(campo_cedula_reserva_laboratorio.getText());
 
         reserva_laboratorios reservaSeleccionada = tabla_reservas_laboratorios_mostrar.getSelectionModel().getSelectedItem();
 
@@ -1154,12 +1156,11 @@ public class DashboardAdministradorController extends credenciales_avisos implem
                             .append("cedula", campo_cedula_reserva_laboratorio.getText());
                     UpdateResult result = collection.replaceOne(query, doc);
 
-                    enviarCorreo.enviarCorreo(obtenerCorreoUsuario(campo_cedula_reserva_laboratorio.getText()), "Actualización de Reserva de Laboratorio", "Estimado/a " + nombreApellidoUsuario + ",\n\n" +
-                            "Su reserva del laboratorio " + campo_seleccionar_laboratorios.getText() + " para el día " + campo_seleccionar_fecha_laboratorios.getValue().toString() + " en el horario de " + campo_seleccionar_horario_laboratorio.getText() + " ha sido actualizada exitosamente.\n\n" +
-                            "Saludos cordiales,\n" +
-                            "Gestión de Aulas y Laboratorios ESFOT");
-
                     if (result.getMatchedCount() > 0) {
+                        enviarCorreo.enviarCorreo(obtenerCorreoUsuario(campo_cedula_reserva_laboratorio.getText()), "Actualización de Reserva de Laboratorio", "Estimado/a " + nombreApellidoUsuario + ",\n\n" +
+                                "Su reserva del laboratorio " + campo_seleccionar_laboratorios.getText() + " para el día " + campo_seleccionar_fecha_laboratorios.getValue().toString() + " en el horario de " + campo_seleccionar_horario_laboratorio.getText() + " ha sido actualizada exitosamente.\n\n" +
+                                "Saludos cordiales,\n" +
+                                "Gestión de Aulas y Laboratorios ESFOT");
                         mostrarConfirmacion("Reserva actualizada", "La reserva ha sido actualizada exitosamente");
                     } else {
                         mostrarAlerta("Error al actualizar reserva", "No se encontró la reserva para actualizar");

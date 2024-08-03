@@ -112,10 +112,102 @@ public class credenciales_avisos {
         return false;
     }
 
-    public String obtenerNombreApellidoUsuario(String cedula) {
+    public boolean usuarioExisteCollectionCorreo(String correo, String campo_tipo_rol) {
         String mongoUri = "mongodb+srv://Richard-Soria:RichardSoria%401899@aulas-laboratorios-esfo.o7jjnmz.mongodb.net/";
         String databaseName = "Base_Datos_Aulas_Laboratorios_ESFOT";
-        String NombreApellidoUsuario = null;
+        String collectionName = "";
+
+        switch (campo_tipo_rol) {
+            case "Administrador":
+                collectionName = "Administradores";
+                break;
+            case "Profesor":
+                collectionName = "Profesores";
+                break;
+            case "Estudiante":
+                collectionName = "Estudiantes";
+                break;
+        }
+
+        try (MongoClient mongoClient = MongoClients.create(mongoUri)) {
+            MongoDatabase database = mongoClient.getDatabase(databaseName);
+            MongoCollection<Document> collection = database.getCollection(collectionName);
+            Document query = new Document("correo", correo);
+            if (collection.find(query).first() != null) {
+                return true;
+            }
+        } catch (Exception e) {
+            mostrarAlerta("Error al buscar usuario", "Error al consultar la base de datos: " + e.getMessage());
+        }
+        return false;
+    }
+
+    public boolean usuarioExisteCollectionNumeroCelular(String numeroCelular, String campo_tipo_rol) {
+        String mongoUri = "mongodb+srv://Richard-Soria:RichardSoria%401899@aulas-laboratorios-esfo.o7jjnmz.mongodb.net/";
+        String databaseName = "Base_Datos_Aulas_Laboratorios_ESFOT";
+        String collectionName = "";
+
+        switch (campo_tipo_rol) {
+            case "Administrador":
+                collectionName = "Administradores";
+                break;
+            case "Profesor":
+                collectionName = "Profesores";
+                break;
+            case "Estudiante":
+                collectionName = "Estudiantes";
+                break;
+        }
+
+        try (MongoClient mongoClient = MongoClients.create(mongoUri)) {
+            MongoDatabase database = mongoClient.getDatabase(databaseName);
+            MongoCollection<Document> collection = database.getCollection(collectionName);
+            Document query = new Document("numero_celular", numeroCelular);
+            if (collection.find(query).first() != null) {
+                return true;
+            }
+        } catch (Exception e) {
+            mostrarAlerta("Error al buscar usuario", "Error al consultar la base de datos: " + e.getMessage());
+        }
+        return false;
+    }
+
+    public String obtenerNombreApellidoUsuario(String cedula, String campo_tipo_rol) {
+        String mongoUri = "mongodb+srv://Richard-Soria:RichardSoria%401899@aulas-laboratorios-esfo.o7jjnmz.mongodb.net/";
+        String databaseName = "Base_Datos_Aulas_Laboratorios_ESFOT";
+        String collectionName = "";
+        String nombreApellidoUsuario = null;
+
+        switch (campo_tipo_rol) {
+            case "Administrador":
+                collectionName = "Administradores";
+                break;
+            case "Profesor":
+                collectionName = "Profesores";
+                break;
+            case "Estudiante":
+                collectionName = "Estudiantes";
+                break;
+        }
+
+        try (MongoClient mongoClient = MongoClients.create(mongoUri)) {
+            MongoDatabase database = mongoClient.getDatabase(databaseName);
+            MongoCollection<Document> collection = database.getCollection(collectionName);
+            Document query = new Document("cedula", cedula);
+            Document usuario = collection.find(query).first();
+            if (usuario != null) {
+                nombreApellidoUsuario = usuario.getString("nombre") + " " + usuario.getString("apellido");
+            }
+        } catch (Exception e) {
+            mostrarAlerta("Error al buscar usuario", "Error al consultar la base de datos: " + e.getMessage());
+        }
+        return nombreApellidoUsuario;
+    }
+
+    public String mostrarNombreApellidoUsuario(String cedula) {
+        String mongoUri = "mongodb+srv://Richard-Soria:RichardSoria%401899@aulas-laboratorios-esfo.o7jjnmz.mongodb.net/";
+        String databaseName = "Base_Datos_Aulas_Laboratorios_ESFOT";
+        String nombreApellidoUsuario = null;
 
         try (MongoClient mongoClient = MongoClients.create(mongoUri)) {
             MongoDatabase database = mongoClient.getDatabase(databaseName);
@@ -127,16 +219,17 @@ public class credenciales_avisos {
                 Document query = new Document("cedula", cedula);
                 Document usuario = collection.find(query).first();
                 if (usuario != null) {
-                    NombreApellidoUsuario = usuario.getString("nombre") + " " + usuario.getString("apellido");
+                    nombreApellidoUsuario = usuario.getString("nombre") + " " + usuario.getString("apellido");
                     break;
                 }
             }
         } catch (Exception e) {
             mostrarAlerta("Error al buscar usuario", "Error al consultar la base de datos: " + e.getMessage());
         }
-
-        return NombreApellidoUsuario;
+        return nombreApellidoUsuario;
     }
+
+
 
     public String obtenerCorreoUsuario(String cedula){
         String mongoUri = "mongodb+srv://Richard-Soria:RichardSoria%401899@aulas-laboratorios-esfo.o7jjnmz.mongodb.net/";

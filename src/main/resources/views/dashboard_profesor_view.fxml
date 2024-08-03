@@ -1,0 +1,533 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.MenuButton?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.shape.Line?>
+<?import javafx.scene.text.Font?>
+
+<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.DashboardProfesorController">
+   <children>
+      <BorderPane prefHeight="600.0" prefWidth="200.0">
+         <left>
+            <AnchorPane prefHeight="600.0" prefWidth="200.0" style="-fx-background-color: #0e4c71;" BorderPane.alignment="CENTER">
+               <children>
+                  <ImageView fitHeight="150.0" fitWidth="100.0" layoutX="50.0" layoutY="20.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/Administrator-PNG-Image.png" />
+                     </image>
+                  </ImageView>
+                  <Label alignment="CENTER" contentDisplay="CENTER" layoutY="125.0" prefHeight="20.0" prefWidth="200.0" text="PROFESOR" textFill="#e72f2b">
+                     <font>
+                        <Font name="Verdana Bold" size="20.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="nombre_usuario_conectado" alignment="CENTER" layoutX="12.5" layoutY="150.0" prefHeight="25.0" prefWidth="175.0" style="-fx-text-fill: white;">
+                     <font>
+                        <Font name="Verdana Italic" size="20.0" />
+                     </font>
+                  </Label>
+                  <Line endX="105.0" endY="0.5999908447265625" layoutX="85.0" layoutY="180.0" startX="-75.0" startY="0.5999908447265625" />
+                  <Button fx:id="boton_modulos" layoutX="15.0" layoutY="190.0" mnemonicParsing="false" onAction="#botonModulos" prefWidth="170.0" style="-fx-background-radius: 0; -fx-border-radius: 0; -fx-text-fill: white;" styleClass="bg_red" stylesheets="@../styles/style_dashboard.css" text="Módulos">
+                     <font>
+                        <Font name="Verdana Bold" size="20.0" />
+                     </font>
+                     <graphic>
+                        <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../images/klipartz.com.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                  </Button>
+                  <Button fx:id="boton_aulas" layoutX="15.0" layoutY="240.0" mnemonicParsing="false" onAction="#botonAulas" prefWidth="170.0" style="-fx-background-radius: 0; -fx-border-radius: 0; -fx-text-fill: white;" styleClass="bg_red" stylesheets="@../styles/style_dashboard.css" text="Aulas">
+                     <font>
+                        <Font name="Verdana Bold" size="20.0" />
+                     </font>
+                     <graphic>
+                        <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../images/aulas.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                  </Button>
+                  <Button fx:id="boton_labs" layoutX="15.0" layoutY="290.0" mnemonicParsing="false" onAction="#botonLabs" prefWidth="170.0" style="-fx-background-radius: 0; -fx-border-radius: 0; -fx-text-fill: white;" styleClass="bg_red" stylesheets="@../styles/style_dashboard.css" text="LABS">
+                     <font>
+                        <Font name="Verdana Bold" size="20.0" />
+                     </font>
+                     <graphic>
+                        <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../images/pngwing.com.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                  </Button>
+                  <Button fx:id="boton_salir_sesion" alignment="CENTER" layoutX="45.0" layoutY="540.0" mnemonicParsing="false" onAction="#salirInicioSesion" prefHeight="40.0" prefWidth="110.0" styleClass="button_color" stylesheets="@../styles/style_dashboard.css" text="Salir">
+                     <font>
+                        <Font name="Verdana Bold" size="20.0" />
+                     </font>
+                     <graphic>
+                        <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../images/clipart879792.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                     <cursor>
+                        <Cursor fx:constant="HAND" />
+                     </cursor>
+                  </Button>
+               </children>
+            </AnchorPane>
+         </left>
+         <center>
+            <AnchorPane prefHeight="200.0" prefWidth="200.0" styleClass="bg_red" stylesheets="@../styles/style_dashboard.css" BorderPane.alignment="CENTER">
+               <children>
+                  <AnchorPane fx:id="dashboard_modulos" layoutX="10.0" layoutY="10.0" prefHeight="580.0" prefWidth="780.0" stylesheets="@../styles/style_dashboard.css">
+                     <styleClass>
+                        <String fx:value="bg_white" />
+                        <String fx:value="border" />
+                     </styleClass>
+                     <children>
+                        <GridPane hgap="20.0" layoutX="20.0" layoutY="150.0" prefHeight="250.0" prefWidth="740.0" vgap="20.0">
+                           <columnConstraints>
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                           </rowConstraints>
+                           <children>
+                              <Button id="boton_usuario" fx:id="modulo_boton_aulas" alignment="CENTER" contentDisplay="TOP" mnemonicParsing="false" onAction="#moduloBotonAulas" prefHeight="250.0" prefWidth="250.0" style="-fx-text-fill: black;" styleClass="button_color_yellow" stylesheets="@../styles/style_dashboard.css" text="Aulas" GridPane.halignment="RIGHT" GridPane.valignment="CENTER">
+                                 <font>
+                                    <Font name="Verdana Bold" size="38.0" />
+                                 </font>
+                                 <graphic>
+                                    <ImageView fitHeight="150.0" fitWidth="250.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../images/aulas.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                                 <cursor>
+                                    <Cursor fx:constant="HAND" />
+                                 </cursor>
+                              </Button>
+                              <Button id="boton_usuario" fx:id="modulo_boton_labs" alignment="CENTER" contentDisplay="TOP" mnemonicParsing="false" onAction="#moduloBotonLabs" prefHeight="250.0" prefWidth="250.0" style="-fx-text-fill: black;" styleClass="button_color_yellow" stylesheets="@../styles/style_dashboard.css" text="LABS" GridPane.columnIndex="1" GridPane.valignment="CENTER">
+                                 <font>
+                                    <Font name="Verdana Bold" size="38.0" />
+                                 </font>
+                                 <graphic>
+                                    <ImageView fitHeight="150.0" fitWidth="250.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../images/pngwing.com.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                                 <cursor>
+                                    <Cursor fx:constant="HAND" />
+                                 </cursor>
+                              </Button>
+                           </children>
+                        </GridPane>
+                        <Label alignment="CENTER" contentDisplay="CENTER" layoutX="105.0" layoutY="20.0" prefHeight="130.0" prefWidth="570.0" text="MÓDULOS" textAlignment="CENTER" textFill="#e72f2b">
+                           <font>
+                              <Font name="Verdana Bold" size="100.0" />
+                           </font>
+                        </Label>
+                        <ImageView fitHeight="150.0" fitWidth="300.0" layoutX="240.0" layoutY="420.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../images/logo_esfot_buho.png" />
+                           </image>
+                        </ImageView>
+                     </children>
+                  </AnchorPane>
+                  <AnchorPane fx:id="dashboard_reservar_aulas" layoutX="10.0" layoutY="10.0" prefHeight="580.0" prefWidth="780.0" stylesheets="@../styles/style_dashboard.css" visible="false">
+                     <styleClass>
+                        <String fx:value="bg_white" />
+                        <String fx:value="border" />
+                     </styleClass>
+                     <children>
+                        <AnchorPane layoutX="20.0" layoutY="20.0" prefHeight="540.0" prefWidth="250.0" stylesheets="@../styles/botones_reservas.css">
+                           <styleClass>
+                              <String fx:value="bg_white" />
+                              <String fx:value="border" />
+                           </styleClass>
+                           <children>
+                              <Label alignment="CENTER" layoutX="37.0" layoutY="20.0" prefHeight="30.0" prefWidth="175.0" style="-fx-text-fill: #e72f2b;" text="Reservar Aulas">
+                                 <font>
+                                    <Font name="Verdana Bold Italic" size="20.0" />
+                                 </font>
+                              </Label>
+                              <Label alignment="CENTER" layoutX="37.0" layoutY="87.0" prefHeight="30.0" prefWidth="175.0" text="Seleccione el aula:">
+                                 <font>
+                                    <Font name="Verdana Bold" size="16.0" />
+                                 </font>
+                              </Label>
+                              <MenuButton fx:id="campo_seleccionar_aula" alignment="CENTER" contentDisplay="CENTER" layoutX="37.0" layoutY="118.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="175.0" stylesheets="@../styles/botones_reservas.css" text="Aulas" textAlignment="CENTER" textFill="WHITE">
+                                 <items>
+                                    <MenuItem mnemonicParsing="false" text="ESFOT-LTI AULA" />
+                                    <MenuItem mnemonicParsing="false" text="ESFOT-7 AULA" />
+                                    <MenuItem mnemonicParsing="false" text="ESFOT-8 AULA" />
+                                    <MenuItem mnemonicParsing="false" text="ESFOT-9 AULA" />
+                                    <MenuItem mnemonicParsing="false" text="ESFOT-13 AULA" />
+                                    <MenuItem mnemonicParsing="false" text="ESFOT-17 AULA" />
+                                    <MenuItem mnemonicParsing="false" text="ESFOT-18 AULA" />
+                                    <MenuItem mnemonicParsing="false" text="ESFOT-19 AULA" />
+                                    <MenuItem mnemonicParsing="false" text="ESFOT-21 AULA" />
+                                    <MenuItem mnemonicParsing="false" text="ESFOT-24 AULA" />
+                                    <MenuItem mnemonicParsing="false" text="ESFOT-25 AULA" />
+                                    <MenuItem mnemonicParsing="false" text="ESFOT-26 AULA" />
+                                    <MenuItem mnemonicParsing="false" text="ESFOT-27 AULA" />
+                                    <MenuItem mnemonicParsing="false" text="ESFOT-28 AULA" />
+                                    <MenuItem mnemonicParsing="false" text="ESFOT-29 AULA" />
+                                    <MenuItem mnemonicParsing="false" text="ESFOT-30 AULA" />
+                                    <MenuItem mnemonicParsing="false" text="ESFOT-32 AULA" />
+                                    <MenuItem mnemonicParsing="false" text="ESFOT-33 AULA" />
+                                    <MenuItem mnemonicParsing="false" text="ESFOT-34 AULA" />
+                                    <MenuItem mnemonicParsing="false" text="ESFOT-35 AULA" />
+                                    <MenuItem mnemonicParsing="false" text="ESFOT-36 AULA" />
+                                    <MenuItem mnemonicParsing="false" text="ESFOT-37 AULA" />
+                                    <MenuItem mnemonicParsing="false" text="ESFOT-38 AULA" />
+                                    <MenuItem mnemonicParsing="false" text="ESFOT-39 AULA" />
+                                 </items>
+                                 <font>
+                                    <Font name="Verdana Bold" size="15.0" />
+                                 </font>
+                              </MenuButton>
+                              <Label alignment="CENTER" layoutX="35.0" layoutY="150.0" prefHeight="30.0" prefWidth="180.0" text="Seleccione la fecha:">
+                                 <font>
+                                    <Font name="Verdana Bold" size="16.0" />
+                                 </font>
+                              </Label>
+                              <DatePicker fx:id="campo_seleccionar_fecha_aula" layoutX="37.0" layoutY="181.0" prefHeight="30.0" prefWidth="175.0" promptText="AA-MM-DD" style="-fx-border-color: black; -fx-border-radius: 4;" stylesheets="@../styles/botones_reservas.css">
+                                 <cursor>
+                                    <Cursor fx:constant="HAND" />
+                                 </cursor></DatePicker>
+                              <Label alignment="CENTER" layoutX="25.0" layoutY="214.0" prefHeight="30.0" prefWidth="200.0" text="Seleccione el horario:">
+                                 <font>
+                                    <Font name="Verdana Bold" size="16.0" />
+                                 </font>
+                              </Label>
+                              <MenuButton fx:id="campo_seleccionar_horario_aula" alignment="CENTER" contentDisplay="CENTER" layoutX="37.0" layoutY="245.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="175.0" stylesheets="@../styles/botones_reservas.css" text="Horarios" textFill="WHITE">
+                                 <items>
+                                    <MenuItem mnemonicParsing="false" text="07:00 - 09:00" />
+                                    <MenuItem mnemonicParsing="false" text="09:00 - 11:00" />
+                                    <MenuItem mnemonicParsing="false" text="11:00 - 13:00" />
+                                    <MenuItem mnemonicParsing="false" text="14:00 - 16:00" />
+                                    <MenuItem mnemonicParsing="false" text="16:00 - 18:00" />
+                                    <MenuItem mnemonicParsing="false" text="18:00 - 20:00" />
+                                 </items>
+                                 <font>
+                                    <Font name="Verdana Bold" size="15.0" />
+                                 </font>
+                              </MenuButton>
+                              <TextField fx:id="campo_cedula_reserva_aula" alignment="CENTER" layoutX="37.0" layoutY="298.0" prefHeight="30.0" prefWidth="175.0" promptText="Cédula del usuario" style="-fx-border-color: black; -fx-border-radius: 4;" visible="false">
+                                 <font>
+                                    <Font name="Verdana" size="15.0" />
+                                 </font>
+                              </TextField>
+                              <Button fx:id="boton_reservar_aula" layoutX="37.0" layoutY="345.0" mnemonicParsing="false" onAction="#botonRealizarReservaAula" prefHeight="30.0" prefWidth="175.0" style="-fx-background-radius: 5; -fx-border-radius: 5; -fx-text-fill: white;" styleClass="bg_blue" stylesheets="@../styles/style_dashboard.css" text="Reservar">
+                                 <font>
+                                    <Font name="Verdana Bold" size="20.0" />
+                                 </font>
+                                 <graphic>
+                                    <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../images/calendar_1100753.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                                 <cursor>
+                                    <Cursor fx:constant="HAND" />
+                                 </cursor>
+                              </Button>
+                              <Button fx:id="boton_actualizar_aula" layoutX="37.0" layoutY="390.0" mnemonicParsing="false" onAction="#botonActualizarReservaAula" prefHeight="30.0" prefWidth="175.0" style="-fx-background-radius: 5; -fx-border-radius: 5; -fx-text-fill: white;" styleClass="bg_blue" stylesheets="@../styles/style_dashboard.css" text="Actualizar">
+                                 <font>
+                                    <Font name="Verdana Bold" size="20.0" />
+                                 </font>
+                                 <graphic>
+                                    <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../images/curved-arrow-png-1-1.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                                 <cursor>
+                                    <Cursor fx:constant="HAND" />
+                                 </cursor>
+                              </Button>
+                              <Button fx:id="boton_eliminar_aula" layoutX="37.0" layoutY="435.0" mnemonicParsing="false" onAction="#botonEliminarReservaAula" prefHeight="30.0" prefWidth="175.0" style="-fx-background-radius: 5; -fx-border-radius: 5; -fx-text-fill: white;" styleClass="bg_blue" stylesheets="@../styles/style_dashboard.css" text="Eliminar">
+                                 <font>
+                                    <Font name="Verdana Bold" size="20.0" />
+                                 </font>
+                                 <graphic>
+                                    <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../images/PngItem_314793.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                                 <cursor>
+                                    <Cursor fx:constant="HAND" />
+                                 </cursor>
+                              </Button>
+                              <TextField fx:id="campo_buscar_aula" layoutX="37.0" layoutY="55.0" onKeyReleased="#buscarAula" prefHeight="30.0" prefWidth="175.0" promptText="Buscar aula" style="-fx-border-color: black; -fx-border-radius: 4; -fx-alignment: CENTER_LEFT;">
+                                 <font>
+                                    <Font name="Verdana" size="15.0" />
+                                 </font>
+                              </TextField>
+                              <Button layoutX="176.0" layoutY="55.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="31.0" styleClass="bg_red" stylesheets="@../styles/style_dashboard.css">
+                                 <graphic>
+                                    <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../images/search.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                                 <cursor>
+                                    <Cursor fx:constant="DEFAULT" />
+                                 </cursor>
+                              </Button>
+                              <Button fx:id="boton_limpiar_campo_reserva_aula" layoutX="37.0" layoutY="480.0" mnemonicParsing="false" onAction="#botonLimpiarCamposReservaAula" prefHeight="30.0" prefWidth="175.0" style="-fx-background-radius: 5; -fx-border-radius: 5; -fx-text-fill: white;" styleClass="bg_blue" stylesheets="@../styles/style_dashboard.css" text="Limpiar">
+                                 <font>
+                                    <Font name="Verdana Bold" size="20.0" />
+                                 </font>
+                                 <graphic>
+                                    <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../images/ClipartKey_489544.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                                 <cursor>
+                                    <Cursor fx:constant="HAND" />
+                                 </cursor>
+                              </Button>
+                           </children>
+                        </AnchorPane>
+                        <AnchorPane layoutX="290.0" layoutY="20.0" prefHeight="540.0" prefWidth="470.0">
+                           <styleClass>
+                              <String fx:value="bg_white" />
+                              <String fx:value="border" />
+                           </styleClass>
+                           <children>
+                              <TableView fx:id="tabla_mostrar_reservas_aulas" onMouseClicked="#seleccionarAulaReserva" prefHeight="540.0" prefWidth="470.0" stylesheets="@../styles/style_dashboard.css">
+                                 <columns>
+                                    <TableColumn fx:id="columna_aula" prefWidth="120.0" text="Aula" />
+                                    <TableColumn fx:id="columna_aula_fecha" prefWidth="100.0" text="Fecha" />
+                                    <TableColumn fx:id="columna_aula_horario" prefWidth="130.0" text="Horario" />
+                                    <TableColumn fx:id="columna_aula_cedula" prefWidth="115.0" text="Cédula" />
+                                 </columns>
+                                 <columnResizePolicy>
+                                    <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                                 </columnResizePolicy>
+                              </TableView>
+                           </children>
+                        </AnchorPane>
+                     </children>
+                  </AnchorPane>
+                  <AnchorPane fx:id="dashboard_reservar_laboratorios" layoutX="10.0" layoutY="10.0" prefHeight="580.0" prefWidth="780.0" stylesheets="@../styles/style_dashboard.css" visible="false">
+                     <styleClass>
+                        <String fx:value="bg_white" />
+                        <String fx:value="border" />
+                     </styleClass>
+                     <children>
+                        <AnchorPane layoutX="20.0" layoutY="20.0" prefHeight="540.0" prefWidth="250.0" stylesheets="@../styles/botones_reservas.css">
+                           <styleClass>
+                              <String fx:value="bg_white" />
+                              <String fx:value="border" />
+                           </styleClass>
+                           <children>
+                              <Label alignment="CENTER" layoutX="37.0" layoutY="20.0" prefHeight="30.0" prefWidth="175.0" style="-fx-text-fill: #e72f2b;" text="Reservar LABS">
+                                 <font>
+                                    <Font name="Verdana Bold Italic" size="20.0" />
+                                 </font>
+                              </Label>
+                              <Label alignment="CENTER" layoutX="37.0" layoutY="87.0" prefHeight="30.0" prefWidth="175.0" text="Seleccione el LAB:">
+                                 <font>
+                                    <Font name="Verdana Bold" size="16.0" />
+                                 </font>
+                              </Label>
+                              <MenuButton fx:id="campo_seleccionar_laboratorios" alignment="CENTER" layoutX="37.0" layoutY="118.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="175.0" stylesheets="@../styles/botones_reservas.css" text="Laboratorios" textFill="WHITE">
+                                 <items>
+                                    <MenuItem mnemonicParsing="false" text="ELECTRO DE POTENCIA" />
+                                    <MenuItem mnemonicParsing="false" text="MICROPRO Y REDES INF" />
+                                    <MenuItem mnemonicParsing="false" text="MICROPROCESADORES" />
+                                    <MenuItem mnemonicParsing="false" text="TICS 22A" />
+                                    <MenuItem mnemonicParsing="false" text="TICS 22B" />
+                                    <MenuItem mnemonicParsing="false" text="TICS 14" />
+                                    <MenuItem mnemonicParsing="false" text="TICS 15" />
+                                    <MenuItem mnemonicParsing="false" text="TICS 16" />
+                                    <MenuItem mnemonicParsing="false" text="SISTEMAS DIGITALES" />
+                                    <MenuItem mnemonicParsing="false" text="MARCELO DAVILA" />
+                                 </items>
+                                 <font>
+                                    <Font name="Verdana Bold" size="15.0" />
+                                 </font>
+                              </MenuButton>
+                              <Label alignment="CENTER" layoutX="35.0" layoutY="150.0" prefHeight="30.0" prefWidth="180.0" text="Seleccione la fecha:">
+                                 <font>
+                                    <Font name="Verdana Bold" size="16.0" />
+                                 </font>
+                              </Label>
+                              <DatePicker fx:id="campo_seleccionar_fecha_laboratorios" layoutX="37.0" layoutY="181.0" prefHeight="30.0" prefWidth="175.0" promptText="AA-MM-DD" style="-fx-border-color: black; -fx-border-radius: 4;" stylesheets="@../styles/botones_reservas.css">
+                                 <cursor>
+                                    <Cursor fx:constant="HAND" />
+                                 </cursor>
+                              </DatePicker>
+                              <Label alignment="CENTER" layoutX="25.0" layoutY="214.0" prefHeight="30.0" prefWidth="200.0" text="Seleccione el horario:">
+                                 <font>
+                                    <Font name="Verdana Bold" size="16.0" />
+                                 </font>
+                              </Label>
+                              <MenuButton fx:id="campo_seleccionar_horario_laboratorio" alignment="CENTER" contentDisplay="CENTER" layoutX="37.0" layoutY="245.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="175.0" stylesheets="@../styles/botones_reservas.css" text="Horarios" textFill="WHITE">
+                                 <items>
+                                    <MenuItem mnemonicParsing="false" text="07:00 - 09:00" />
+                                    <MenuItem mnemonicParsing="false" text="09:00 - 11:00" />
+                                    <MenuItem mnemonicParsing="false" text="11:00 - 13:00" />
+                                    <MenuItem mnemonicParsing="false" text="14:00 - 16:00" />
+                                    <MenuItem mnemonicParsing="false" text="16:00 - 18:00" />
+                                    <MenuItem mnemonicParsing="false" text="18:00 - 20:00" />
+                                 </items>
+                                 <font>
+                                    <Font name="Verdana Bold" size="15.0" />
+                                 </font>
+                              </MenuButton>
+                              <TextField fx:id="campo_buscar_laboratorio" layoutX="37.0" layoutY="55.0" onKeyReleased="#buscarLaboratorio" prefHeight="30.0" prefWidth="175.0" promptText="Buscar Lab" style="-fx-border-color: black; -fx-border-radius: 4; -fx-alignment: CENTER_LEFT;">
+                                 <font>
+                                    <Font name="Verdana" size="15.0" />
+                                 </font>
+                              </TextField>
+                              <Button layoutX="176.0" layoutY="55.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="31.0" styleClass="bg_red" stylesheets="@../styles/style_dashboard.css">
+                                 <graphic>
+                                    <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../images/search.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                                 <cursor>
+                                    <Cursor fx:constant="DEFAULT" />
+                                 </cursor>
+                              </Button>
+                              <Button fx:id="boton_reservar_laboratorio" layoutX="37.0" layoutY="345.0" mnemonicParsing="false" onAction="#botonRealizarReservaLaboratorio" prefHeight="30.0" prefWidth="175.0" style="-fx-background-radius: 5; -fx-border-radius: 5; -fx-text-fill: white;" styleClass="bg_blue" stylesheets="@../styles/style_dashboard.css" text="Reservar">
+                                 <font>
+                                    <Font name="Verdana Bold" size="20.0" />
+                                 </font>
+                                 <graphic>
+                                    <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../images/calendar_1100753.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                                 <cursor>
+                                    <Cursor fx:constant="HAND" />
+                                 </cursor>
+                              </Button>
+                              <Button fx:id="boton_actualizar_laboratorio" layoutX="37.0" layoutY="390.0" mnemonicParsing="false" onAction="#botonActualizarReservaLaboratorio" prefHeight="30.0" prefWidth="175.0" style="-fx-background-radius: 5; -fx-border-radius: 5; -fx-text-fill: white;" styleClass="bg_blue" stylesheets="@../styles/style_dashboard.css" text="Actualizar">
+                                 <font>
+                                    <Font name="Verdana Bold" size="20.0" />
+                                 </font>
+                                 <graphic>
+                                    <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../images/curved-arrow-png-1-1.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                                 <cursor>
+                                    <Cursor fx:constant="HAND" />
+                                 </cursor>
+                              </Button>
+                              <Button fx:id="boton_eliminar_laboratorio" layoutX="37.0" layoutY="435.0" mnemonicParsing="false" onAction="#botonEliminarReservaLaboratorio" prefHeight="30.0" prefWidth="175.0" style="-fx-background-radius: 5; -fx-border-radius: 5; -fx-text-fill: white;" styleClass="bg_blue" stylesheets="@../styles/style_dashboard.css" text="Eliminar">
+                                 <font>
+                                    <Font name="Verdana Bold" size="20.0" />
+                                 </font>
+                                 <graphic>
+                                    <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../images/PngItem_314793.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                                 <cursor>
+                                    <Cursor fx:constant="HAND" />
+                                 </cursor>
+                              </Button>
+                              <Button fx:id="boton_limpiar_campos_laboratorio" layoutX="37.0" layoutY="480.0" mnemonicParsing="false" onAction="#botonLimpiarCamposReservaLaboratorio" prefHeight="30.0" prefWidth="175.0" style="-fx-background-radius: 5; -fx-border-radius: 5; -fx-text-fill: white;" styleClass="bg_blue" stylesheets="@../styles/style_dashboard.css" text="Limpiar">
+                                 <font>
+                                    <Font name="Verdana Bold" size="20.0" />
+                                 </font>
+                                 <graphic>
+                                    <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                          <Image url="@../images/ClipartKey_489544.png" />
+                                       </image>
+                                    </ImageView>
+                                 </graphic>
+                                 <cursor>
+                                    <Cursor fx:constant="HAND" />
+                                 </cursor>
+                              </Button>
+                              <TextField fx:id="campo_cedula_reserva_laboratorio" alignment="CENTER" layoutX="37.0" layoutY="298.0" prefHeight="30.0" prefWidth="175.0" promptText="Cédula del usuario" style="-fx-border-color: black; -fx-border-radius: 4;" visible="false">
+                                 <font>
+                                    <Font name="Verdana" size="15.0" />
+                                 </font>
+                              </TextField>
+                           </children>
+                        </AnchorPane>
+                        <AnchorPane layoutX="290.0" layoutY="20.0" prefHeight="540.0" prefWidth="470.0">
+                           <styleClass>
+                              <String fx:value="bg_white" />
+                              <String fx:value="border" />
+                           </styleClass>
+                           <children>
+                              <TableView fx:id="tabla_reservas_laboratorios_mostrar" onMouseClicked="#seleccionarLaboratorioReserva" prefHeight="540.0" prefWidth="470.0" stylesheets="@../styles/style_dashboard.css">
+                                 <columns>
+                                    <TableColumn fx:id="columna_laboratorio" prefWidth="120.0" text="Laboratorios" />
+                                    <TableColumn fx:id="columna_laboratorio_fecha" prefWidth="115.0" text="Fecha" />
+                                    <TableColumn fx:id="columna_laboratorio_horario" prefWidth="115.0" text="Horario" />
+                                    <TableColumn fx:id="columna_laboratorio_cedula" prefWidth="115.0" text="Cédula" />
+                                 </columns>
+                                 <columnResizePolicy>
+                                    <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                                 </columnResizePolicy>
+                              </TableView>
+                           </children>
+                        </AnchorPane>
+                     </children>
+                  </AnchorPane>
+               </children>
+            </AnchorPane>
+         </center>
+      </BorderPane>
+   </children>
+</StackPane>
