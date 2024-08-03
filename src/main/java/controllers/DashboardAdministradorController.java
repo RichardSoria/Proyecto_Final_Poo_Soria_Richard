@@ -24,6 +24,8 @@ import org.bson.Document;
 
 import java.io.IOException;
 import java.net.URL;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -318,6 +320,34 @@ public class DashboardAdministradorController extends credenciales_avisos implem
             item.setOnAction(e -> campo_seleccionar_horario_laboratorio.setText(item.getText()));
         }
 
+        // Configurar DatePicker para reservas de aulas
+        configurarDatePicker(campo_seleccionar_fecha_aula);
+
+        // Configurar DatePicker para reservas de laboratorios
+        configurarDatePicker(campo_seleccionar_fecha_laboratorios);
+
+    }
+
+    private void configurarDatePicker(DatePicker datePicker) {
+        datePicker.setDayCellFactory(picker -> new DateCell() {
+            @Override
+            public void updateItem(LocalDate date, boolean empty) {
+                super.updateItem(date, empty);
+
+                // Deshabilitar fechas anteriores a hoy
+                if (date.isBefore(LocalDate.now())) {
+                    setDisable(true);
+                    setStyle("-fx-background-color: #ffc0cb;"); // Color de fondo para fechas deshabilitadas
+                }
+
+                // Deshabilitar sábados y domingos
+                DayOfWeek day = date.getDayOfWeek();
+                if (day == DayOfWeek.SATURDAY || day == DayOfWeek.SUNDAY) {
+                    setDisable(true);
+                    setStyle("-fx-background-color: #ffc0cb;"); // Color de fondo para fines de semana
+                }
+            }
+        });
     }
 
     public void buscarUsuario() {
