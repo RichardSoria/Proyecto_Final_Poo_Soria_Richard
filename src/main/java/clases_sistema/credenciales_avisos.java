@@ -6,7 +6,6 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import controllers.IniciarSesionController;
 import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
@@ -14,7 +13,6 @@ import org.bson.Document;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.Optional;
 
 public class credenciales_avisos {
 
@@ -84,6 +82,71 @@ public class credenciales_avisos {
         return false;
     }
 
+    public String obtenerNombreApellidoUsuario(String cedula) {
+        String mongoUri = "mongodb+srv://Richard-Soria:RichardSoria%401899@aulas-laboratorios-esfo.o7jjnmz.mongodb.net/";
+        String databaseName = "Base_Datos_Aulas_Laboratorios_ESFOT";
+        String NombreApellidoUsuario = null;
+
+        try (MongoClient mongoClient = MongoClients.create(mongoUri)) {
+            MongoDatabase database = mongoClient.getDatabase(databaseName);
+
+            String[] collections = {"Administradores", "Profesores", "Estudiantes"};
+
+            for (String collectionName : collections) {
+                MongoCollection<Document> collection = database.getCollection(collectionName);
+                Document query = new Document("cedula", cedula);
+                Document usuario = collection.find(query).first();
+                if (usuario != null) {
+                    NombreApellidoUsuario = usuario.getString("nombre") + " " + usuario.getString("apellido");
+                    break;
+                }
+            }
+        } catch (Exception e) {
+            mostrarAlerta("Error al buscar usuario", "Error al consultar la base de datos: " + e.getMessage());
+        }
+
+        return NombreApellidoUsuario;
+    }
+
+    public Boolean comprobarReservaLaboratorios(String cedula, String fecha, String horario) {
+        String mongoUri = "mongodb+srv://Richard-Soria:RichardSoria%401899@aulas-laboratorios-esfo.o7jjnmz.mongodb.net/";
+        String databaseName = "Base_Datos_Aulas_Laboratorios_ESFOT";
+        Boolean reservaExiste = false;
+
+        try (MongoClient mongoClient = MongoClients.create(mongoUri)) {
+            MongoDatabase database = mongoClient.getDatabase(databaseName);
+            MongoCollection<Document> collection = database.getCollection("Reservas_Laboratorios");
+            Document query = new Document("cedula", cedula)
+                    .append("fecha", fecha)
+                    .append("horario", horario);
+            if (collection.find(query).first() != null) {
+                reservaExiste = true;
+            }
+        } catch (Exception e) {
+            mostrarAlerta("Error al buscar reserva", "Error al consultar la base de datos: " + e.getMessage());
+        }
+        return reservaExiste;
+    }
+
+    public Boolean comprobarReservaAulas(String cedula, String fecha, String horario) {
+        String mongoUri = "mongodb+srv://Richard-Soria:RichardSoria%401899@aulas-laboratorios-esfo.o7jjnmz.mongodb.net/";
+        String databaseName = "Base_Datos_Aulas_Laboratorios_ESFOT";
+        Boolean reservaExiste = false;
+
+        try (MongoClient mongoClient = MongoClients.create(mongoUri)) {
+            MongoDatabase database = mongoClient.getDatabase(databaseName);
+            MongoCollection<Document> collection = database.getCollection("Reservas_Aulas");
+            Document query = new Document("cedula", cedula)
+                    .append("fecha", fecha)
+                    .append("horario", horario);
+            if (collection.find(query).first() != null) {
+                reservaExiste = true;
+            }
+        } catch (Exception e) {
+            mostrarAlerta("Error al buscar reserva", "Error al consultar la base de datos: " + e.getMessage());
+        }
+        return reservaExiste;
+    }
 
     public void mostrarConfirmacion(String titulo, String mensaje) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);

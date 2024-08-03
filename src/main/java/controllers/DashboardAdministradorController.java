@@ -224,6 +224,8 @@ public class DashboardAdministradorController extends credenciales_avisos implem
     private ObservableList<reserva_laboratorios> listaReservasLaboratorios;
     private FilteredList<reserva_laboratorios> filteredDataReservasLaboratorios;
 
+    String nombreApellidoUsuario;
+
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -393,6 +395,7 @@ public class DashboardAdministradorController extends credenciales_avisos implem
     public void botonAnadirUsuario() {
         if (campo_cedula.getText().isEmpty() || campo_nombre.getText().isEmpty() || campo_apellido.getText().isEmpty() || campo_correo.getText().isEmpty() || campo_contrasena.getText().isEmpty() || campo_numero_celular.getText().isEmpty() || campo_rol_usuario.getText().equals("Tipo de Usuario")) {
             mostrarAlerta("Error al añadir usuario", "Por favor, llene todos los campos y seleccione un tipo de usuario");
+
         } else if (!validarCorreo(campo_correo.getText())) {
             mostrarAlerta("Error al añadir usuario", "Correo Institucional inválido");
 
@@ -411,13 +414,7 @@ public class DashboardAdministradorController extends credenciales_avisos implem
         } else if (campo_contrasena.getText().length() < 8) {
             mostrarAlerta("Error al añadir usuario", "La contraseña debe tener al menos 8 caracteres");
 
-        } else if (campo_cedula.getText().equals(tabla_mostrar_usuarios.getSelectionModel().getSelectedItem().getCedula())
-                && campo_nombre.getText().equals(tabla_mostrar_usuarios.getSelectionModel().getSelectedItem().getNombre())
-                && campo_apellido.getText().equals(tabla_mostrar_usuarios.getSelectionModel().getSelectedItem().getApellido())
-                && campo_correo.getText().equals(tabla_mostrar_usuarios.getSelectionModel().getSelectedItem().getCorreo())
-                && campo_contrasena.getText().equals(tabla_mostrar_usuarios.getSelectionModel().getSelectedItem().getContrasena())
-                && campo_numero_celular.getText().equals(tabla_mostrar_usuarios.getSelectionModel().getSelectedItem().getNumero_celular())
-                && campo_rol_usuario.getText().equals(tabla_mostrar_usuarios.getSelectionModel().getSelectedItem().getTipo_rol())) {
+        } else if (usuarioExiste(campo_cedula.getText())) {
             mostrarAlerta("Error al añadir usuario", "El usuario ya se encuentra registrado");
 
         } else {
@@ -465,7 +462,7 @@ public class DashboardAdministradorController extends credenciales_avisos implem
                     botonLimpiarCamposUsuarios();
                     cargarUsuarios();
                 } catch (Exception e) {
-                    mostrarAlerta("Error al añadir usuario", "Error al añadir usuario a la base de datos: el usuario ya se encuentra registrado.");
+                    mostrarAlerta("Error al añadir usuario", "Error al añadir usuario en la base de datos: " + e.getMessage());
                 }
             }
         }
@@ -491,6 +488,9 @@ public class DashboardAdministradorController extends credenciales_avisos implem
 
         } else if (campo_contrasena.getText().length() < 8) {
             mostrarAlerta("Error al añadir usuario", "La contraseña debe tener al menos 8 caracteres");
+
+        } else if (usuarioExiste(campo_cedula.getText())) {
+            mostrarAlerta("Error al añadir usuario", "El usuario ya se encuentra registrado");
 
         } else if (campo_cedula.getText().equals(tabla_mostrar_usuarios.getSelectionModel().getSelectedItem().getCedula())
                 && campo_nombre.getText().equals(tabla_mostrar_usuarios.getSelectionModel().getSelectedItem().getNombre())
@@ -665,16 +665,30 @@ public class DashboardAdministradorController extends credenciales_avisos implem
     }
 
     public void botonRealizarReservaAula() {
+        nombreApellidoUsuario = obtenerNombreApellidoUsuario(campo_cedula_reserva_aula.getText());
+
         if (campo_seleccionar_aula.getText().isEmpty() || campo_seleccionar_fecha_aula.getValue() == null || campo_seleccionar_horario_aula.getText().isEmpty() || campo_cedula_reserva_aula.getText().isEmpty()) {
             mostrarAlerta("Error al realizar reserva", "Por favor, llene todos los campos");
+
         } else if (campo_cedula_reserva_aula.getText().length() != 10) {
             mostrarAlerta("Error al realizar reserva", "Cédula inválida");
+
         } else if (!campoNumerico(campo_cedula_reserva_aula.getText())) {
             mostrarAlerta("Error al realizar reserva", "Cédula inválida");
+
         } else if (!usuarioExiste(campo_cedula_reserva_aula.getText())) {
             mostrarAlerta("Error al realizar reserva", "El usuario no existe en el sistema");
+
         } else if (listaReservasAulas.stream().anyMatch(reserva -> reserva.getAula().equals(campo_seleccionar_aula.getText()) && reserva.getFecha().equals(campo_seleccionar_fecha_aula.getValue().toString()) && reserva.getHorario().equals(campo_seleccionar_horario_aula.getText()))) {
-            mostrarAlerta("Error al realizar reserva", "Un usuario ya ha reservado esta aula en la misma fecha y horario");
+            mostrarAlerta("Error al realizar reserva", "El usuario " + nombreApellidoUsuario + " ya ha reservado esta aula en la misma fecha y horario");
+
+        } else if (listaReservasAulas.stream().anyMatch(reserva -> reserva.getCedula().equals(campo_cedula_reserva_aula.getText()) && reserva.getFecha().equals(campo_seleccionar_fecha_aula.getValue().toString()) && reserva.getHorario().equals(campo_seleccionar_horario_aula.getText()))) {
+
+            mostrarAlerta("Error al realizar reserva", "El usuario " + nombreApellidoUsuario + " ya ha reservado un aula en la misma fecha y horario");
+
+        } else if (comprobarReservaLaboratorios(campo_cedula_reserva_aula.getText(), campo_seleccionar_fecha_aula.getValue().toString(), campo_seleccionar_horario_aula.getText())) {
+            mostrarAlerta("Error al realizar reserva", "El usuario " + nombreApellidoUsuario + " ya ha reservado un laboratorio en la misma fecha y horario");
+
         } else {
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setTitle("Realizar Reserva");
@@ -710,19 +724,35 @@ public class DashboardAdministradorController extends credenciales_avisos implem
 
 
     public void botonActualizarReservaAula() {
+        nombreApellidoUsuario = obtenerNombreApellidoUsuario(campo_cedula_reserva_aula.getText());
+
         if (campo_seleccionar_aula.getText().isEmpty() || campo_seleccionar_fecha_aula.getValue() == null || campo_seleccionar_horario_aula.getText().isEmpty() || campo_cedula_reserva_aula.getText().isEmpty()) {
             mostrarAlerta("Error al actualizar reserva", "Por favor, llene todos los campos");
+
         } else if (campo_cedula_reserva_aula.getText().length() != 10) {
             mostrarAlerta("Error al actualizar reserva", "Cédula inválida");
+
         } else if (!campoNumerico(campo_cedula_reserva_aula.getText())) {
             mostrarAlerta("Error al actualizar reserva", "Cédula inválida");
+
         } else if (!usuarioExiste(campo_cedula_reserva_aula.getText())) {
             mostrarAlerta("Error al realizar reserva", "El usuario no existe en el sistema");
+
+        } else if (listaReservasAulas.stream().anyMatch(reserva -> reserva.getAula().equals(campo_seleccionar_aula.getText()) && reserva.getFecha().equals(campo_seleccionar_fecha_aula.getValue().toString()) && reserva.getHorario().equals(campo_seleccionar_horario_aula.getText())) && !campo_seleccionar_aula.getText().equals(tabla_mostrar_reservas_aulas.getSelectionModel().getSelectedItem().getAula())) {
+            mostrarAlerta("Error al realizar reserva", "El usuario " + nombreApellidoUsuario + " ya ha reservado esta aula en la misma fecha y horario");
+
+        } else if (listaReservasAulas.stream().anyMatch(reserva -> reserva.getCedula().equals(campo_cedula_reserva_aula.getText()) && reserva.getFecha().equals(campo_seleccionar_fecha_aula.getValue().toString()) && reserva.getHorario().equals(campo_seleccionar_horario_aula.getText()) && !campo_cedula_reserva_aula.getText().equals(tabla_mostrar_reservas_aulas.getSelectionModel().getSelectedItem().getCedula()))) {
+            mostrarAlerta("Error al realizar reserva", "El usuario " + nombreApellidoUsuario + " ya ha reservado un aula en la misma fecha y horario");
+
+        } else if (comprobarReservaLaboratorios(campo_cedula_reserva_aula.getText(), campo_seleccionar_fecha_aula.getValue().toString(), campo_seleccionar_horario_aula.getText())) {
+            mostrarAlerta("Error al realizar reserva", "El usuario " + nombreApellidoUsuario + " ya ha reservado un laboratorio en la misma fecha y horario");
+
         } else if (campo_seleccionar_aula.getText().equals(tabla_mostrar_reservas_aulas.getSelectionModel().getSelectedItem().getAula())
                 && campo_seleccionar_fecha_aula.getValue().toString().equals(tabla_mostrar_reservas_aulas.getSelectionModel().getSelectedItem().getFecha())
                 && campo_seleccionar_horario_aula.getText().equals(tabla_mostrar_reservas_aulas.getSelectionModel().getSelectedItem().getHorario())
                 && campo_cedula_reserva_aula.getText().equals(tabla_mostrar_reservas_aulas.getSelectionModel().getSelectedItem().getCedula())) {
             mostrarAlerta("Error al actualizar reserva", "No se ha realizado ningún cambio en los campos");
+
         } else {
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setTitle("Actualizar Reserva");
@@ -863,16 +893,31 @@ public class DashboardAdministradorController extends credenciales_avisos implem
 
     // Realizar reserva de laboratorios
     public void botonRealizarReservaLaboratorio() {
+        nombreApellidoUsuario = obtenerNombreApellidoUsuario(campo_cedula_reserva_laboratorio.getText());
+
         if (campo_seleccionar_laboratorios.getText().isEmpty() || campo_seleccionar_fecha_laboratorios.getValue() == null || campo_seleccionar_horario_laboratorio.getText().isEmpty() || campo_cedula_reserva_laboratorio.getText().isEmpty()) {
             mostrarAlerta("Error al realizar reserva", "Por favor, llene todos los campos");
+
         } else if (campo_cedula_reserva_laboratorio.getText().length() != 10) {
             mostrarAlerta("Error al realizar reserva", "Cédula inválida");
+
         } else if (!campoNumerico(campo_cedula_reserva_laboratorio.getText())) {
             mostrarAlerta("Error al realizar reserva", "Cédula inválida");
+
         } else if (!usuarioExiste(campo_cedula_reserva_laboratorio.getText())) {
             mostrarAlerta("Error al realizar reserva", "El usuario no existe en el sistema");
+
+        } else if (comprobarReservaAulas(campo_cedula_reserva_laboratorio.getText(), campo_seleccionar_fecha_laboratorios.getValue().toString(), campo_seleccionar_horario_laboratorio.getText())) {
+            mostrarAlerta("Error al realizar reserva", "El usuario " + nombreApellidoUsuario + " ya ha reservado un aula en la misma fecha y horario");
+
         } else if (listaReservasLaboratorios.stream().anyMatch(reserva -> reserva.getLaboratorio().equals(campo_seleccionar_laboratorios.getText()) && reserva.getFecha().equals(campo_seleccionar_fecha_laboratorios.getValue().toString()) && reserva.getHorario().equals(campo_seleccionar_horario_laboratorio.getText()))) {
-            mostrarAlerta("Error al realizar reserva", "Un usuario ya ha reservado este laboratorio en la misma fecha y horario");
+            mostrarAlerta("Error al realizar reserva", "El usuario " + nombreApellidoUsuario + " ya ha reservado este laboratorio en la misma fecha y horario");
+
+        } else if (listaReservasLaboratorios.stream().anyMatch(reserva -> reserva.getCedula().equals(campo_cedula_reserva_laboratorio.getText()) && reserva.getFecha().equals(campo_seleccionar_fecha_laboratorios.getValue().toString()) && reserva.getHorario().equals(campo_seleccionar_horario_laboratorio.getText()))) {
+            mostrarAlerta("Error al realizar reserva", "El usuario " + nombreApellidoUsuario + " ya ha reservado un laboratorio en la misma fecha y horario");
+
+        } else if (comprobarReservaAulas(campo_cedula_reserva_laboratorio.getText(), campo_seleccionar_fecha_laboratorios.getValue().toString(), campo_seleccionar_horario_laboratorio.getText())) {
+            mostrarAlerta("Error al realizar reserva", "El usuario " + nombreApellidoUsuario + " ya ha reservado un aula en la misma fecha y horario");
 
         } else {
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
@@ -909,14 +954,29 @@ public class DashboardAdministradorController extends credenciales_avisos implem
 
     // Actualizar reserva de laboratorios
     public void botonActualizarReservaLaboratorio() {
+        nombreApellidoUsuario = obtenerNombreApellidoUsuario(campo_cedula_reserva_laboratorio.getText());
+
         if (campo_seleccionar_laboratorios.getText().isEmpty() || campo_seleccionar_fecha_laboratorios.getValue() == null || campo_seleccionar_horario_laboratorio.getText().isEmpty() || campo_cedula_reserva_laboratorio.getText().isEmpty()) {
             mostrarAlerta("Error al actualizar reserva", "Por favor, llene todos los campos");
+
         } else if (campo_cedula_reserva_laboratorio.getText().length() != 10) {
             mostrarAlerta("Error al actualizar reserva", "Cédula inválida");
+
         } else if (!campoNumerico(campo_cedula_reserva_laboratorio.getText())) {
             mostrarAlerta("Error al actualizar reserva", "Cédula inválida");
+
         } else if (!usuarioExiste(campo_cedula_reserva_laboratorio.getText())) {
             mostrarAlerta("Error al realizar reserva", "El usuario no existe en el sistema");
+
+        } else if (comprobarReservaAulas(campo_cedula_reserva_laboratorio.getText(), campo_seleccionar_fecha_laboratorios.getValue().toString(), campo_seleccionar_horario_laboratorio.getText())) {
+            mostrarAlerta("Error al realizar reserva", "El usuario " + nombreApellidoUsuario + " ya ha reservado un aula en la misma fecha y horario");
+
+        } else if (listaReservasLaboratorios.stream().anyMatch(reserva -> reserva.getLaboratorio().equals(campo_seleccionar_laboratorios.getText()) && reserva.getFecha().equals(campo_seleccionar_fecha_laboratorios.getValue().toString()) && reserva.getHorario().equals(campo_seleccionar_horario_laboratorio.getText())) && !campo_seleccionar_laboratorios.getText().equals(tabla_reservas_laboratorios_mostrar.getSelectionModel().getSelectedItem().getLaboratorio())) {
+            mostrarAlerta("Error al realizar reserva", "El usuario " + nombreApellidoUsuario + " ya ha reservado este laboratorio en la misma fecha y horario");
+
+        } else if (listaReservasLaboratorios.stream().anyMatch(reserva -> reserva.getCedula().equals(campo_cedula_reserva_laboratorio.getText()) && reserva.getFecha().equals(campo_seleccionar_fecha_laboratorios.getValue().toString()) && reserva.getHorario().equals(campo_seleccionar_horario_laboratorio.getText())) && !campo_cedula_reserva_laboratorio.getText().equals(tabla_reservas_laboratorios_mostrar.getSelectionModel().getSelectedItem().getCedula())) {
+            mostrarAlerta("Error al realizar reserva", "El usuario " + nombreApellidoUsuario + " ya ha reservado un laboratorio en la misma fecha y horario");
+
         } else if (campo_seleccionar_laboratorios.getText().equals(tabla_reservas_laboratorios_mostrar.getSelectionModel().getSelectedItem().getLaboratorio())
                 && campo_seleccionar_fecha_laboratorios.getValue().toString().equals(tabla_reservas_laboratorios_mostrar.getSelectionModel().getSelectedItem().getFecha())
                 && campo_seleccionar_horario_laboratorio.getText().equals(tabla_reservas_laboratorios_mostrar.getSelectionModel().getSelectedItem().getHorario())
