@@ -1,1 +1,0 @@
-packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"m":"com.example.proyecto_final_poo_soria_richard","l":"clases_sistema"},{"m":"com.example.proyecto_final_poo_soria_richard","l":"controllers"}];updateSearchResults();
