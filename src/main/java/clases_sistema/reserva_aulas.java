@@ -1,5 +1,10 @@
 package clases_sistema;
 
+/**
+ * La clase reserva_aulas permite crear un objeto con los datos de una reserva de aulas.
+ * @autor Richard Soria
+ * */
+
 public class reserva_aulas {
     String aula;
     String fecha;

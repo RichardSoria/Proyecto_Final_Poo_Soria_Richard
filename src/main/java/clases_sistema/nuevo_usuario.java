@@ -1,5 +1,10 @@
 package clases_sistema;
 
+/**
+ * La clase nuevo_usuario permite crear un objeto con los datos de un nuevo usuario.
+ * @autor Richard Soria
+ * */
+
 public class nuevo_usuario {
     private String cedula;
     private String nombre;

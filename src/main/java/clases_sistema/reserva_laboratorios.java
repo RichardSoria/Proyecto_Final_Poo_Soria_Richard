@@ -1,5 +1,10 @@
 package clases_sistema;
 
+/**
+ * La clase reserva_laboratorios permite crear un objeto con los datos de una reserva de laboratorios.
+ * @autor Richard Soria
+ * */
+
 public class reserva_laboratorios {
     String laboratorio;
     String fecha;

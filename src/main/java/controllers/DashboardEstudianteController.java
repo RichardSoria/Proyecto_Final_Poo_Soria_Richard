@@ -1,5 +1,24 @@
 package controllers;
 
+/**
+     * La clase DashboardEstudianteController gestiona las acciones de la interfaz de usuario
+ * para la reserva de aulas en la aplicación.
+ * Proporciona métodos para manejar las reservas y la navegación del dashboard.
+ *
+ * Esta clase incluye métodos para realizar y gestionar reservas, cambiar entre diferentes
+ * vistas del dashboard y manejar la sesión del usuario.
+ *
+ * Dependencias externas:
+ * - JavaFX para la interfaz gráfica de usuario.
+ * - Clases de reserva: ReservaAula y ReservaLaboratorio.
+ * - Clase UsuarioConectado para gestionar la sesión del usuario.
+ * - Clase EnviarCorreo para enviar notificaciones por correo electrónico.
+ * - Clase CredencialesAvisos para mostrar alertas y confirmaciones.
+ *
+ * @autor Richard Soria
+ */
+
+// Importaciones necesarias para el funcionamiento del controlador
 import clases_sistema.*;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
@@ -30,6 +49,7 @@ import java.util.ResourceBundle;
 
 public class DashboardEstudianteController extends credenciales_avisos implements Initializable {
 
+    // Definición de elementos de la interfaz de usuario con la anotación @FXML
     @FXML
     private Button boton_actualizar_aula;
 
@@ -216,9 +236,25 @@ public class DashboardEstudianteController extends credenciales_avisos implement
     @FXML
     private TableView<reserva_laboratorios> tabla_reservas_laboratorios_mostrar;
 
+    @FXML
     private ObservableList<reserva_aulas> listaReservasAulas;
+
+    @FXML
     private FilteredList<reserva_aulas> filteredDataReservasAulas;
 
+    /**
+     * Variables de instancia para manejar la información del usuario conectado.
+     * Estas variables se inicializan con los valores del usuario conectado.
+     * @param nombreApellidoUsuario Nombre y apellido del usuario conectado.
+     * Se obtiene a partir de la cédula del usuario.
+     * @param nombreApellidoUsuarioReservado Nombre y apellido del usuario que ya ha reservado un aula.
+     * Se obtiene a partir de la cédula del usuario.
+     * @param correoUsuario Correo electrónico del usuario conectado.
+     * @param cedulaUsuario Cédula del usuario conectado.
+     * @param tipoRolUsuario Tipo de rol del usuario conectado.
+     * @param enviarCorreo Instancia de la clase EnviarCorreo para enviar notificaciones por correo electrónico.
+     */
+    // Variables para manejar información del usuario conectado
     String nombreApellidoUsuario;
     String nombreApellidoUsuarioReservado;
     String correoUsuario = usuarioConectado.getInstance().getCorreoUsuarioConectado();
@@ -226,8 +262,24 @@ public class DashboardEstudianteController extends credenciales_avisos implement
     String tipoRolUsuario = usuarioConectado.getInstance().getTipoRolUsuarioConectado();
     enviar_correo enviarCorreo = new enviar_correo();
 
+    /**
+     * Inicializa los componentes del controlador.
+     * Define la visibilidad de los paneles del dashboard.
+     * Este método es llamado automáticamente después de cargar el archivo FXML.
+     */
+    // Método de inicialización del controlador
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+
+        /**
+         * Inicialización de componentes de la interfaz de usuario.
+         * Configuración de columnas de las tablas y eventos de los elementos de la interfaz.
+         * Carga de reservas de aulas y laboratorios desde la base de datos.
+         * Configuración de DatePicker para seleccionar fechas de reservas.
+         * Configuración de MenuItems para seleccionar opciones de aulas y horarios.
+         * Configuración de MenuItems para seleccionar opciones de laboratorios y horarios.
+         * Mostrar nombre de usuario conectado en la interfaz.
+         */
         // Mostrar nombre de usuario conectado
         String nombreUsuarioConectado = usuarioConectado.getInstance().getNombreUsuarioConectado();
         nombre_usuario_conectado.setText(nombreUsuarioConectado);
@@ -261,6 +313,14 @@ public class DashboardEstudianteController extends credenciales_avisos implement
 
     }
 
+    /**
+     * Configura el DatePicker para seleccionar fechas de reservas.
+     * Deshabilita fechas anteriores a la fecha actual y fines de semana.
+     * @param datePicker DatePicker para seleccionar fechas de reservas.
+     * Se configura para deshabilitar fechas anteriores a la fecha actual y fines de semana.
+     * Se establece un color de fondo para las fechas deshabilitadas.
+     */
+    // Configuración del DatePicker para deshabilitar fechas anteriores y fines de semana
     private void configurarDatePicker(DatePicker datePicker) {
         datePicker.setDayCellFactory(picker -> new DateCell() {
             @Override
@@ -283,7 +343,12 @@ public class DashboardEstudianteController extends credenciales_avisos implement
         });
     }
 
-    // Buscar aula
+    /**
+     * Realizar la búsqueda de reservas de aulas.
+     * Filtra las reservas de aulas por aula, fecha, horario y cédula.
+     * Actualiza la tabla de reservas de aulas con los resultados de la búsqueda.
+     */
+    // Método para buscar reservas de aulas
     public void buscarAula() {
         String filter = campo_buscar_aula.getText();
         filteredDataReservasAulas.setPredicate(reserva -> {
@@ -298,7 +363,13 @@ public class DashboardEstudianteController extends credenciales_avisos implement
         });
     }
 
-    // Mostrar reserva de aulas
+    /**
+     * Realizar la carga de reservas de laboratorios.
+     * Consulta las reservas de laboratorios desde la base de datos.
+     * Actualiza la lista de reservas de laboratorios con los resultados de la consulta.
+     * Muestra un mensaje de error si ocurre un problema al cargar las reservas.
+     */
+    // Método para cargar reservas de aulas desde la base de datos
     public void cargarReservasAulas() {
         listaReservasAulas.clear(); // Limpiar la lista actual antes de cargar nuevas reservas
 
@@ -324,7 +395,12 @@ public class DashboardEstudianteController extends credenciales_avisos implement
         }
     }
 
-    // Seleccionar reserva de aulas
+    /**
+     * Seleccionar una reserva de aulas.
+     * Obtiene la reserva de aulas seleccionada en la tabla.
+     * Muestra los datos de la reserva en los campos de texto correspondientes.
+     */
+    // Método para seleccionar una reserva de aulas
     public void seleccionarAulaReserva() {
         reserva_aulas reservaSeleccionada = tabla_mostrar_reservas_aulas.getSelectionModel().getSelectedItem();
         if (reservaSeleccionada != null) {
@@ -335,6 +411,21 @@ public class DashboardEstudianteController extends credenciales_avisos implement
         }
     }
 
+    /**
+     * Realizar la reserva de un aula.
+     * Válida los campos de la reserva de aula y realiza la reserva en la base de datos.
+     * Envía una notificación por correo electrónico al usuario que realiza la reserva.
+     * Muestra un mensaje de confirmación si la reserva se realiza con éxito.
+     * Muestra un mensaje de error si ocurre un problema al realizar la reserva.
+     * Actualiza la tabla de reservas de aulas con la nueva reserva.
+     * Limpia los campos de texto después de realizar la reserva.
+     * Actualiza la lista de reservas de aulas con la nueva reserva.
+     * Comprueba si el usuario ya ha reservado un laboratorio en la misma fecha y horario.
+     * Comprueba si ya existe una reserva para la misma aula, fecha y horario.
+     * Comprueba si el usuario ya ha reservado un aula en la misma fecha y horario.
+     * Comprueba si la cédula del usuario es válida y si el usuario existe en el sistema.
+     */
+    // Método para realizar una reserva de aulas
     public void botonRealizarReservaAula() {
         campo_cedula_reserva_aula.setText(cedulaUsuario);
         nombreApellidoUsuario = obtenerNombreApellidoUsuario(campo_cedula_reserva_aula.getText(), tipoRolUsuario);
@@ -408,6 +499,22 @@ public class DashboardEstudianteController extends credenciales_avisos implement
         }
     }
 
+    /**
+     * Actualizar una reserva de aula.
+     * Obtiene la reserva de aula seleccionada en la tabla.
+     * Válida los campos de la reserva de aula y actualiza la reserva en la base de datos.
+     * Envía una notificación por correo electrónico al usuario que actualiza la reserva.
+     * Muestra un mensaje de confirmación si la reserva se actualiza con éxito.
+     * Muestra un mensaje de error si ocurre un problema al actualizar la reserva.
+     * Actualiza la tabla de reservas de aulas con la reserva actualizada.
+     * Limpia los campos de texto después de actualizar la reserva.
+     * Comprueba si la cédula del usuario es válida y si el usuario existe en el sistema.
+     * Comprueba si el usuario tiene permisos para actualizar la reserva de otro usuario.
+     * Comprueba si se ha realizado algún cambio en los campos de la reserva.
+     * Comprueba si se ha encontrado la reserva para actualizar.
+     * Comprueba si el usuario ya ha reservado un laboratorio en la misma fecha y horario.
+     */
+    // Método para actualizar una reserva de aula
     public void botonActualizarReservaAula() {
         campo_cedula_reserva_aula.setText(cedulaUsuario);
         nombreApellidoUsuario = obtenerNombreApellidoUsuario(campo_cedula_reserva_aula.getText(), tipoRolUsuario);
@@ -503,6 +610,21 @@ public class DashboardEstudianteController extends credenciales_avisos implement
         }
     }
 
+    /**
+     * Eliminar una reserva de aula.
+     * Obtiene la reserva de aula seleccionada en la tabla.
+     * Válida los campos de la reserva de aula y elimina la reserva de la base de datos.
+     * Envía una notificación por correo electrónico al usuario que elimina la reserva.
+     * Muestra un mensaje de confirmación si la reserva se elimina con éxito.
+     * Muestra un mensaje de error si ocurre un problema al eliminar la reserva.
+     * Actualiza la tabla de reservas de aulas sin la reserva eliminada.
+     * Limpia los campos de texto después de eliminar la reserva.
+     * Comprueba si el usuario tiene permisos para eliminar la reserva de otro usuario.
+     * Comprueba si se ha seleccionado una reserva para eliminar.
+     * Comprueba si se ha encontrado la reserva para eliminar.
+     * Comprueba si la cédula del usuario es válida y si el usuario existe en el sistema.
+     * */
+    // Método para eliminar una reserva de aula
     public void botonEliminarReservaAula() {
         reserva_aulas reservaSeleccionada = tabla_mostrar_reservas_aulas.getSelectionModel().getSelectedItem();
 
@@ -556,6 +678,11 @@ public class DashboardEstudianteController extends credenciales_avisos implement
         }
     }
 
+    /**
+     * Limpiar los campos de reserva de aula.
+     * Limpia los campos de texto para seleccionar aula, fecha, horario y cédula.
+     */
+    // Método para limpiar campos de reserva de aula
     public void botonLimpiarCamposReservaAula() {
         campo_seleccionar_aula.setText("Aulas");
         campo_seleccionar_fecha_aula.setValue(null);
@@ -563,24 +690,46 @@ public class DashboardEstudianteController extends credenciales_avisos implement
         campo_cedula_reserva_aula.setText("");
     }
 
+    /**
+     * Muestra el módulo de reservas de aulas.
+     * Oculta los demás módulos.
+     * Limpia los campos de reserva de aula.
+     */
+    // Métodos para cambiar entre módulos del dashboard
     public void moduloBotonAulas() {
         dashboard_reservar_aulas.setVisible(true);
         dashboard_modulos.setVisible(false);
         botonLimpiarCamposReservaAula();
     }
 
+    /**
+     * Muestra el módulo general.
+     * Oculta los demás módulos.
+     * Limpia los campos de reserva de aula.
+     */
     public void botonModulos() {
         dashboard_modulos.setVisible(true);
         dashboard_reservar_aulas.setVisible(false);
         botonLimpiarCamposReservaAula();
     }
 
+    /**
+     * Muestra el módulo de reservas de aulas.
+     * Oculta el módulo de reservas de laboratorios.
+     * Limpia los campos de reserva de aula.
+     */
     public void botonAulas() {
         dashboard_reservar_aulas.setVisible(true);
         dashboard_modulos.setVisible(false);
         botonLimpiarCamposReservaAula();
     }
 
+    /**
+     * Cierra la sesión del usuario.
+     * Muestra un mensaje de confirmación para cerrar la sesión.
+     * Cierra la ventana actual y muestra la ventana de inicio de sesión.
+     * */
+    // Método para cerrar sesión
     public void salirInicioSesion() {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Cerrar Sesión");

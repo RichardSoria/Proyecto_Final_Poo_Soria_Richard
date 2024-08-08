@@ -1,5 +1,13 @@
 package clases_sistema;
 
+
+/**
+ * La clase credenciales_avisos contiene métodos para validar credenciales de usuarios y mostrar mensajes de alerta.
+ * Permite validar correos electrónicos, generar hash de contraseñas, validar campos numéricos y mostrar alertas.
+ * @autor Richard Soria
+ */
+
+// Importaciones necesarias
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
@@ -16,12 +24,20 @@ import java.security.NoSuchAlgorithmException;
 
 public class credenciales_avisos {
 
+    /**
+     * Validar correo electrónico.
+     * Método que permite validar un correo electrónico con una expresión regular.
+     * */
     // Validar correo electrónico
     private static final String EMAIL_PATTERN = "^[a-zA-Z]+\\.[a-zA-Z]+@epn\\.edu\\.ec$";
     public boolean validarCorreo(String correo) {
         return correo.matches(EMAIL_PATTERN);
     }
 
+    /**
+     * Generar hash de contraseña.
+     * Método que permite generar un hash de una contraseña utilizando el algoritmo SHA-256.
+     * */
     // Generar hash de la contraseña
     public static String generateHash(String input) {
         try {
@@ -33,6 +49,10 @@ public class credenciales_avisos {
         }
     }
 
+    /**
+     * Coversión de bytes a hexadecimal.
+     * Método que permite convertir un arreglo de bytes a una cadena de texto en hexadecimal.
+     * */
     // Convertir bytes a hexadecimal
     private static String bytesToHex(byte[] hash) {
         StringBuilder hexString = new StringBuilder();
@@ -46,10 +66,19 @@ public class credenciales_avisos {
         return hexString.toString();
     }
 
+    /**
+     * validar campo numérico.
+     * Método que permite validar un campo numérico con una expresión regular.
+     * */
+    // Validar campo numérico
     public boolean campoNumerico(String texto) {
         return texto.matches("\\d+");
     }
 
+    /**
+     * Mostrar alerta.
+     * Método que permite mostrar una alerta con un mensaje de error.
+     * */
     public void mostrarAlerta(String titulo, String mensaje) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle(titulo);
@@ -60,6 +89,10 @@ public class credenciales_avisos {
         alert.showAndWait();
     }
 
+    /**
+     * Usuario existe.
+     * Método que permite verificar si un usuario existe en la base de datos.
+     * */
     public boolean usuarioExiste(String cedula) {
         String mongoUri = "mongodb+srv://Richard-Soria:RichardSoria%401899@aulas-laboratorios-esfo.o7jjnmz.mongodb.net/";
         String databaseName = "Base_Datos_Aulas_Laboratorios_ESFOT";
@@ -82,6 +115,10 @@ public class credenciales_avisos {
         return false;
     }
 
+    /**
+     * Usuario existe en colección.
+     * Método que permite verificar si un usuario existe en una colección específica de la base de datos.
+     * */
     public boolean usuarioExisteCollection(String cedula, String campo_tipo_rol) {
         String mongoUri = "mongodb+srv://Richard-Soria:RichardSoria%401899@aulas-laboratorios-esfo.o7jjnmz.mongodb.net/";
         String databaseName = "Base_Datos_Aulas_Laboratorios_ESFOT";
@@ -112,6 +149,10 @@ public class credenciales_avisos {
         return false;
     }
 
+    /**
+     * Usuario existe en colección por correo.
+     * Método que permite verificar si un usuario existe en una colección específica de la base de datos por su correo electrónico.
+     * */
     public boolean usuarioExisteCollectionCorreo(String correo, String campo_tipo_rol) {
         String mongoUri = "mongodb+srv://Richard-Soria:RichardSoria%401899@aulas-laboratorios-esfo.o7jjnmz.mongodb.net/";
         String databaseName = "Base_Datos_Aulas_Laboratorios_ESFOT";
@@ -142,6 +183,10 @@ public class credenciales_avisos {
         return false;
     }
 
+    /**
+     * Usuario existe en colección por número de celular.
+     * Método que permite verificar si un usuario existe en una colección específica de la base de datos por su número de celular.
+     * */
     public boolean usuarioExisteCollectionNumeroCelular(String numeroCelular, String campo_tipo_rol) {
         String mongoUri = "mongodb+srv://Richard-Soria:RichardSoria%401899@aulas-laboratorios-esfo.o7jjnmz.mongodb.net/";
         String databaseName = "Base_Datos_Aulas_Laboratorios_ESFOT";
@@ -172,6 +217,10 @@ public class credenciales_avisos {
         return false;
     }
 
+    /**
+     * Obtener nombre y apellido de usuario.
+     * Método que permite obtener el nombre y apellido de un usuario en la base de datos.
+     * */
     public String obtenerNombreApellidoUsuario(String cedula, String campo_tipo_rol) {
         String mongoUri = "mongodb+srv://Richard-Soria:RichardSoria%401899@aulas-laboratorios-esfo.o7jjnmz.mongodb.net/";
         String databaseName = "Base_Datos_Aulas_Laboratorios_ESFOT";
@@ -204,6 +253,10 @@ public class credenciales_avisos {
         return nombreApellidoUsuario;
     }
 
+    /**
+     * Mostrar nombre y apellido de usuario.
+     * Método que permite mostrar el nombre y apellido de un usuario en la base de datos.
+     * */
     public String mostrarNombreApellidoUsuario(String cedula) {
         String mongoUri = "mongodb+srv://Richard-Soria:RichardSoria%401899@aulas-laboratorios-esfo.o7jjnmz.mongodb.net/";
         String databaseName = "Base_Datos_Aulas_Laboratorios_ESFOT";
@@ -229,8 +282,10 @@ public class credenciales_avisos {
         return nombreApellidoUsuario;
     }
 
-
-
+    /**
+     * Obtener correo de usuario.
+     * Método que permite obtener el correo de un usuario en la base de datos.
+     * */
     public String obtenerCorreoUsuario(String cedula){
         String mongoUri = "mongodb+srv://Richard-Soria:RichardSoria%401899@aulas-laboratorios-esfo.o7jjnmz.mongodb.net/";
         String databaseName = "Base_Datos_Aulas_Laboratorios_ESFOT";
@@ -257,6 +312,10 @@ public class credenciales_avisos {
         return correoUsuario;
     }
 
+    /**
+     * Comprobar reserva laboratorios.
+     * Método que permite comprobar si una reserva de laboratorios ya existe en la base de datos.
+     * */
     public Boolean comprobarReservaLaboratorios(String cedula, String fecha, String horario) {
         String mongoUri = "mongodb+srv://Richard-Soria:RichardSoria%401899@aulas-laboratorios-esfo.o7jjnmz.mongodb.net/";
         String databaseName = "Base_Datos_Aulas_Laboratorios_ESFOT";
@@ -277,6 +336,10 @@ public class credenciales_avisos {
         return reservaExiste;
     }
 
+    /**
+     * Comprobar reserva aulas.
+     * Método que permite comprobar si una reserva de aulas ya existe en la base de datos.
+     * */
     public Boolean comprobarReservaAulas(String cedula, String fecha, String horario) {
         String mongoUri = "mongodb+srv://Richard-Soria:RichardSoria%401899@aulas-laboratorios-esfo.o7jjnmz.mongodb.net/";
         String databaseName = "Base_Datos_Aulas_Laboratorios_ESFOT";
@@ -297,6 +360,10 @@ public class credenciales_avisos {
         return reservaExiste;
     }
 
+    /**
+     * Mostrar confirmación.
+     * Método que permite mostrar una alerta de confirmación con un mensaje de éxito.
+     * */
     public void mostrarConfirmacion(String titulo, String mensaje) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(titulo);
@@ -317,6 +384,4 @@ public class credenciales_avisos {
         alert.setGraphic(imageView);
         alert.showAndWait();
     }
-
-
 }

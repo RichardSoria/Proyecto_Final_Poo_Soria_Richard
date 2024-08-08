@@ -1,5 +1,10 @@
 package clases_sistema;
 
+/**
+ * La clase usuarioConectado permite crear un objeto con los datos del usuario que se encuentra conectado.
+ * @autor Richard Soria
+ * */
+
 public class usuarioConectado {
     private static usuarioConectado instance;
     private String nombreUsuarioConectado;
@@ -9,6 +14,10 @@ public class usuarioConectado {
 
     private usuarioConectado() {}
 
+    /**
+     * Utiliza el patrón Singleton para garantizar que solo exista una instancia de usuarioConectado.
+     * @return instance
+     * */
     public static usuarioConectado getInstance() {
         if (instance == null) {
             instance = new usuarioConectado();
@@ -16,6 +25,11 @@ public class usuarioConectado {
         return instance;
     }
 
+    /**
+     * Obtiene y establece los datos del usuario conectado.
+     * Permitiendo obtener los datos del usuario conectado.
+     * Logrando utilizar los datos del usuario conectado en cualquier parte del sistema.
+     * */
     public String getNombreUsuarioConectado() {
         return nombreUsuarioConectado;
     }
