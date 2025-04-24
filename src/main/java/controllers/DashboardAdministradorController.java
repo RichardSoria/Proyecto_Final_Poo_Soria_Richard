@@ -441,7 +441,7 @@ public class DashboardAdministradorController extends credenciales_avisos implem
      * */
     // Método para cargar a los usuarios desde la base de datos
     public void cargarUsuarios() {
-        String mongoUri = "mongodb+srv://Richard-Soria:RichardSoria%401899@aulas-laboratorios-esfo.o7jjnmz.mongodb.net/";
+        String mongoUri = "mongodb+srv://richardsoria:A2SzFCFSAoVRMZZD@reservas-aulas-labs-esf.upy3z5b.mongodb.net/?retryWrites=true&w=majority&appName=Reservas-Aulas-Labs-Esfot";
         String databaseName = "Base_Datos_Aulas_Laboratorios_ESFOT";
         String collectionName = "";
 
@@ -553,7 +553,7 @@ public class DashboardAdministradorController extends credenciales_avisos implem
             Optional<ButtonType> opcion = alert.showAndWait();
 
             if (opcion.get() == ButtonType.OK) {
-                String mongoUri = "mongodb+srv://Richard-Soria:RichardSoria%401899@aulas-laboratorios-esfo.o7jjnmz.mongodb.net/";
+                String mongoUri = "mongodb+srv://richardsoria:A2SzFCFSAoVRMZZD@reservas-aulas-labs-esf.upy3z5b.mongodb.net/?retryWrites=true&w=majority&appName=Reservas-Aulas-Labs-Esfot";
                 String databaseName = "Base_Datos_Aulas_Laboratorios_ESFOT";
                 String collectionName = "";
 
@@ -647,7 +647,7 @@ public class DashboardAdministradorController extends credenciales_avisos implem
             Optional<ButtonType> opcion = alert.showAndWait();
 
             if (opcion.get() == ButtonType.OK) {
-                String mongoUri = "mongodb+srv://Richard-Soria:RichardSoria%401899@aulas-laboratorios-esfo.o7jjnmz.mongodb.net/";
+                String mongoUri = "mongodb+srv://richardsoria:A2SzFCFSAoVRMZZD@reservas-aulas-labs-esf.upy3z5b.mongodb.net/?retryWrites=true&w=majority&appName=Reservas-Aulas-Labs-Esfot";
                 String databaseName = "Base_Datos_Aulas_Laboratorios_ESFOT";
                 String collectionName = "";
 
@@ -757,7 +757,7 @@ public class DashboardAdministradorController extends credenciales_avisos implem
             Optional<ButtonType> opcion = alert.showAndWait();
 
             if (opcion.get() == ButtonType.OK) {
-                String mongoUri = "mongodb+srv://Richard-Soria:RichardSoria%401899@aulas-laboratorios-esfo.o7jjnmz.mongodb.net/";
+                String mongoUri = "mongodb+srv://richardsoria:A2SzFCFSAoVRMZZD@reservas-aulas-labs-esf.upy3z5b.mongodb.net/?retryWrites=true&w=majority&appName=Reservas-Aulas-Labs-Esfot";
                 String databaseName = "Base_Datos_Aulas_Laboratorios_ESFOT";
                 String collectionName = "";
 
@@ -845,7 +845,7 @@ public class DashboardAdministradorController extends credenciales_avisos implem
     public void cargarReservasAulas() {
         listaReservasAulas.clear(); // Limpiar la lista actual antes de cargar nuevas reservas
 
-        String mongoUri = "mongodb+srv://Richard-Soria:RichardSoria%401899@aulas-laboratorios-esfo.o7jjnmz.mongodb.net/";
+        String mongoUri = "mongodb+srv://richardsoria:A2SzFCFSAoVRMZZD@reservas-aulas-labs-esf.upy3z5b.mongodb.net/?retryWrites=true&w=majority&appName=Reservas-Aulas-Labs-Esfot";
         String databaseName = "Base_Datos_Aulas_Laboratorios_ESFOT";
         String collectionName = "Reservas_Aulas";
 
@@ -930,7 +930,7 @@ public class DashboardAdministradorController extends credenciales_avisos implem
             Optional<ButtonType> opcion = alert.showAndWait();
 
             if (opcion.get() == ButtonType.OK) {
-                String mongoUri = "mongodb+srv://Richard-Soria:RichardSoria%401899@aulas-laboratorios-esfo.o7jjnmz.mongodb.net/";
+                String mongoUri = "mongodb+srv://richardsoria:A2SzFCFSAoVRMZZD@reservas-aulas-labs-esf.upy3z5b.mongodb.net/?retryWrites=true&w=majority&appName=Reservas-Aulas-Labs-Esfot";
                 String databaseName = "Base_Datos_Aulas_Laboratorios_ESFOT";
                 String collectionName = "Reservas_Aulas";
 
@@ -1022,7 +1022,7 @@ public class DashboardAdministradorController extends credenciales_avisos implem
             Optional<ButtonType> opcion = alert.showAndWait();
 
             if (opcion.get() == ButtonType.OK) {
-                String mongoUri = "mongodb+srv://Richard-Soria:RichardSoria%401899@aulas-laboratorios-esfo.o7jjnmz.mongodb.net/";
+                String mongoUri = "mongodb+srv://richardsoria:A2SzFCFSAoVRMZZD@reservas-aulas-labs-esf.upy3z5b.mongodb.net/?retryWrites=true&w=majority&appName=Reservas-Aulas-Labs-Esfot";
                 String databaseName = "Base_Datos_Aulas_Laboratorios_ESFOT";
                 String collectionName = "Reservas_Aulas";
 
@@ -1094,7 +1094,7 @@ public class DashboardAdministradorController extends credenciales_avisos implem
             Optional<ButtonType> opcion = alert.showAndWait();
 
             if (opcion.get() == ButtonType.OK) {
-                String mongoUri = "mongodb+srv://Richard-Soria:RichardSoria%401899@aulas-laboratorios-esfo.o7jjnmz.mongodb.net/";
+                String mongoUri = "mongodb+srv://richardsoria:A2SzFCFSAoVRMZZD@reservas-aulas-labs-esf.upy3z5b.mongodb.net/?retryWrites=true&w=majority&appName=Reservas-Aulas-Labs-Esfot";
                 String databaseName = "Base_Datos_Aulas_Laboratorios_ESFOT";
                 String collectionName = "Reservas_Aulas";
 
@@ -1165,7 +1165,7 @@ public class DashboardAdministradorController extends credenciales_avisos implem
     public void cargarReservasLaboratorios() {
         listaReservasLaboratorios.clear(); // Limpiar la lista actual antes de cargar nuevas reservas
 
-        String mongoUri = "mongodb+srv://Richard-Soria:RichardSoria%401899@aulas-laboratorios-esfo.o7jjnmz.mongodb.net/";
+        String mongoUri = "mongodb+srv://richardsoria:A2SzFCFSAoVRMZZD@reservas-aulas-labs-esf.upy3z5b.mongodb.net/?retryWrites=true&w=majority&appName=Reservas-Aulas-Labs-Esfot";
         String databaseName = "Base_Datos_Aulas_Laboratorios_ESFOT";
         String collectionName = "Reservas_Laboratorios";
 
@@ -1252,7 +1252,7 @@ public class DashboardAdministradorController extends credenciales_avisos implem
             Optional<ButtonType> opcion = alert.showAndWait();
 
             if (opcion.get() == ButtonType.OK) {
-                String mongoUri = "mongodb+srv://Richard-Soria:RichardSoria%401899@aulas-laboratorios-esfo.o7jjnmz.mongodb.net/";
+                String mongoUri = "mongodb+srv://richardsoria:A2SzFCFSAoVRMZZD@reservas-aulas-labs-esf.upy3z5b.mongodb.net/?retryWrites=true&w=majority&appName=Reservas-Aulas-Labs-Esfot";
                 String databaseName = "Base_Datos_Aulas_Laboratorios_ESFOT";
                 String collectionName = "Reservas_Laboratorios";
 
@@ -1343,7 +1343,7 @@ public class DashboardAdministradorController extends credenciales_avisos implem
             Optional<ButtonType> opcion = alert.showAndWait();
 
             if (opcion.get() == ButtonType.OK) {
-                String mongoUri = "mongodb+srv://Richard-Soria:RichardSoria%401899@aulas-laboratorios-esfo.o7jjnmz.mongodb.net/";
+                String mongoUri = "mongodb+srv://richardsoria:A2SzFCFSAoVRMZZD@reservas-aulas-labs-esf.upy3z5b.mongodb.net/?retryWrites=true&w=majority&appName=Reservas-Aulas-Labs-Esfot";
                 String databaseName = "Base_Datos_Aulas_Laboratorios_ESFOT";
                 String collectionName = "Reservas_Laboratorios";
 
@@ -1415,7 +1415,7 @@ public class DashboardAdministradorController extends credenciales_avisos implem
             Optional<ButtonType> opcion = alert.showAndWait();
 
             if (opcion.get() == ButtonType.OK) {
-                String mongoUri = "mongodb+srv://Richard-Soria:RichardSoria%401899@aulas-laboratorios-esfo.o7jjnmz.mongodb.net/";
+                String mongoUri = "mongodb+srv://richardsoria:A2SzFCFSAoVRMZZD@reservas-aulas-labs-esf.upy3z5b.mongodb.net/?retryWrites=true&w=majority&appName=Reservas-Aulas-Labs-Esfot";
                 String databaseName = "Base_Datos_Aulas_Laboratorios_ESFOT";
                 String collectionName = "Reservas_Laboratorios";
 
