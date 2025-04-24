@@ -81,7 +81,7 @@ public class IniciarSesionController extends credenciales_avisos {
         }
 
         // URI de conexión a MongoDB
-        String mongoUri = "mongodb+srv://richardsoria:A2SzFCFSAoVRMZZD@reservas-aulas-labs-esf.upy3z5b.mongodb.net/?retryWrites=true&w=majority&appName=Reservas-Aulas-Labs-Esfot";
+        String mongoUri = "mongodb://localhost:27017/";
         String databaseName = "Base_Datos_Aulas_Laboratorios_ESFOT";
         String collectionName = "";
 
